@@ -18,16 +18,16 @@ package com.arvatosystems.t9t.mediaresolver.impl;
 import java.io.File;
 import java.io.IOException;
 
+import com.google.common.io.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.mediaresolver.IMediaResolverSub;
-import com.google.common.io.Files;
 
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ByteArray;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.mediaresolver.IMediaResolverSub;
 
 @Named("FILE") // MediaStorageLocation.FILE.name() is not a constant, apparently
 @Singleton

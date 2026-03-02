@@ -15,9 +15,10 @@
  */
 package com.arvatosystems.t9t.kafka.service;
 
-import de.jpaw.bonaparte.core.BonaPortable;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
+import de.jpaw.bonaparte.core.BonaPortable;
 
 /**
  * Low level API to transfer any BonaPortable object via kafka.

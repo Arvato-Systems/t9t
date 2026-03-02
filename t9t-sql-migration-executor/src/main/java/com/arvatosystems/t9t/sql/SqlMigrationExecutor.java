@@ -19,25 +19,25 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.flywaydb.core.Flyway;
-import org.flywaydb.core.api.configuration.FluentConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.base.T9tUtil;
-import com.arvatosystems.t9t.cfg.be.ConfigProvider;
-import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
-import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.Parameter;
 import com.martiansoftware.jsap.SimpleJSAP;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.configuration.FluentConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
+
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
+import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
 
 /** Runs an SQL migration, if requested by command line parameter (or system property). */
 @Startup(67)

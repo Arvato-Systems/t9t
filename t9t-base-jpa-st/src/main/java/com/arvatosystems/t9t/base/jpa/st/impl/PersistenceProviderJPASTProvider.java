@@ -21,13 +21,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.jpa.JpaTransactionManager;
 
-import com.arvatosystems.t9t.base.services.RequestContext;
-
 import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.bonaparte.pojos.api.PersistenceProviders;
 import de.jpaw.dp.CustomScope;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
+
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 /**
  * The provider for the JPA persistence context. This implementation hooks into the RequestContext (which could be

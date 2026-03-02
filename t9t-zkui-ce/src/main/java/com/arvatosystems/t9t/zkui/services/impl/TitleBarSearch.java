@@ -15,12 +15,12 @@
  */
 package com.arvatosystems.t9t.zkui.services.impl;
 
-import com.arvatosystems.t9t.zkui.services.ITitleBarSearch;
-import com.arvatosystems.t9t.zkui.util.JumpTool;
-
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.zkui.services.ITitleBarSearch;
+import com.arvatosystems.t9t.zkui.util.JumpTool;
 
 @Singleton
 @Fallback

@@ -18,6 +18,22 @@ package com.arvatosystems.t9t.rest.endpoints;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.container.AsyncResponse;
+import jakarta.ws.rs.container.Suspended;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.request.ErrorDescription;
 import com.arvatosystems.t9t.base.request.RetrievePossibleErrorCodesRequest;
 import com.arvatosystems.t9t.base.request.RetrievePossibleErrorCodesResponse;
@@ -26,20 +42,6 @@ import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 import com.arvatosystems.t9t.xml.ErrorDescription001;
 import com.arvatosystems.t9t.xml.ErrorDescriptionList;
 import com.arvatosystems.t9t.xml.GenericResult;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.container.AsyncResponse;
-import jakarta.ws.rs.container.Suspended;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.HttpHeaders;
 
 /**
  * Endpoint retrieving the list of possible return codes.

@@ -15,10 +15,10 @@
  */
 package com.arvatosystems.t9t.voice.client.alexa;
 
-import com.arvatosystems.t9t.voice.client.VoiceSessionContext;
-
 import de.jpaw.bonaparte.pojos.api.alexa.AlexaIntentIn;
 import de.jpaw.bonaparte.pojos.api.alexa.AlexaResponse;
+
+import com.arvatosystems.t9t.voice.client.VoiceSessionContext;
 
 /** Specific implementations are injected via @Named qualifier. */
 public interface IGenericIntent<T extends VoiceSessionContext> {

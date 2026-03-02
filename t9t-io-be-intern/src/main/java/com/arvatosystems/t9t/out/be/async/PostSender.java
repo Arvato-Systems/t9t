@@ -22,18 +22,18 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.core.HttpPostResponseObject;
+import de.jpaw.bonaparte.sock.HttpPostClient;
+import de.jpaw.dp.Dependent;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Named;
+
 import com.arvatosystems.t9t.io.AsyncChannelDTO;
 import com.arvatosystems.t9t.io.AsyncHttpResponse;
 import com.arvatosystems.t9t.io.AsyncQueueDTO;
 import com.arvatosystems.t9t.io.InMemoryMessage;
 import com.arvatosystems.t9t.out.services.IAsyncSender;
 import com.arvatosystems.t9t.out.services.IMarshallerExt;
-
-import de.jpaw.bonaparte.core.HttpPostResponseObject;
-import de.jpaw.bonaparte.sock.HttpPostClient;
-import de.jpaw.dp.Dependent;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Named;
 
 /**
  * The PostSender implements a simple client invocation via http POST.

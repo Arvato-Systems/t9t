@@ -17,9 +17,9 @@ package com.arvatosystems.t9t.base.jpa.st.impl;
 
 import jakarta.persistence.Query;
 
-import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
-
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
 
 @Singleton
 public class QueryHintSetter implements IQueryHintSetter {

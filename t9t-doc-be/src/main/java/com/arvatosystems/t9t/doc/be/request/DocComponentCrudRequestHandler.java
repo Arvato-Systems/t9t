@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.doc.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.be.impl.AbstractCrudSurrogateKeyBERequestHandler;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
@@ -25,8 +27,6 @@ import com.arvatosystems.t9t.doc.DocComponentRef;
 import com.arvatosystems.t9t.doc.be.impl.DocFormatter;
 import com.arvatosystems.t9t.doc.request.DocComponentCrudRequest;
 import com.arvatosystems.t9t.doc.services.IDocComponentResolver;
-
-import de.jpaw.dp.Jdp;
 
 public class DocComponentCrudRequestHandler extends
   AbstractCrudSurrogateKeyBERequestHandler<DocComponentRef, DocComponentDTO, FullTrackingWithVersion, DocComponentCrudRequest> {

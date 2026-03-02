@@ -21,14 +21,11 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.api.RequestParameters;
-import com.arvatosystems.t9t.base.api.ServiceRequest;
-import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.base.auth.PermissionType;
-import com.arvatosystems.t9t.cfg.Packages;
 
 import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -40,8 +37,12 @@ import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.enums.XEnum;
 import de.jpaw.util.ApplicationException;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+
+import com.arvatosystems.t9t.base.api.RequestParameters;
+import com.arvatosystems.t9t.base.api.ServiceRequest;
+import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.auth.PermissionType;
+import com.arvatosystems.t9t.cfg.Packages;
 
 /**
  * Utility class in charge of providing common utility functionality to be used in the scope of the overall message processing.

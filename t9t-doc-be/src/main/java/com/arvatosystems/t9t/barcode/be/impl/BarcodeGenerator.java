@@ -15,10 +15,6 @@
  */
 package com.arvatosystems.t9t.barcode.be.impl;
 
-import com.arvatosystems.t9t.barcode.api.BarcodeFormat;
-import com.arvatosystems.t9t.doc.services.IBarcodeGenerator;
-import com.arvatosystems.t9t.doc.services.ImageParameter;
-import com.arvatosystems.t9t.image.be.impl.AbstractImageGenerator;
 import com.google.zxing.aztec.AztecWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.oned.CodaBarWriter;
@@ -33,6 +29,11 @@ import com.google.zxing.qrcode.QRCodeWriter;
 
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.barcode.api.BarcodeFormat;
+import com.arvatosystems.t9t.doc.services.IBarcodeGenerator;
+import com.arvatosystems.t9t.doc.services.ImageParameter;
+import com.arvatosystems.t9t.image.be.impl.AbstractImageGenerator;
 
 @Singleton
 public class BarcodeGenerator extends AbstractImageGenerator implements IBarcodeGenerator {

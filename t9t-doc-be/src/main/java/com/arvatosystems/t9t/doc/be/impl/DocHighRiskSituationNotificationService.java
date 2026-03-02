@@ -20,6 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.IHighRiskSituationNotificationService;
@@ -27,9 +30,6 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.doc.DocConstants;
 import com.arvatosystems.t9t.doc.api.NewDocumentRequest;
 import com.arvatosystems.t9t.email.api.RecipientEmail;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class DocHighRiskSituationNotificationService implements IHighRiskSituationNotificationService {

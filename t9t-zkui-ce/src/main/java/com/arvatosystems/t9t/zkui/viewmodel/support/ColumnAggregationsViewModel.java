@@ -15,19 +15,11 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel.support;
 
-import com.arvatosystems.t9t.base.IGridConfigContainer;
-import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
-import com.arvatosystems.t9t.base.uiprefs.UILeanGridPreferences;
-import com.arvatosystems.t9t.zkui.components.grid.ILeanGridConfigResolver;
-import com.arvatosystems.t9t.zkui.components.grid.LeanGridConfigResolver;
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-import com.arvatosystems.t9t.zkui.util.Constants;
-import de.jpaw.bonaparte.pojos.api.AggregateColumn;
-import de.jpaw.bonaparte.pojos.api.AggregateFunctionType;
-import de.jpaw.bonaparte.pojos.meta.DataCategory;
-import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
-import de.jpaw.bonaparte.pojos.ui.UIMeta;
-import de.jpaw.bonaparte.util.FreezeTools;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.BindingParam;
@@ -40,10 +32,20 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Window;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import de.jpaw.bonaparte.pojos.api.AggregateColumn;
+import de.jpaw.bonaparte.pojos.api.AggregateFunctionType;
+import de.jpaw.bonaparte.pojos.meta.DataCategory;
+import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
+import de.jpaw.bonaparte.pojos.ui.UIMeta;
+import de.jpaw.bonaparte.util.FreezeTools;
+
+import com.arvatosystems.t9t.base.IGridConfigContainer;
+import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
+import com.arvatosystems.t9t.base.uiprefs.UILeanGridPreferences;
+import com.arvatosystems.t9t.zkui.components.grid.ILeanGridConfigResolver;
+import com.arvatosystems.t9t.zkui.components.grid.LeanGridConfigResolver;
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.Constants;
 
 public class ColumnAggregationsViewModel {
 

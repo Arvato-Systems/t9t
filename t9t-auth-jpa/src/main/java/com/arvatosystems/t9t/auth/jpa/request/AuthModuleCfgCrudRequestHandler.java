@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.auth.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.jpa.entities.AuthModuleCfgEntity;
 import com.arvatosystems.t9t.auth.jpa.mapping.IAuthModuleCfgDTOMapper;
@@ -23,7 +25,6 @@ import com.arvatosystems.t9t.auth.request.AuthModuleCfgCrudRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudModuleCfgRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-import de.jpaw.dp.Jdp;
 
 public class AuthModuleCfgCrudRequestHandler extends AbstractCrudModuleCfgRequestHandler<AuthModuleCfgDTO, AuthModuleCfgCrudRequest, AuthModuleCfgEntity> {
 

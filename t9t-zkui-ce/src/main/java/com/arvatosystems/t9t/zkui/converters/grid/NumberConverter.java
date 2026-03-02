@@ -3,16 +3,17 @@ package com.arvatosystems.t9t.zkui.converters.grid;
 import java.text.DecimalFormat;
 import java.util.function.BiConsumer;
 
-import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
-import org.zkoss.util.resource.Labels;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
-import com.arvatosystems.t9t.base.T9tUtil;
-import com.arvatosystems.t9t.zkui.util.Constants;
+import org.zkoss.util.resource.Labels;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+
+import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
+import com.arvatosystems.t9t.zkui.util.Constants;
 
 public class NumberConverter<T extends Number> implements IItemConverter<T> {
     /** The format to use for consistent formatting with fixed decimal places */

@@ -17,15 +17,16 @@ package com.arvatosystems.t9t.base.jpa;
 
 import java.util.function.Supplier;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.search.TwoRefs;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.search.TwoRefs;
 
 /** Defines methods to return either the artificial key (via any key) or the full JPA entity (via some key).
  *

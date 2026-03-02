@@ -15,6 +15,21 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel.framework;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import jakarta.annotation.Nonnull;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.annotation.NotifyChange;
+
+import de.jpaw.bonaparte.pojos.api.DataWithTracking;
+
 import com.arvatosystems.t9t.ai.AiPromptDTO;
 import com.arvatosystems.t9t.ai.AiPromptParameter;
 import com.arvatosystems.t9t.ai.AiPromptParameterDTO;
@@ -25,18 +40,6 @@ import com.arvatosystems.t9t.zkui.exceptions.ServiceResponseException;
 import com.arvatosystems.t9t.zkui.util.Constants;
 import com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM;
 import com.arvatosystems.t9t.zkui.viewmodel.MapHelper;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import jakarta.annotation.Nonnull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zkoss.bind.annotation.Command;
-import org.zkoss.bind.annotation.Init;
-import org.zkoss.bind.annotation.NotifyChange;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Init(superclass = true)
 public class AiPromptViewModel extends CrudSurrogateKeyVM<AiPromptRef, AiPromptDTO, FullTrackingWithVersion> {

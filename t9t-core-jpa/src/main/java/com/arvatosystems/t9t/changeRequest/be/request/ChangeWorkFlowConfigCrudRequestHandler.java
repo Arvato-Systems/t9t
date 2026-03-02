@@ -15,6 +15,11 @@
  */
 package com.arvatosystems.t9t.changeRequest.be.request;
 
+import jakarta.annotation.Nonnull;
+
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
@@ -26,9 +31,6 @@ import com.arvatosystems.t9t.changeRequest.jpa.entities.ChangeWorkFlowConfigEnti
 import com.arvatosystems.t9t.changeRequest.jpa.mapping.IChangeWorkFlowConfigDTOMapper;
 import com.arvatosystems.t9t.changeRequest.jpa.persistence.IChangeWorkFlowConfigEntityResolver;
 import com.arvatosystems.t9t.changeRequest.request.ChangeWorkFlowConfigCrudRequest;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.dp.Jdp;
-import jakarta.annotation.Nonnull;
 
 public class ChangeWorkFlowConfigCrudRequestHandler extends AbstractCrudSurrogateKeyRequestHandler<ChangeWorkFlowConfigRef, ChangeWorkFlowConfigDTO,
     FullTrackingWithVersion, ChangeWorkFlowConfigCrudRequest, ChangeWorkFlowConfigEntity> {

@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.voice.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
@@ -25,7 +27,6 @@ import com.arvatosystems.t9t.voice.jpa.entities.VoiceUserEntity;
 import com.arvatosystems.t9t.voice.jpa.mapping.IVoiceUserDTOMapper;
 import com.arvatosystems.t9t.voice.jpa.persistence.IVoiceUserEntityResolver;
 import com.arvatosystems.t9t.voice.request.VoiceUserCrudRequest;
-import de.jpaw.dp.Jdp;
 
 public class VoiceUserCrudRequestHandler extends
         AbstractCrudSurrogateKeyRequestHandler<VoiceUserRef, VoiceUserDTO, FullTrackingWithVersion, VoiceUserCrudRequest, VoiceUserEntity> {

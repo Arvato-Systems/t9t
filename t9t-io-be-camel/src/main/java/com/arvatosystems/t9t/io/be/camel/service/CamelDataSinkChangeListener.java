@@ -18,16 +18,16 @@ package com.arvatosystems.t9t.io.be.camel.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.event.EventParameters;
 import com.arvatosystems.t9t.base.services.IEventHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.event.DataSinkChangedEvent;
 import com.arvatosystems.t9t.out.be.impl.output.camel.CamelOutputProcessor;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
 
 /**
  * Event to be executed on other nodes if a data sink change has been performed.

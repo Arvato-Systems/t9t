@@ -23,14 +23,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.arvatosystems.t9t.base.services.ISearchTools;
-
 import de.jpaw.bonaparte.pojos.api.AndFilter;
 import de.jpaw.bonaparte.pojos.api.AsciiFilter;
 import de.jpaw.bonaparte.pojos.api.NotFilter;
 import de.jpaw.bonaparte.pojos.api.OrFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.dp.Jdp;
+
+import com.arvatosystems.t9t.base.services.ISearchTools;
 
 public class QueueToSearchFilterTest {
     private ISearchTools searchTools = Mockito.mock(ISearchTools.class);

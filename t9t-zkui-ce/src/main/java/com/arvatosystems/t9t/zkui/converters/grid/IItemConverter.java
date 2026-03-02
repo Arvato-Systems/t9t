@@ -15,9 +15,10 @@
  */
 package com.arvatosystems.t9t.zkui.converters.grid;
 
+import jakarta.annotation.Nonnull;
+
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import jakarta.annotation.Nonnull;
 
 /**
  * Converter interface for formatting grid cell values.

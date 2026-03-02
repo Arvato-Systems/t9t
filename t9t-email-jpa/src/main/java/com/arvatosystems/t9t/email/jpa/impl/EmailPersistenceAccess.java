@@ -15,6 +15,11 @@
  */
 package com.arvatosystems.t9t.email.jpa.impl;
 
+import java.util.UUID;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.email.EmailStatus;
 import com.arvatosystems.t9t.email.api.EmailMessage;
@@ -23,9 +28,6 @@ import com.arvatosystems.t9t.email.jpa.entities.EmailEntity;
 import com.arvatosystems.t9t.email.jpa.persistence.IEmailAttachmentsEntityResolver;
 import com.arvatosystems.t9t.email.jpa.persistence.IEmailEntityResolver;
 import com.arvatosystems.t9t.email.services.IEmailPersistenceAccess;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import java.util.UUID;
 
 @Singleton
 public class EmailPersistenceAccess implements IEmailPersistenceAccess {

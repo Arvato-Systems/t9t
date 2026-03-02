@@ -20,14 +20,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.arvatosystems.t9t.base.jpa.IPersistenceProviderJPAShadow;
-import com.arvatosystems.t9t.base.jpa.ormspecific.IJpaJdbcConnectionProvider;
-import com.arvatosystems.t9t.base.services.IJdbcConnectionProvider;
-
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.jpa.IPersistenceProviderJPAShadow;
+import com.arvatosystems.t9t.base.jpa.ormspecific.IJpaJdbcConnectionProvider;
+import com.arvatosystems.t9t.base.services.IJdbcConnectionProvider;
 
 @Singleton
 @Named("shadow")

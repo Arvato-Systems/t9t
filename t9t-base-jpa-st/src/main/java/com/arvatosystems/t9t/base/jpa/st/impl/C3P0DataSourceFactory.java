@@ -19,17 +19,17 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.hibernate.ConnectionReleaseMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.jpa.st.IDataSourceFactory;
 import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
 import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class C3P0DataSourceFactory implements IDataSourceFactory {

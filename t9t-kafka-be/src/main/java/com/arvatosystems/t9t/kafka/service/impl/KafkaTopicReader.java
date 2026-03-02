@@ -36,12 +36,12 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.kafka.service.IKafkaConsumer;
-import com.arvatosystems.t9t.kafka.service.IKafkaTopicReader;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CompactByteArrayParser;
 import de.jpaw.util.ExceptionUtil;
+
+import com.arvatosystems.t9t.kafka.service.IKafkaConsumer;
+import com.arvatosystems.t9t.kafka.service.IKafkaTopicReader;
 
 public class KafkaTopicReader implements IKafkaTopicReader {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaTopicReader.class);

@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.io.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.crud.RefResolverResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.jpa.persistence.ISinkEntityResolver;
 import com.arvatosystems.t9t.io.request.SinkResolverRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class SinkResolverRequestHandler extends AbstractRequestHandler<SinkResolverRequest> {
 

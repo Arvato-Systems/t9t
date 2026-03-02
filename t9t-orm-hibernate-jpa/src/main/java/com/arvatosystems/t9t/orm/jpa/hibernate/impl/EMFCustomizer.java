@@ -22,6 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Persistence;
+
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.HANADialect;
@@ -30,6 +35,8 @@ import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.dialect.SQLServerDialect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Singleton;
 
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.jpa.ormspecific.IEMFCustomizer;
@@ -40,12 +47,6 @@ import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
 import com.arvatosystems.t9t.cfg.be.SearchConfiguration;
 import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
 import com.arvatosystems.t9t.init.InitContainers;
-
-import de.jpaw.dp.Singleton;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.Persistence;
 
 @Singleton
 public class EMFCustomizer implements IEMFCustomizer {

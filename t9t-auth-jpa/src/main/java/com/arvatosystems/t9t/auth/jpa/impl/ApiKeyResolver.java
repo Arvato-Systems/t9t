@@ -18,6 +18,9 @@ package com.arvatosystems.t9t.auth.jpa.impl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.ApiKeyRef;
 import com.arvatosystems.t9t.auth.jpa.entities.ApiKeyEntity;
@@ -26,9 +29,6 @@ import com.arvatosystems.t9t.auth.jpa.persistence.IApiKeyEntityResolver;
 import com.arvatosystems.t9t.auth.services.IApiKeyResolver;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractJpaResolver;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class ApiKeyResolver extends AbstractJpaResolver<ApiKeyRef, ApiKeyDTO, FullTrackingWithVersion, ApiKeyEntity> implements IApiKeyResolver {

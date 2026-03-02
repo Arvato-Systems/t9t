@@ -15,12 +15,12 @@
  */
 package com.arvatosystems.t9t.base.be.execution;
 
-import com.arvatosystems.t9t.base.types.AuthenticationParameters;
-import com.arvatosystems.t9t.base.types.SessionParameters;
+import java.util.Objects;
 
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 
-import java.util.Objects;
+import com.arvatosystems.t9t.base.types.AuthenticationParameters;
+import com.arvatosystems.t9t.base.types.SessionParameters;
 
 public class AuthInfo {
     private final SessionParameters sessionParameters;

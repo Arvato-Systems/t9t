@@ -18,6 +18,14 @@ package com.arvatosystems.t9t.misc.extensions;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.DataWithTracking;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.SearchFilter;
+
 import com.arvatosystems.t9t.base.ITestConnection;
 import com.arvatosystems.t9t.base.crud.CrudAnyKeyResponse;
 import com.arvatosystems.t9t.base.request.GetServerInformationRequest;
@@ -32,13 +40,6 @@ import com.arvatosystems.t9t.updates.request.FinishUpdateRequest;
 import com.arvatosystems.t9t.updates.request.GetUpdateStatusRequest;
 import com.arvatosystems.t9t.updates.request.GetUpdateStatusResponse;
 import com.arvatosystems.t9t.updates.request.StartUpdateRequest;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 /**
  * A set of static utility methods to be imported for setup / update tests.

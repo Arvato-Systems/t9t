@@ -15,12 +15,12 @@
  */
 package com.arvatosystems.t9t.base.jpa;
 
-import com.arvatosystems.t9t.base.T9tException;
-
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
+
+import com.arvatosystems.t9t.base.T9tException;
 
 /**
  * Define restriction that can be applied before/after entity is resolved.

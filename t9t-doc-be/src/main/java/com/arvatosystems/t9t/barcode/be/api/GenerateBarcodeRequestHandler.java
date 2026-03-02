@@ -15,15 +15,15 @@
  */
 package com.arvatosystems.t9t.barcode.be.api;
 
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.barcode.api.GenerateBarcodeRequest;
 import com.arvatosystems.t9t.barcode.api.GenerateBarcodeResponse;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.doc.services.IBarcodeGenerator;
 import com.arvatosystems.t9t.doc.services.ImageParameter;
-
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.dp.Jdp;
 
 public class GenerateBarcodeRequestHandler extends AbstractReadOnlyRequestHandler<GenerateBarcodeRequest> {
 

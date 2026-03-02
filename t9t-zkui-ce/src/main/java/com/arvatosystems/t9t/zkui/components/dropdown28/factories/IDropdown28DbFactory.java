@@ -15,12 +15,12 @@
  */
 package com.arvatosystems.t9t.zkui.components.dropdown28.factories;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.apiw.Ref;
+
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.base.search.LeanSearchRequest;
 import com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28Db;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
 
 /** Describes a factory for a Dropdown Combobox which is populated via a DB query.
  * By convention, LeanSearchRequests are used.

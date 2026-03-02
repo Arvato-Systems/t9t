@@ -15,10 +15,11 @@
  */
 package com.arvatosystems.t9t.out.be.jackson;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.jackson.JacksonTools;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Generic Jackson based serializer, used for example for async http output.

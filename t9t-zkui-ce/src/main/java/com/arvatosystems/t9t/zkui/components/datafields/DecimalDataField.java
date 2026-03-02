@@ -20,9 +20,9 @@ import java.math.RoundingMode;
 
 import org.zkoss.zul.Decimalbox;
 
-import com.arvatosystems.t9t.zkui.util.CurrencyUtil;
-
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+
+import com.arvatosystems.t9t.zkui.util.CurrencyUtil;
 
 public class DecimalDataField extends AbstractDataField<Decimalbox, BigDecimal> {
     protected final Decimalbox c = new Decimalbox();

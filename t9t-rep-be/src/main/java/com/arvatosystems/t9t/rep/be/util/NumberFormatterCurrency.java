@@ -20,11 +20,11 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class NumberFormatterCurrency {
     private static final Logger LOGGER = LoggerFactory.getLogger(NumberFormatterCurrency.class);

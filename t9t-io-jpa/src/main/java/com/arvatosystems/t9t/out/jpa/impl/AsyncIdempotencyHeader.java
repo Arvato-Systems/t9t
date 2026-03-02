@@ -17,11 +17,11 @@ package com.arvatosystems.t9t.out.jpa.impl;
 
 import java.util.UUID;
 
-import com.arvatosystems.t9t.io.AsyncChannelDTO;
-import com.arvatosystems.t9t.out.services.IAsyncIdempotencyHeader;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.io.AsyncChannelDTO;
+import com.arvatosystems.t9t.out.services.IAsyncIdempotencyHeader;
 
 @Singleton
 public class AsyncIdempotencyHeader implements IAsyncIdempotencyHeader {

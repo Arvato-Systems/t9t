@@ -21,9 +21,9 @@ import org.zkoss.bind.BindContext;
 import org.zkoss.bind.Converter;
 import org.zkoss.zk.ui.Component;
 
-import com.arvatosystems.t9t.zkui.util.CurrencyUtil;
-
 import de.jpaw.fixedpoint.FixedPointBase;
+
+import com.arvatosystems.t9t.zkui.util.CurrencyUtil;
 
 /**
  * This is a ZK Data binding converter that is only a formatter (for labels etc) to provide read only numbers.

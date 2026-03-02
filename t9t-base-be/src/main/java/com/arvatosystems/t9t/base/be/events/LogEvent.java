@@ -15,13 +15,15 @@
  */
 package com.arvatosystems.t9t.base.be.events;
 
-import com.arvatosystems.t9t.base.services.IEventImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import com.arvatosystems.t9t.base.services.IEventImpl;
 
 @Singleton
 @Named("log")

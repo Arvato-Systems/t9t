@@ -22,6 +22,10 @@ import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import de.jpaw.bonaparte.pojos.api.LongFilter;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
@@ -36,10 +40,6 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.SinkDTO;
 import com.arvatosystems.t9t.io.request.SinkSearchRequest;
 import com.arvatosystems.t9t.pdf.request.ConcatenatePDFsRequest;
-
-import de.jpaw.bonaparte.pojos.api.LongFilter;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.dp.Jdp;
 
 public class ConcatenatePDFsRequestHandler extends AbstractRequestHandler<ConcatenatePDFsRequest> {
 

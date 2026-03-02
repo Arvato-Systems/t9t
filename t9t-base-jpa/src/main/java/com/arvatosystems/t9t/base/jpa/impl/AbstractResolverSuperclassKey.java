@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.base.jpa.impl;
 
-import com.arvatosystems.t9t.base.jpa.IResolverSuperclassKey;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Alternative;
+
+import com.arvatosystems.t9t.base.jpa.IResolverSuperclassKey;
 
 /** Base implementation of the IEntityResolver interface, suitable for tables with a natural key. */
 @Alternative

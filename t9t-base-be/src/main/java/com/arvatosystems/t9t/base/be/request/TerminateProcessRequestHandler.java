@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.base.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -22,8 +24,6 @@ import com.arvatosystems.t9t.base.be.execution.RequestContextScope;
 import com.arvatosystems.t9t.base.request.TerminateProcessRequest;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
 
 /**
  * A technical request handler which is used to terminate other processes.

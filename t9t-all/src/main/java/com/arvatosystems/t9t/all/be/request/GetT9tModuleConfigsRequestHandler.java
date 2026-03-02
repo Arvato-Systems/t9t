@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.all.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.all.T9tModuleConfigs;
 import com.arvatosystems.t9t.all.request.GetT9tModuleConfigsRequest;
 import com.arvatosystems.t9t.all.request.GetT9tModuleConfigsResponse;
@@ -24,8 +26,6 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.doc.services.IDocModuleCfgDtoResolver;
 import com.arvatosystems.t9t.email.services.IEmailModuleCfgDtoResolver;
 import com.arvatosystems.t9t.solr.services.ISolrModuleCfgDtoResolver;
-
-import de.jpaw.dp.Jdp;
 
 public class GetT9tModuleConfigsRequestHandler extends AbstractReadOnlyRequestHandler<GetT9tModuleConfigsRequest> {
     private final IAuthModuleCfgDtoResolver authModuleCfgResolver = Jdp.getRequired(IAuthModuleCfgDtoResolver.class);

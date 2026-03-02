@@ -1,9 +1,11 @@
 package com.arvatosystems.t9t.hs.search.be.converter;
 
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import jakarta.annotation.Nonnull;
+
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.SearchPredicateFactory;
+
+import de.jpaw.bonaparte.pojos.api.SearchFilter;
 
 public interface ISearchFilterToPredicate<FILTER extends SearchFilter> {
 

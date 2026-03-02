@@ -17,13 +17,13 @@ package com.arvatosystems.t9t.base;
 
 import java.util.UUID;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
 import com.arvatosystems.t9t.base.types.AuthenticationParameters;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 
 /** Common methods for embedded and remote tests. */
 public interface ITestConnection {

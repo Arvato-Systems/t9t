@@ -15,6 +15,21 @@
  */
 package com.arvatosystems.t9t.all.be.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import jakarta.annotation.Nonnull;
+
+import com.google.common.collect.ImmutableMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.OperationTypes;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
 import com.arvatosystems.t9t.authc.api.UserData;
 import com.arvatosystems.t9t.base.T9tConstants;
@@ -23,24 +38,12 @@ import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.changeRequest.ChangeWorkFlowConfigDTO;
+import com.arvatosystems.t9t.changeRequest.DataChangeRequestDTO;
 import com.arvatosystems.t9t.changeRequest.services.IChangeWorkFlowConfigCache;
 import com.arvatosystems.t9t.changeRequest.services.IDataChangeRequestEmailService;
-import com.arvatosystems.t9t.changeRequest.DataChangeRequestDTO;
 import com.arvatosystems.t9t.doc.DocConstants;
 import com.arvatosystems.t9t.doc.api.NewDocumentRequest;
 import com.arvatosystems.t9t.email.api.RecipientEmail;
-import com.google.common.collect.ImmutableMap;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.OperationTypes;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import jakarta.annotation.Nonnull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Singleton
 public class DataChangeRequestEmailService implements IDataChangeRequestEmailService {

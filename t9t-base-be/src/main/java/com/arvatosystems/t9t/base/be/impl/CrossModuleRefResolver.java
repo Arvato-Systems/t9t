@@ -15,6 +15,12 @@
  */
 package com.arvatosystems.t9t.base.be.impl;
 
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.bonaparte.pojos.apiw.Ref;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyRequest;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
@@ -22,12 +28,6 @@ import com.arvatosystems.t9t.base.crud.RefResolverRequest;
 import com.arvatosystems.t9t.base.crud.RefResolverResponse;
 import com.arvatosystems.t9t.base.services.ICrossModuleRefResolver;
 import com.arvatosystems.t9t.base.services.IExecutor;
-
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 /**
  * Default implementation for {@linkplain ICrossModuleRefResolver} interface.

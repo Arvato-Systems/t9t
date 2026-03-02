@@ -20,14 +20,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.CrudViewModel;
-import com.arvatosystems.t9t.base.types.TenantIsolationCategoryType;
-import com.arvatosystems.t9t.init.InitContainers;
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-import com.arvatosystems.t9t.zkui.util.Constants;
-import com.arvatosystems.t9t.zkui.util.T9tConfigConstants;
-import com.arvatosystems.t9t.zkui.util.ZulUtils;
-
 import de.jpaw.bonaparte.pojos.meta.AlphanumericEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.DataCategory;
 import de.jpaw.bonaparte.pojos.meta.EnumSetDefinition;
@@ -38,6 +30,14 @@ import de.jpaw.bonaparte.pojos.meta.XEnumSetDefinition;
 import de.jpaw.bonaparte.pojos.ui.UIFilter;
 import de.jpaw.bonaparte.pojos.ui.UIFilterType;
 import de.jpaw.dp.Jdp;
+
+import com.arvatosystems.t9t.base.CrudViewModel;
+import com.arvatosystems.t9t.base.types.TenantIsolationCategoryType;
+import com.arvatosystems.t9t.init.InitContainers;
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.Constants;
+import com.arvatosystems.t9t.zkui.util.T9tConfigConstants;
+import com.arvatosystems.t9t.zkui.util.ZulUtils;
 
 /** Creates ZK components for filters. */
 public class FieldFactory {

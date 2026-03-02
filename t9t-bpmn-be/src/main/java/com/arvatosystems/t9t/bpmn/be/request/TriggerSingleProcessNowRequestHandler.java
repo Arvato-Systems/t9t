@@ -15,14 +15,14 @@
  */
 package com.arvatosystems.t9t.bpmn.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.bpmn.request.TriggerSingleProcessNowRequest;
 import com.arvatosystems.t9t.bpmn.services.IBpmnRunner;
-
-import de.jpaw.dp.Jdp;
 
 public class TriggerSingleProcessNowRequestHandler extends AbstractRequestHandler<TriggerSingleProcessNowRequest> {
     private final IBpmnRunner runner = Jdp.getRequired(IBpmnRunner.class);

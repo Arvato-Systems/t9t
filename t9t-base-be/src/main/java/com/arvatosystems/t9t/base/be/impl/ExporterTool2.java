@@ -19,18 +19,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import com.google.common.collect.ImmutableList;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.IExporterTool2;
 import com.arvatosystems.t9t.base.services.IOutputSession;
 import com.arvatosystems.t9t.base.services.ISplittingOutputSessionProvider;
-import com.google.common.collect.ImmutableList;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 /** Utility class which performs the export or data return for SearchRequests which are composed from other requests, with DTO extensions / post processing.
  */

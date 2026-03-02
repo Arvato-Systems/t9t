@@ -19,14 +19,14 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.fields;
 import static com.tngtech.archunit.library.GeneralCodingRules.NO_CLASSES_SHOULD_USE_JAVA_UTIL_LOGGING;
 
-import org.slf4j.Logger;
-
-import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
+import org.slf4j.Logger;
 
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 
 public class StandardArchTests {
     @ArchTest

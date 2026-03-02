@@ -15,14 +15,16 @@
  */
 package com.arvatosystems.t9t.authc.be.api;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
 import com.arvatosystems.t9t.authc.api.GetTenantsRequest;
 import com.arvatosystems.t9t.authc.api.GetTenantsResponse;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-import de.jpaw.dp.Jdp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class GetTenantsRequestHandler extends AbstractReadOnlyRequestHandler<GetTenantsRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(GetTenantsRequestHandler.class);

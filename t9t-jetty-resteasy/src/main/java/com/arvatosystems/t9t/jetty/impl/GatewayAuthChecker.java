@@ -17,8 +17,14 @@ package com.arvatosystems.t9t.jetty.impl;
 
 import java.util.concurrent.TimeUnit;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ApplicationException;
 
 import com.arvatosystems.t9t.base.IRemoteConnection;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -26,12 +32,6 @@ import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.base.types.AuthenticationParameters;
 import com.arvatosystems.t9t.base.types.SessionParameters;
 import com.arvatosystems.t9t.rest.services.IGatewayAuthChecker;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ApplicationException;
 
 @Singleton
 public class GatewayAuthChecker implements IGatewayAuthChecker {

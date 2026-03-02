@@ -22,6 +22,10 @@ import java.nio.charset.UnsupportedCharsetException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.media.MediaType;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.IInputQueuePartitioner;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -47,10 +51,6 @@ import com.arvatosystems.t9t.io.request.DataSinkCrudRequest;
 import com.arvatosystems.t9t.io.services.IDataSinkDefaultConfigurationProvider;
 import com.arvatosystems.t9t.out.services.ICommunicationFormatGenerator;
 import com.arvatosystems.t9t.out.services.IPreOutputDataTransformer;
-
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
-import de.jpaw.dp.Jdp;
 
 public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKeyRequestHandler<DataSinkRef, DataSinkDTO,
   FullTrackingWithVersion, DataSinkCrudRequest, DataSinkEntity> {

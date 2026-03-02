@@ -15,10 +15,6 @@
  */
 package com.arvatosystems.t9t.dataloader.maven;
 
-import com.arvatosystems.t9t.dataloader.maven.config.Database;
-import com.arvatosystems.t9t.dataloader.maven.config.SqlArtifact;
-import com.arvatosystems.t9t.dataloader.maven.util.DbSetupHelper;
-import com.arvatosystems.t9t.dataloader.maven.util.SqlDependencyHelper;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,6 +27,10 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 import com.arvatosystems.t9t.dataloader.DbSetup;
+import com.arvatosystems.t9t.dataloader.maven.config.Database;
+import com.arvatosystems.t9t.dataloader.maven.config.SqlArtifact;
+import com.arvatosystems.t9t.dataloader.maven.util.DbSetupHelper;
+import com.arvatosystems.t9t.dataloader.maven.util.SqlDependencyHelper;
 
 /**
  * Maven plugin that wraps the dataloader (@link {@link DbSetup}).

@@ -18,19 +18,20 @@ package com.arvatosystems.t9t.jetty.rest.endpoints;
 import java.io.InputStream;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.LogSanitizer;
-import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
-
-import de.jpaw.dp.Singleton;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+
+import io.swagger.v3.oas.annotations.Operation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.LogSanitizer;
+import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
 
 @Path("")
 @Singleton

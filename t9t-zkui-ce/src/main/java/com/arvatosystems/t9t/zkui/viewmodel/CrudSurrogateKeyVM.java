@@ -19,11 +19,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Init;
 
-import com.arvatosystems.t9t.base.crud.CrudAnyKeyResponse;
-import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyRequest;
-
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
+
+import com.arvatosystems.t9t.base.crud.CrudAnyKeyResponse;
+import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyRequest;
 
 @Init(superclass = true)
 public class CrudSurrogateKeyVM<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase>

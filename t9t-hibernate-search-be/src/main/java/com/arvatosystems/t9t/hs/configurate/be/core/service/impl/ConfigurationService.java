@@ -19,13 +19,11 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
-import com.arvatosystems.t9t.base.services.RequestContext;
-import com.arvatosystems.t9t.batch.StatisticsDTO;
-import com.arvatosystems.t9t.hs.configurate.be.core.service.EntityConfigCache;
-import com.arvatosystems.t9t.statistics.services.IStatisticsService;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.metamodel.EntityType;
+
 import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.mapper.orm.mapping.SearchMapping;
 import org.hibernate.search.mapper.orm.schema.management.SearchSchemaManager;
@@ -33,12 +31,15 @@ import org.hibernate.search.mapper.orm.scope.SearchScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.hs.configurate.be.core.service.IConfigurationService;
-import com.arvatosystems.t9t.hs.configurate.be.core.util.ConfigurationLoader;
-
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
-import jakarta.persistence.EntityManagerFactory;
+
+import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.batch.StatisticsDTO;
+import com.arvatosystems.t9t.hs.configurate.be.core.service.EntityConfigCache;
+import com.arvatosystems.t9t.hs.configurate.be.core.service.IConfigurationService;
+import com.arvatosystems.t9t.hs.configurate.be.core.util.ConfigurationLoader;
+import com.arvatosystems.t9t.statistics.services.IStatisticsService;
 
 /**
  * Index Persistence Information:

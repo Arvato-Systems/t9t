@@ -25,6 +25,14 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zul.Tabpanel;
 
+import de.jpaw.bonaparte.api.SearchFilters;
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.DataWithTracking;
+import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.bonaparte.pojos.apiw.Ref;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.zkui.ITabpanelExtension;
 import com.arvatosystems.t9t.zkui.components.EventDataSelect28;
@@ -34,14 +42,6 @@ import com.arvatosystems.t9t.zkui.components.IFilterGenerator;
 import com.arvatosystems.t9t.zkui.components.IGridIdOwner;
 import com.arvatosystems.t9t.zkui.components.grid.detail.IGridDetailMapper;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
-import de.jpaw.dp.Jdp;
 
 /** A tabpanel usually hosts its own grid to display data. It therefore must have a gridId.
  * It may or may not have an own filter section.

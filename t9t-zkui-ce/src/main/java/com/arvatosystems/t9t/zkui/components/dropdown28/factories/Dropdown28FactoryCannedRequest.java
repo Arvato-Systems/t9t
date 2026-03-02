@@ -15,15 +15,15 @@
  */
 package com.arvatosystems.t9t.zkui.components.dropdown28.factories;
 
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.search.LeanSearchRequest;
 import com.arvatosystems.t9t.core.CannedRequestDTO;
 import com.arvatosystems.t9t.core.CannedRequestKey;
 import com.arvatosystems.t9t.core.CannedRequestRef;
 import com.arvatosystems.t9t.core.request.LeanCannedRequestSearchRequest;
 import com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28Db;
-
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
 
 @Named("cannedRequestId")
 @Singleton

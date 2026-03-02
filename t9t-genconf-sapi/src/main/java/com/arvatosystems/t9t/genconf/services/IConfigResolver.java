@@ -16,9 +16,8 @@
 package com.arvatosystems.t9t.genconf.services;
 
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
+import com.arvatosystems.t9t.base.services.IRefResolver;
 import com.arvatosystems.t9t.genconf.ConfigDTO;
 import com.arvatosystems.t9t.genconf.ConfigRef;
-
-import com.arvatosystems.t9t.base.services.IRefResolver;
 
 public interface IConfigResolver extends IRefResolver<ConfigRef, ConfigDTO, FullTrackingWithVersion> { }

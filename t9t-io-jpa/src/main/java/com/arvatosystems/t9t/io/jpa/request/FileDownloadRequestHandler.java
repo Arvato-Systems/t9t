@@ -22,6 +22,10 @@ import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.util.ApplicationException;
+import de.jpaw.util.ByteArray;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
@@ -38,10 +42,6 @@ import com.arvatosystems.t9t.io.request.FileDownloadRequest;
 import com.arvatosystems.t9t.io.request.FileDownloadResponse;
 import com.arvatosystems.t9t.io.services.IIOHook;
 import com.arvatosystems.t9t.mediaresolver.IMediaDataSource;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.util.ApplicationException;
-import de.jpaw.util.ByteArray;
 
 public class FileDownloadRequestHandler extends AbstractRequestHandler<FileDownloadRequest> {
 

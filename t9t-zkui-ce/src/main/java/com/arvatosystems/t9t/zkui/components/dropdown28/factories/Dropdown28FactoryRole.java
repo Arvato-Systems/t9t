@@ -15,15 +15,15 @@
  */
 package com.arvatosystems.t9t.zkui.components.dropdown28.factories;
 
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.auth.RoleDTO;
 import com.arvatosystems.t9t.auth.RoleKey;
 import com.arvatosystems.t9t.auth.RoleRef;
 import com.arvatosystems.t9t.auth.request.LeanRoleSearchRequest;
 import com.arvatosystems.t9t.base.search.LeanSearchRequest;
 import com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28Db;
-
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
 
 @Named("roleId")
 @Singleton

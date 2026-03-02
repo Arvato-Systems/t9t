@@ -15,9 +15,25 @@
  */
 package com.arvatosystems.t9t.base.vertx.impl;
 
+import io.vertx.core.AsyncResult;
+import io.vertx.core.MultiMap;
+import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpHeaders;
+import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+
+import de.jpaw.bonaparte.api.codecs.IMessageCoderFactory;
+import de.jpaw.bonaparte.api.codecs.IMessageDecoder;
+import de.jpaw.bonaparte.api.codecs.IMessageEncoder;
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.dp.Jdp;
+import de.jpaw.util.ApplicationException;
+import de.jpaw.util.ByteUtil;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
@@ -29,22 +45,6 @@ import com.arvatosystems.t9t.base.services.T9tInternalConstants;
 import com.arvatosystems.t9t.base.vertx.IServiceModule;
 import com.arvatosystems.t9t.server.services.ICachingAuthenticationProcessor;
 import com.arvatosystems.t9t.server.services.IRequestProcessor;
-
-import de.jpaw.bonaparte.api.codecs.IMessageCoderFactory;
-import de.jpaw.bonaparte.api.codecs.IMessageDecoder;
-import de.jpaw.bonaparte.api.codecs.IMessageEncoder;
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.dp.Jdp;
-import de.jpaw.util.ApplicationException;
-import de.jpaw.util.ByteUtil;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.MultiMap;
-import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.http.HttpHeaders;
-import io.vertx.ext.web.Router;
-import io.vertx.ext.web.RoutingContext;
 
 public abstract class AbstractRpcModule implements IServiceModule {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractRpcModule.class);

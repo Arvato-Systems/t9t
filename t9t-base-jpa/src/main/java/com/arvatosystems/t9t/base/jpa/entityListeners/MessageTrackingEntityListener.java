@@ -19,9 +19,9 @@ import java.time.Instant;
 
 import jakarta.persistence.PrePersist;
 
-import com.arvatosystems.t9t.base.entities.MessageTracking;
-
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
+
+import com.arvatosystems.t9t.base.entities.MessageTracking;
 
 public class MessageTrackingEntityListener extends AbstractEntityListener<MessageTracking> {
 

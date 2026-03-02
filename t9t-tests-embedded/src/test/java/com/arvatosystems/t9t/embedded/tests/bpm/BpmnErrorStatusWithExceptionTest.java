@@ -22,6 +22,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import de.jpaw.bonaparte.pojos.api.NoTracking;
+
 import com.arvatosystems.t9t.auth.tests.setup.SetupUserTenantRole;
 import com.arvatosystems.t9t.base.ITestConnection;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
@@ -36,9 +39,6 @@ import com.arvatosystems.t9t.bpmn.request.TriggerSingleProcessNowRequest;
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection;
 import com.arvatosystems.t9t.embedded.tests.bpmn.BPMTestThrowExceptionStep;
 import com.arvatosystems.t9t.misc.extensions.BpmExtensions;
-
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.NoTracking;
 
 /**
  * Test that an unhandled exception within a workflow step result (nevertheless) in an updated process status with details of the exception.

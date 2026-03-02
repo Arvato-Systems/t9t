@@ -15,11 +15,12 @@
  */
 package com.arvatosystems.t9t.out.services.oauth;
 
-import com.arvatosystems.t9t.io.oauth.AccessTokenDTO;
+import java.util.Map;
+
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-import java.util.Map;
+import com.arvatosystems.t9t.io.oauth.AccessTokenDTO;
 
 public interface IAccessTokenClient<KEY> {
 

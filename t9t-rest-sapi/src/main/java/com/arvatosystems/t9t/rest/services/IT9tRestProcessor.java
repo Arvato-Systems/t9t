@@ -18,20 +18,21 @@ package com.arvatosystems.t9t.rest.services;
 import java.util.List;
 import java.util.function.Function;
 
+import jakarta.annotation.Nonnull;
+import jakarta.ws.rs.container.AsyncResponse;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.util.ApplicationException;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.arvatosystems.t9t.xml.GenericResult;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.util.ApplicationException;
-import jakarta.annotation.Nonnull;
-import jakarta.ws.rs.container.AsyncResponse;
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 
 public interface IT9tRestProcessor {
     /** Performs the request synchronously (just for authentication checks). */

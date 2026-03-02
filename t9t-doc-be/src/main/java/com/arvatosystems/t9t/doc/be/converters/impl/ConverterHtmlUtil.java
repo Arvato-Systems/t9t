@@ -15,9 +15,9 @@
  */
 package com.arvatosystems.t9t.doc.be.converters.impl;
 
-import com.google.common.html.HtmlEscapers;
-
 import java.util.Map;
+
+import com.google.common.html.HtmlEscapers;
 
 public final class ConverterHtmlUtil {
     private static final String EMPTY_STRING = "";

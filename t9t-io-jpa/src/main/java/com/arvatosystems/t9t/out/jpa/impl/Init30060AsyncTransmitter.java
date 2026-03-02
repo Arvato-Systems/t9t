@@ -18,13 +18,13 @@ package com.arvatosystems.t9t.out.jpa.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
-import com.arvatosystems.t9t.out.services.IAsyncQueue;
-
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupShutdown;
 import de.jpaw.util.ExceptionUtil;
+
+import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
+import com.arvatosystems.t9t.out.services.IAsyncQueue;
 
 // start and stop the async transmitter service at the desired point in time
 

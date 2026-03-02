@@ -23,12 +23,12 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-import com.arvatosystems.t9t.zkui.util.Constants;
-
 import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.ui.UIFilter;
+
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.Constants;
 
 public abstract class EnumBaseField extends AbstractField<Combobox> {
     private static final Logger LOGGER = LoggerFactory.getLogger(EnumBaseField.class);

@@ -17,12 +17,12 @@ package com.arvatosystems.t9t.zkui.services.impl;
 
 import java.util.Iterator;
 
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.zkui.services.IApplicationDAO;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.viewmodel.beans.Navi;
 import com.arvatosystems.t9t.zkui.viewmodel.support.NaviGroupingViewModel;
-
-import de.jpaw.dp.Singleton;
 
 /**
  * Menu DAO builds up the Menu from the property file.

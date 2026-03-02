@@ -22,10 +22,10 @@ import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Textbox;
 
-import com.arvatosystems.t9t.zkui.util.ZulUtils;
-
 import de.jpaw.json.JsonException;
 import de.jpaw.json.JsonParser;
+
+import com.arvatosystems.t9t.zkui.util.ZulUtils;
 
 public class MultilineJson extends Textbox implements IdSpace, AfterCompose  {
     private static final long serialVersionUID = 78048814132135L;

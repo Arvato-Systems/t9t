@@ -31,6 +31,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.BonaPortableClass;
+import de.jpaw.bonaparte.core.BonaPortableFactory;
+import de.jpaw.bonaparte.core.DataConverter;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.media.MediaType;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.dp.Dependent;
+import de.jpaw.dp.Jdp;
+import de.jpaw.util.ApplicationException;
+
 import com.arvatosystems.t9t.base.IInputQueuePartitioner;
 import com.arvatosystems.t9t.base.IStatefulServiceSession;
 import com.arvatosystems.t9t.base.StringTrimmer;
@@ -56,17 +67,6 @@ import com.arvatosystems.t9t.io.request.DataSinkCrudRequest;
 import com.arvatosystems.t9t.io.request.ImportStatusResponse;
 import com.arvatosystems.t9t.io.request.StoreSinkRequest;
 import com.arvatosystems.t9t.io.request.WriteRecordsToDataSinkRequest;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.BonaPortableClass;
-import de.jpaw.bonaparte.core.BonaPortableFactory;
-import de.jpaw.bonaparte.core.DataConverter;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
-import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
-import de.jpaw.dp.Dependent;
-import de.jpaw.dp.Jdp;
-import de.jpaw.util.ApplicationException;
 
 //this class operates outside of a RequestContext!
 @Dependent

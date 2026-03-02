@@ -18,8 +18,16 @@ package com.arvatosystems.t9t.mcp.restapi.service.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import jakarta.ws.rs.container.AsyncResponse;
+import jakarta.ws.rs.core.HttpHeaders;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
 
 import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
 import com.arvatosystems.t9t.ai.mcp.IMcpService;
@@ -30,13 +38,6 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.mcp.restapi.McpRestUtils;
 import com.arvatosystems.t9t.mcp.restapi.service.IMcpRestEndpointHandler;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
-import com.fasterxml.jackson.databind.JsonNode;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
-import jakarta.ws.rs.container.AsyncResponse;
-import jakarta.ws.rs.core.HttpHeaders;
 
 @Singleton
 @Named(T9tAiMcpConstants.METHOD_PROMPTS_GET)

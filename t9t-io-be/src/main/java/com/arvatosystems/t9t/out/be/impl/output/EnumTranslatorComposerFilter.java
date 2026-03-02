@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.out.be.impl.output;
 
-import com.arvatosystems.t9t.out.services.ISpecificTranslationProvider;
-
 import de.jpaw.bonaparte.core.DelegatingBaseComposer;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
+
+import com.arvatosystems.t9t.out.services.ISpecificTranslationProvider;
 
 public class EnumTranslatorComposerFilter<E extends Exception> extends DelegatingBaseComposer<E> {
     private final ISpecificTranslationProvider translator;

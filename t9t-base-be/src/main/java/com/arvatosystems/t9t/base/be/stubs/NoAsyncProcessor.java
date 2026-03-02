@@ -18,15 +18,15 @@ package com.arvatosystems.t9t.base.be.stubs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Any;
+import de.jpaw.dp.Fallback;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.event.EventData;
 import com.arvatosystems.t9t.base.services.IAsyncRequestProcessor;
 import com.arvatosystems.t9t.base.services.IEventHandler;
-
-import de.jpaw.dp.Any;
-import de.jpaw.dp.Fallback;
-import de.jpaw.dp.Singleton;
 
 @Fallback
 @Any

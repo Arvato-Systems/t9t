@@ -21,6 +21,14 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ApplicationException;
+
 import com.arvatosystems.t9t.auth.SessionDTO;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
@@ -32,14 +40,6 @@ import com.arvatosystems.t9t.server.InternalHeaderParameters;
 import com.arvatosystems.t9t.server.services.IAuthenticate;
 import com.arvatosystems.t9t.server.services.IRequestLogger;
 import com.arvatosystems.t9t.server.services.IRequestProcessor;
-
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ApplicationException;
 
 @Singleton
 public class Authentication implements IAuthenticate {

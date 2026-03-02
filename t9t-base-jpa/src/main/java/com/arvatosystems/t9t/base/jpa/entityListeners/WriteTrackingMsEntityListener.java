@@ -15,11 +15,12 @@
  */
 package com.arvatosystems.t9t.base.jpa.entityListeners;
 
-import com.arvatosystems.t9t.base.entities.FullTrackingMs;
-import com.arvatosystems.t9t.base.entities.WriteTrackingMs;
+import jakarta.persistence.PrePersist;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
-import jakarta.persistence.PrePersist;
+
+import com.arvatosystems.t9t.base.entities.FullTrackingMs;
+import com.arvatosystems.t9t.base.entities.WriteTrackingMs;
 
 public class WriteTrackingMsEntityListener extends AbstractEntityListener<WriteTrackingMs> {
 

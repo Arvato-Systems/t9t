@@ -15,8 +15,9 @@
  */
 package com.arvatosystems.t9t.base.services;
 
-import jakarta.annotation.Nonnull;
 import java.util.List;
+
+import jakarta.annotation.Nonnull;
 
 public interface IEnumResolver {
     /** Returns an integer for a NonTokenizableEnum, the token String for a TokenizableEnum (or null if the token was "").

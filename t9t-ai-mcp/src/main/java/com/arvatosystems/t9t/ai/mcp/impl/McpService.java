@@ -21,8 +21,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.annotation.Nonnull;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.api.media.MediaTypeInfo;
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ApplicationException;
 
 import com.arvatosystems.t9t.ai.AiPromptDTO;
 import com.arvatosystems.t9t.ai.AiPromptParameter;
@@ -51,18 +64,6 @@ import com.arvatosystems.t9t.ai.request.AiRunToolResponse;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.jackson.JacksonTools;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ApplicationException;
-import jakarta.annotation.Nonnull;
 
 @Singleton
 public class McpService implements IMcpService {

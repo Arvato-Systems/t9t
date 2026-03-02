@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.auth.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.jpa.persistence.IRoleEntityResolver;
 import com.arvatosystems.t9t.auth.request.RoleCountRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
 
 public class RoleCountRequestHandler extends AbstractReadOnlyRequestHandler<RoleCountRequest> {
 

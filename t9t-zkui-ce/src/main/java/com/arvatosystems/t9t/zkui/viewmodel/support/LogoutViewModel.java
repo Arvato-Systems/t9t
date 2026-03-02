@@ -15,11 +15,13 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel.support;
 
-import com.arvatosystems.t9t.zkui.services.IAuthenticationService;
-import de.jpaw.dp.Jdp;
 import org.zkoss.bind.annotation.GlobalCommand;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+
+import de.jpaw.dp.Jdp;
+
+import com.arvatosystems.t9t.zkui.services.IAuthenticationService;
 
 /**
  * Logout ViewModel.

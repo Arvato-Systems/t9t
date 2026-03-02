@@ -15,12 +15,26 @@
  */
 package com.arvatosystems.t9t.voice.client.alexa;
 
-import com.arvatosystems.t9t.cfg.be.ApplicationConfiguration;
-import com.arvatosystems.t9t.cfg.be.ConfigProvider;
-import com.arvatosystems.t9t.jdp.Init;
-import com.arvatosystems.t9t.voice.VoiceProvider;
-import com.arvatosystems.t9t.voice.client.SessionCache;
-import com.arvatosystems.t9t.voice.client.VoiceSessionContext;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
+
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpHeaders;
+import io.vertx.core.http.HttpServer;
+import io.vertx.core.http.HttpServerRequest;
+import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.BodyHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import picocli.CommandLine;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.ParameterException;
+import picocli.CommandLine.UnmatchedArgumentException;
 
 import de.jpaw.bonaparte.core.JsonComposer;
 import de.jpaw.bonaparte.core.MapParser;
@@ -35,27 +49,13 @@ import de.jpaw.bonaparte.pojos.api.alexa.SpeechType;
 import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.dp.Jdp;
 import de.jpaw.json.JsonParser;
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.http.HttpHeaders;
-import io.vertx.core.http.HttpServer;
-import io.vertx.core.http.HttpServerRequest;
-import io.vertx.ext.web.Router;
-import io.vertx.ext.web.RoutingContext;
-import io.vertx.ext.web.handler.BodyHandler;
-import picocli.CommandLine;
-import picocli.CommandLine.Option;
-import picocli.CommandLine.ParameterException;
-import picocli.CommandLine.UnmatchedArgumentException;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.arvatosystems.t9t.cfg.be.ApplicationConfiguration;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.jdp.Init;
+import com.arvatosystems.t9t.voice.VoiceProvider;
+import com.arvatosystems.t9t.voice.client.SessionCache;
+import com.arvatosystems.t9t.voice.client.VoiceSessionContext;
 
 public class AlexaServer extends AbstractVerticle {
     private static final Logger LOGGER = LoggerFactory.getLogger(AlexaServer.class);

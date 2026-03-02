@@ -18,14 +18,14 @@ package com.arvatosystems.t9t.base.be.lifecycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Startup;
+import de.jpaw.dp.StartupOnly;
+
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.ITextSearch;
 import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
 import com.arvatosystems.t9t.server.services.IRequestLogger;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Startup;
-import de.jpaw.dp.StartupOnly;
 
 @Startup(30000)
 public class Init30000FrameworkAndPlausis implements StartupOnly {

@@ -25,6 +25,11 @@ import java.util.concurrent.ConcurrentMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
+import de.jpaw.bonaparte.pojos.ui.UIFilter;
+import de.jpaw.bonaparte.util.ToStringHelper;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.IGridConfigContainer;
 import com.arvatosystems.t9t.base.ILeanGridConfigContainer;
 import com.arvatosystems.t9t.base.T9tException;
@@ -38,11 +43,6 @@ import com.arvatosystems.t9t.uiprefs.request.GridConfigRequest;
 import com.arvatosystems.t9t.uiprefs.request.GridConfigResponse;
 import com.arvatosystems.t9t.uiprefsv3.request.LeanGridConfigRequest;
 import com.arvatosystems.t9t.uiprefsv3.request.LeanGridConfigResponse;
-
-import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
-import de.jpaw.bonaparte.pojos.ui.UIFilter;
-import de.jpaw.bonaparte.util.ToStringHelper;
-import de.jpaw.dp.Jdp;
 
 public class GridConfigRequestHandler extends AbstractRequestHandler<GridConfigRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(GridConfigRequestHandler.class);

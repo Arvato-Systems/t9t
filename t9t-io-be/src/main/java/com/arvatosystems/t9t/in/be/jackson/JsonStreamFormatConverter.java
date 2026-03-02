@@ -18,19 +18,19 @@ package com.arvatosystems.t9t.in.be.jackson;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.io.T9tIOException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
 import de.jpaw.util.ExceptionUtil;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.io.T9tIOException;
 
 @Dependent
 @Named("JSONJackson") // generic JSON reader

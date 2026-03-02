@@ -31,14 +31,6 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.CrudViewModel;
-import com.arvatosystems.t9t.base.ILeanGridConfigContainer;
-import com.arvatosystems.t9t.base.IViewModelContainer;
-import com.arvatosystems.t9t.base.MessagingUtil;
-import com.arvatosystems.t9t.base.MutableInt;
-import com.arvatosystems.t9t.base.RandomNumberGenerators;
-import com.arvatosystems.t9t.cfg.Packages;
-
 import de.jpaw.bonaparte.enums.BonaEnum;
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
@@ -53,6 +45,14 @@ import de.jpaw.util.ExceptionUtil;
 import de.jpaw.xenums.init.ExceptionInitializer;
 import de.jpaw.xenums.init.ReflectionsPackageCache;
 import de.jpaw.xenums.init.XenumInitializer;
+
+import com.arvatosystems.t9t.base.CrudViewModel;
+import com.arvatosystems.t9t.base.ILeanGridConfigContainer;
+import com.arvatosystems.t9t.base.IViewModelContainer;
+import com.arvatosystems.t9t.base.MessagingUtil;
+import com.arvatosystems.t9t.base.MutableInt;
+import com.arvatosystems.t9t.base.RandomNumberGenerators;
+import com.arvatosystems.t9t.cfg.Packages;
 
 public final class InitContainers {
     private static final Logger LOGGER = LoggerFactory.getLogger(InitContainers.class);

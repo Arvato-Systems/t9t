@@ -17,13 +17,13 @@ package com.arvatosystems.t9t.base.jpa.impl;
 
 import jakarta.persistence.EntityManager;
 
-import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
-import com.arvatosystems.t9t.base.services.IJpaSessionControl;
-
 import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
+import com.arvatosystems.t9t.base.services.IJpaSessionControl;
 
 @Singleton
 public class JpaSessionControl implements IJpaSessionControl {

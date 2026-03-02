@@ -18,11 +18,11 @@ package com.arvatosystems.t9t.bpmn.be.steps;
 import java.time.Instant;
 import java.util.Map;
 
-import com.arvatosystems.t9t.base.JsonUtil;
-import com.arvatosystems.t9t.bpmn.WorkflowReturnCode;
-
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.JsonUtil;
+import com.arvatosystems.t9t.bpmn.WorkflowReturnCode;
 
 /**
  * Delay the workflow for the given number of minutes, but only once time (delete the offset from variables once used).

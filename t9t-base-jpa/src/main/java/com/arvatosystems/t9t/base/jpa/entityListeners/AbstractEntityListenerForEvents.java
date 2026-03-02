@@ -21,6 +21,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.jpa.BonaPersistableNoData;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.event.EventParameters;
@@ -31,9 +34,6 @@ import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.IsTenantSpecific;
 import com.arvatosystems.t9t.base.services.impl.ListenerConfigCache;
 import com.arvatosystems.t9t.base.types.ListenerConfig;
-
-import de.jpaw.bonaparte.jpa.BonaPersistableNoData;
-import de.jpaw.dp.Jdp;
 
 public abstract class AbstractEntityListenerForEvents<E extends BonaPersistableNoData<Long, FullTrackingWithVersion> & IsTenantSpecific> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEntityListenerForEvents.class);

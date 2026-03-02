@@ -20,11 +20,11 @@ import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.util.ExceptionUtil;
+
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
-
-import de.jpaw.util.ExceptionUtil;
 
 public abstract class AbstractAsyncRemoteConnection implements IRemoteConnection {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAsyncRemoteConnection.class);

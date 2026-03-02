@@ -15,10 +15,10 @@
  */
 package com.arvatosystems.t9t.authc.be.stubs;
 
-import com.arvatosystems.t9t.auth.hooks.IOtherAuthentication;
-
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.auth.hooks.IOtherAuthentication;
 
 @Singleton
 @Fallback

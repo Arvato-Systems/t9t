@@ -15,11 +15,11 @@
  */
 package com.arvatosystems.t9t.out.be.async;
 
-import com.arvatosystems.t9t.base.IInputQueuePartitioner;
-import com.arvatosystems.t9t.base.api.RequestParameters;
-
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.IInputQueuePartitioner;
+import com.arvatosystems.t9t.base.api.RequestParameters;
 
 @Named("zero")
 @Singleton

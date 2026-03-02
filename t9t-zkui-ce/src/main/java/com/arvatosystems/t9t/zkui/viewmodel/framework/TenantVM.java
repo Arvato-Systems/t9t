@@ -17,6 +17,9 @@ package com.arvatosystems.t9t.zkui.viewmodel.framework;
 
 import org.zkoss.bind.annotation.Init;
 
+import de.jpaw.bonaparte.pojos.api.DataWithTracking;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+
 import com.arvatosystems.t9t.auth.PermissionsDTO;
 import com.arvatosystems.t9t.auth.TenantDTO;
 import com.arvatosystems.t9t.auth.request.TenantCrudRequest;
@@ -24,9 +27,6 @@ import com.arvatosystems.t9t.base.crud.CrudAnyKeyRequest;
 import com.arvatosystems.t9t.base.crud.CrudStringKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.zkui.viewmodel.AbstractCrudVM;
-
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 
 @Init(superclass = true)
 public class TenantVM extends AbstractCrudVM<String, TenantDTO, FullTrackingWithVersion, TenantCrudRequest,

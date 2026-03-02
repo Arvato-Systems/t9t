@@ -15,6 +15,12 @@
  */
 package com.arvatosystems.t9t.io.jpa.request;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import de.jpaw.bonaparte.pojos.api.BooleanFilter;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -25,12 +31,6 @@ import com.arvatosystems.t9t.io.request.GetQueueStatusRequest;
 import com.arvatosystems.t9t.io.request.GetQueueStatusResponse;
 import com.arvatosystems.t9t.io.request.QueueStatus;
 import com.arvatosystems.t9t.out.services.IAsyncQueue;
-
-import de.jpaw.bonaparte.pojos.api.BooleanFilter;
-import de.jpaw.dp.Jdp;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GetQueueStatusRequestHandler extends AbstractRequestHandler<GetQueueStatusRequest> {
     private final IAsyncQueueEntityResolver queueResolver = Jdp.getRequired(IAsyncQueueEntityResolver.class);

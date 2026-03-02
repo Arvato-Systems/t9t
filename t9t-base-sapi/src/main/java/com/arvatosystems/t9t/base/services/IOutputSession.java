@@ -17,14 +17,15 @@ package com.arvatosystems.t9t.base.services;
 
 import java.io.OutputStream;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.output.OutputSessionParameters;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 
 /** represents a single session within the executor (which spans multiple requests) */
 

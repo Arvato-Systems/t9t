@@ -17,28 +17,6 @@ package com.arvatosystems.t9t.rest.endpoints;
 
 import java.util.UUID;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
-import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
-import com.arvatosystems.t9t.base.types.SessionParameters;
-import com.arvatosystems.t9t.rest.parsers.RestParameterParsers;
-import com.arvatosystems.t9t.rest.services.IAuthFilterCustomization;
-import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
-import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
-import com.arvatosystems.t9t.xml.GenericResult;
-import com.arvatosystems.t9t.xml.auth.AuthByApiKey;
-import com.arvatosystems.t9t.xml.auth.AuthenticationResult;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -51,6 +29,29 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
+import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
+import com.arvatosystems.t9t.base.types.SessionParameters;
+import com.arvatosystems.t9t.rest.parsers.RestParameterParsers;
+import com.arvatosystems.t9t.rest.services.IAuthFilterCustomization;
+import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
+import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
+import com.arvatosystems.t9t.xml.GenericResult;
+import com.arvatosystems.t9t.xml.auth.AuthByApiKey;
+import com.arvatosystems.t9t.xml.auth.AuthenticationResult;
 
 /**
  * Login via API key or username / password

@@ -22,10 +22,10 @@ import org.quartz.utils.ConnectionProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.services.IJdbcDataSource;
-
-import de.jpaw.dp.Jdp;
 
 public class JdbcConnectionProvider implements ConnectionProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(JdbcConnectionProvider.class);

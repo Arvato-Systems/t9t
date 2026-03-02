@@ -23,10 +23,10 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.IFileUtil;
-
-import de.jpaw.dp.Jdp;
 
 /**
  * Base class for camel processor implementations. Holds common logic for resolving endpoint tags into URIs.

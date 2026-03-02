@@ -18,6 +18,8 @@ package com.arvatosystems.t9t.event.jpa.request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
@@ -32,8 +34,6 @@ import com.arvatosystems.t9t.event.jpa.entities.SubscriberConfigEntity;
 import com.arvatosystems.t9t.event.jpa.mapping.ISubscriberConfigDTOMapper;
 import com.arvatosystems.t9t.event.jpa.persistence.ISubscriberConfigEntityResolver;
 import com.arvatosystems.t9t.event.request.SubscriberConfigCrudRequest;
-
-import de.jpaw.dp.Jdp;
 
 /**
  * @author BORUS01

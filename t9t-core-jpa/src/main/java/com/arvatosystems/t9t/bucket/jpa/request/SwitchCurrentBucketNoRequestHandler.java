@@ -18,6 +18,9 @@ package com.arvatosystems.t9t.bucket.jpa.request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.util.ApplicationException;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IAutonomousExecutor;
@@ -28,9 +31,6 @@ import com.arvatosystems.t9t.bucket.jpa.persistence.IBucketEntryEntityResolver;
 import com.arvatosystems.t9t.bucket.request.DeleteBucketRequest;
 import com.arvatosystems.t9t.bucket.request.SwitchCurrentBucketNoRequest;
 import com.arvatosystems.t9t.bucket.request.SwitchCurrentBucketNoResponse;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.util.ApplicationException;
 
 public class SwitchCurrentBucketNoRequestHandler extends AbstractRequestHandler<SwitchCurrentBucketNoRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SwitchCurrentBucketNoRequestHandler.class);

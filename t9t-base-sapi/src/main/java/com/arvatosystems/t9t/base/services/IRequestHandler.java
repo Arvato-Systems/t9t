@@ -15,11 +15,12 @@
  */
 package com.arvatosystems.t9t.base.services;
 
-import com.arvatosystems.t9t.base.api.RequestParameters;
-import com.arvatosystems.t9t.base.api.ServiceResponse;
+import jakarta.annotation.Nonnull;
 
 import de.jpaw.bonaparte.pojos.api.OperationType;
-import jakarta.annotation.Nonnull;
+
+import com.arvatosystems.t9t.base.api.RequestParameters;
+import com.arvatosystems.t9t.base.api.ServiceResponse;
 
 /**
  * The contract to be implemented by any class that shall serve as a request handler for incoming service requests.

@@ -28,10 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zkmax.zul.Chosenbox;
 import org.zkoss.zul.ListModelList;
 
-import com.arvatosystems.t9t.zkui.components.datafields.AbstractCoreDataField;
-import com.arvatosystems.t9t.zkui.components.datafields.DataFieldParameters;
-import com.arvatosystems.t9t.zkui.viewmodel.beans.ComboBoxItem2;
-
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.bonaparte.pojos.meta.XEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumSetDefinition;
@@ -39,6 +35,10 @@ import de.jpaw.enums.AbstractStringXEnumSet;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.ExceptionUtil;
+
+import com.arvatosystems.t9t.zkui.components.datafields.AbstractCoreDataField;
+import com.arvatosystems.t9t.zkui.components.datafields.DataFieldParameters;
+import com.arvatosystems.t9t.zkui.viewmodel.beans.ComboBoxItem2;
 
 /** DataField for XEnumsets, using the ZK EE Chosenbox. Suitable for Xenums with single-character tokens. */
 public class XEnumsetChosenboxDataField<E extends AbstractXEnumBase<E>, S extends AbstractStringXEnumSet<E>> extends AbstractCoreDataField<Chosenbox, S> {

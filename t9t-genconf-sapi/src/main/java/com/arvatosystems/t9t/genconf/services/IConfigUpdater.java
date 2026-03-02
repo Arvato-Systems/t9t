@@ -15,9 +15,9 @@
  */
 package com.arvatosystems.t9t.genconf.services;
 
-import com.arvatosystems.t9t.genconf.ConfigDTO;
-
 import jakarta.annotation.Nonnull;
+
+import com.arvatosystems.t9t.genconf.ConfigDTO;
 
 public interface IConfigUpdater {
 

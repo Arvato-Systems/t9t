@@ -18,9 +18,9 @@ package com.arvatosystems.t9t.io.services;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.arvatosystems.t9t.io.DataSinkDTO;
-
 import jakarta.annotation.Nonnull;
+
+import com.arvatosystems.t9t.io.DataSinkDTO;
 
 /**
  * Provides an interface for encryption or decryption.

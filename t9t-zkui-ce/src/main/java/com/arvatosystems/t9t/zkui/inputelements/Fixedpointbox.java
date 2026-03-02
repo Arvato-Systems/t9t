@@ -26,9 +26,9 @@ import org.zkoss.zk.ui.sys.PropertyAccess;
 import org.zkoss.zul.impl.NumberInputElement;
 import org.zkoss.zul.mesg.MZul;
 
-import com.arvatosystems.t9t.zkui.constraints.FixedPointConstraint;
-
 import de.jpaw.fixedpoint.FixedPointBase;
+
+import com.arvatosystems.t9t.zkui.constraints.FixedPointConstraint;
 
 /**
  * An edit box for fixed point numbers.

@@ -15,12 +15,12 @@
  */
 package com.arvatosystems.t9t.base;
 
-import com.arvatosystems.t9t.base.crud.CrudAnyKeyRequest;
-import com.arvatosystems.t9t.base.search.SearchCriteria;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
+
+import com.arvatosystems.t9t.base.crud.CrudAnyKeyRequest;
+import com.arvatosystems.t9t.base.search.SearchCriteria;
 
 /** A container to hold the common references for a standard UI CRUD screen. */
 public class CrudViewModel<DTO extends BonaPortable, TRACKING extends TrackingBase> {

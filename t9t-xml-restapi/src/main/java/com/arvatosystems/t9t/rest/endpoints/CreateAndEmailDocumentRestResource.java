@@ -19,22 +19,6 @@ import static com.arvatosystems.t9t.base.T9tUtil.nvl;
 
 import java.util.Collections;
 
-import com.arvatosystems.t9t.doc.DocConstants;
-import com.arvatosystems.t9t.doc.api.DocumentSelector;
-import com.arvatosystems.t9t.doc.api.NewDocumentRequest;
-import com.arvatosystems.t9t.email.api.RecipientEmail;
-import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
-import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
-import com.arvatosystems.t9t.xml.GenericResult;
-import com.arvatosystems.t9t.xml.doc.CreateAndEmailDocument;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -44,6 +28,24 @@ import jakarta.ws.rs.container.Suspended;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.doc.DocConstants;
+import com.arvatosystems.t9t.doc.api.DocumentSelector;
+import com.arvatosystems.t9t.doc.api.NewDocumentRequest;
+import com.arvatosystems.t9t.email.api.RecipientEmail;
+import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
+import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
+import com.arvatosystems.t9t.xml.GenericResult;
+import com.arvatosystems.t9t.xml.doc.CreateAndEmailDocument;
 
 /**
  * Create document and send email endpoint.

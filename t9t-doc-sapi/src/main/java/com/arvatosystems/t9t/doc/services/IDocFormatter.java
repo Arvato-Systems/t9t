@@ -17,10 +17,10 @@ package com.arvatosystems.t9t.doc.services;
 
 import java.util.Map;
 
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+
 import com.arvatosystems.t9t.doc.api.DocumentSelector;
 import com.arvatosystems.t9t.doc.api.TemplateType;
-
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
 
 public interface IDocFormatter {
     MediaData formatDocument(

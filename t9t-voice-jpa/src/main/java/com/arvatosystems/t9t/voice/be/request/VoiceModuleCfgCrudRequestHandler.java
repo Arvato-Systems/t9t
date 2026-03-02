@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.voice.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudModuleCfgRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -23,7 +25,6 @@ import com.arvatosystems.t9t.voice.jpa.entities.VoiceModuleCfgEntity;
 import com.arvatosystems.t9t.voice.jpa.mapping.IVoiceModuleCfgDTOMapper;
 import com.arvatosystems.t9t.voice.jpa.persistence.IVoiceModuleCfgEntityResolver;
 import com.arvatosystems.t9t.voice.request.VoiceModuleCfgCrudRequest;
-import de.jpaw.dp.Jdp;
 
 public class VoiceModuleCfgCrudRequestHandler
         extends AbstractCrudModuleCfgRequestHandler<VoiceModuleCfgDTO, VoiceModuleCfgCrudRequest, VoiceModuleCfgEntity> {

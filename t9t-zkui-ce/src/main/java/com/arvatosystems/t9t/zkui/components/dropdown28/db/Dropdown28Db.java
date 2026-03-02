@@ -30,6 +30,11 @@ import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.ListModels;
 
+import de.jpaw.bonaparte.api.SearchFilters;
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.base.search.LeanSearchRequest;
 import com.arvatosystems.t9t.zkui.components.dropdown28.ComboBoxEntry;
@@ -41,11 +46,6 @@ import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.T9tConfigConstants;
 import com.arvatosystems.t9t.zkui.util.UiConfigurationProvider;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
-
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.dp.Jdp;
 
 public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
     private static final Logger LOGGER = LoggerFactory.getLogger(Dropdown28Db.class);

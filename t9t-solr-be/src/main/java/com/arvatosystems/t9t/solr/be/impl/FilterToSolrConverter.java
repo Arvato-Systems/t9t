@@ -15,10 +15,15 @@
  */
 package com.arvatosystems.t9t.solr.be.impl;
 
-import com.arvatosystems.t9t.base.search.EnumFilter;
-import com.arvatosystems.t9t.base.search.XenumFilter;
-import com.arvatosystems.t9t.base.services.IEnumResolver;
-import com.arvatosystems.t9t.solr.be.IFilterToSolrConverter;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import de.jpaw.bonaparte.pojos.api.AndFilter;
 import de.jpaw.bonaparte.pojos.api.AsciiFilter;
 import de.jpaw.bonaparte.pojos.api.BooleanFilter;
@@ -40,14 +45,11 @@ import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 import de.jpaw.bonaparte.pojos.api.UuidFilter;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import com.arvatosystems.t9t.base.search.EnumFilter;
+import com.arvatosystems.t9t.base.search.XenumFilter;
+import com.arvatosystems.t9t.base.services.IEnumResolver;
+import com.arvatosystems.t9t.solr.be.IFilterToSolrConverter;
 
 @Singleton
 public class FilterToSolrConverter implements IFilterToSolrConverter {

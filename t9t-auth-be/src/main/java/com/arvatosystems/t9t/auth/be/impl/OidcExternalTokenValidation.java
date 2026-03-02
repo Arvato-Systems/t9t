@@ -18,15 +18,6 @@ package com.arvatosystems.t9t.auth.be.impl;
 import java.net.URL;
 import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.auth.OidClaims;
-import com.arvatosystems.t9t.auth.services.IExternalTokenValidation;
-import com.arvatosystems.t9t.base.MessagingUtil;
-import com.arvatosystems.t9t.base.T9tUtil;
-import com.arvatosystems.t9t.cfg.be.ConfigProvider;
-import com.arvatosystems.t9t.cfg.be.OidConfiguration;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.jwk.source.JWKSourceBuilder;
@@ -39,8 +30,17 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.auth.OidClaims;
+import com.arvatosystems.t9t.auth.services.IExternalTokenValidation;
+import com.arvatosystems.t9t.base.MessagingUtil;
+import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.cfg.be.OidConfiguration;
 
 /** Validate external OIDC and OAuth2 access tokens. */
 @Singleton

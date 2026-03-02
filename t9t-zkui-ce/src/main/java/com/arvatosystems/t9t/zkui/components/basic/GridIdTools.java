@@ -19,15 +19,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.zkui.components.IGridIdOwner;
 import com.arvatosystems.t9t.zkui.components.IPermissionOwner;
 import com.arvatosystems.t9t.zkui.components.IViewModelOwner;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 
 public final class GridIdTools {
     private static final Logger LOGGER = LoggerFactory.getLogger(GridIdTools.class);

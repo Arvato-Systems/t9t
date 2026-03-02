@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.io.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.in.services.IInputDataTransformer;
@@ -22,8 +24,6 @@ import com.arvatosystems.t9t.io.request.GetDataSinkPresetRequest;
 import com.arvatosystems.t9t.io.request.GetDataSinkPresetsResponse;
 import com.arvatosystems.t9t.io.services.IDataSinkDefaultConfigurationProvider;
 import com.arvatosystems.t9t.out.services.IPreOutputDataTransformer;
-
-import de.jpaw.dp.Jdp;
 
 public class GetDataSinkPresetRequestHandler extends AbstractReadOnlyRequestHandler<GetDataSinkPresetRequest> {
 

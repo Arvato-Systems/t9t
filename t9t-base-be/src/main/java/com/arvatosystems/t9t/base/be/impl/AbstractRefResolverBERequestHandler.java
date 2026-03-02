@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.base.be.impl;
 
+import de.jpaw.bonaparte.pojos.apiw.Ref;
+
 import com.arvatosystems.t9t.base.crud.RefResolverRequest;
 import com.arvatosystems.t9t.base.crud.RefResolverResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
-import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.base.services.IRefResolver;
-
-import de.jpaw.bonaparte.pojos.apiw.Ref;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 public abstract class AbstractRefResolverBERequestHandler<REF extends Ref, REQUEST extends RefResolverRequest<REF>> extends
         AbstractRequestHandler<REQUEST> {

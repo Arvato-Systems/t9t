@@ -22,12 +22,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ExceptionUtil;
+
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.services.IRequestHandler;
 import com.arvatosystems.t9t.base.services.IRequestHandlerResolver;
-
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ExceptionUtil;
 
 /** Implements the global request handler resolver, which returns cached instances of request handler classes.
  * Functionality to actively override implementations is provided.

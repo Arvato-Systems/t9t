@@ -18,11 +18,11 @@ package com.arvatosystems.t9t.auth.jpa.mapping.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.auth.jpa.entities.UserEntity;
 import com.arvatosystems.t9t.auth.jpa.mapping.IUserEntity2UserDataMapper;
 import com.arvatosystems.t9t.authc.api.UserData;
-
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class UserEntity2UserDataMapper implements IUserEntity2UserDataMapper {

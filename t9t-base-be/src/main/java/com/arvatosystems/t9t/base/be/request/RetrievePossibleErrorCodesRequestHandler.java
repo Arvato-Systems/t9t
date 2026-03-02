@@ -18,15 +18,15 @@ package com.arvatosystems.t9t.base.be.request;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.util.ApplicationException;
+import de.jpaw.util.ApplicationException.ExceptionRangeDescription;
+
 import com.arvatosystems.t9t.base.request.ErrorDescription;
 import com.arvatosystems.t9t.base.request.RetrievePossibleErrorCodesRequest;
 import com.arvatosystems.t9t.base.request.RetrievePossibleErrorCodesResponse;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.util.ApplicationException;
-import de.jpaw.util.ApplicationException.ExceptionRangeDescription;
 
 public class RetrievePossibleErrorCodesRequestHandler extends AbstractReadOnlyRequestHandler<RetrievePossibleErrorCodesRequest> {
 

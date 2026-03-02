@@ -15,15 +15,15 @@
  */
 package com.arvatosystems.t9t.zkui.components.dropdown28.factories;
 
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.search.LeanSearchRequest;
 import com.arvatosystems.t9t.io.AsyncQueueDTO;
 import com.arvatosystems.t9t.io.AsyncQueueKey;
 import com.arvatosystems.t9t.io.AsyncQueueRef;
 import com.arvatosystems.t9t.io.request.LeanAsyncQueueSearchRequest;
 import com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28Db;
-
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
 
 @Named("asyncQueueId")
 @Singleton

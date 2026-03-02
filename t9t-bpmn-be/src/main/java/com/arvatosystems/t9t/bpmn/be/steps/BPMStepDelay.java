@@ -21,11 +21,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.bpmn.WorkflowReturnCode;
-
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.bpmn.WorkflowReturnCode;
 
 @Singleton
 @Named("delay")

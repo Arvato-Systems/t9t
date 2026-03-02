@@ -22,8 +22,21 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ExceptionUtil;
 
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tUtil;
@@ -35,18 +48,6 @@ import com.arvatosystems.t9t.ipblocker.services.IIPAddressBlocker;
 import com.arvatosystems.t9t.rest.services.IAuthFilterCustomization;
 import com.arvatosystems.t9t.rest.services.IGatewayAuthChecker;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.google.common.collect.Sets;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ExceptionUtil;
-import jakarta.ws.rs.HttpMethod;
-import jakarta.ws.rs.container.ContainerRequestContext;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 
 @Singleton
 public class AuthFilterCustomization implements IAuthFilterCustomization {

@@ -15,12 +15,12 @@
  */
 package com.arvatosystems.t9t.zkui.context;
 
-import com.arvatosystems.t9t.zkui.components.basic.Grid28;
-
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
+
+import com.arvatosystems.t9t.zkui.components.basic.Grid28;
 
 /** Implementations of this interface are obtained as Singletons via Jdp,
  * using a qualifier which is the id of the context menu plus "#" plus the option name.

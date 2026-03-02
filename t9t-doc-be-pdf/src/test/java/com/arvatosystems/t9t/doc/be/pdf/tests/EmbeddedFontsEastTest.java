@@ -15,13 +15,12 @@
  */
 package com.arvatosystems.t9t.doc.be.pdf.tests;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.BaseFont;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.BaseFont;
 import org.junit.jupiter.api.Test;
 import org.xhtmlrenderer.pdf.ITextFontResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;

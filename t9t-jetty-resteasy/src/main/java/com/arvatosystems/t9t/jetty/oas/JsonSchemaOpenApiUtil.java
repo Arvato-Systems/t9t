@@ -15,10 +15,7 @@
  */
 package com.arvatosystems.t9t.jetty.oas;
 
-import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.fasterxml.jackson.databind.JavaType;
-
-import de.jpaw.util.ByteArray;
 import io.swagger.v3.core.converter.ModelConverter;
 import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -29,6 +26,10 @@ import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.media.XML;
+
+import de.jpaw.util.ByteArray;
+
+import com.arvatosystems.t9t.rest.utils.RestUtils;
 
 
 public final class JsonSchemaOpenApiUtil {

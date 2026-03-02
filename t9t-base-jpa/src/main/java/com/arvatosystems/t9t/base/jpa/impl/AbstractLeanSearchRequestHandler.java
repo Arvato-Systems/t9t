@@ -19,6 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import de.jpaw.bonaparte.jpa.BonaPersistableKey;
+import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
+import de.jpaw.bonaparte.pojos.api.LongFilter;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
 import com.arvatosystems.t9t.base.search.Description;
@@ -29,11 +34,6 @@ import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.IAnyKeySearchRegistry;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.bonaparte.jpa.BonaPersistableKey;
-import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
-import de.jpaw.bonaparte.pojos.api.LongFilter;
-import de.jpaw.dp.Jdp;
 
 public abstract class AbstractLeanSearchRequestHandler<
   S extends LeanSearchRequest,

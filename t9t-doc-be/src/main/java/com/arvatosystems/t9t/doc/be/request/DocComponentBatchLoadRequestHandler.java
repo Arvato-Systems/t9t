@@ -21,6 +21,16 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.core.CSVConfiguration;
+import de.jpaw.bonaparte.core.MessageParserException;
+import de.jpaw.bonaparte.core.StringCSVParser;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaType;
+import de.jpaw.dp.Jdp;
+import de.jpaw.json.JsonException;
+import de.jpaw.json.JsonParser;
+
 import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -33,16 +43,6 @@ import com.arvatosystems.t9t.doc.DocComponentKey;
 import com.arvatosystems.t9t.doc.request.DocComponentBatchLoadRequest;
 import com.arvatosystems.t9t.doc.request.DocComponentCrudRequest;
 import com.arvatosystems.t9t.doc.request.DocComponentResource;
-
-import de.jpaw.bonaparte.core.CSVConfiguration;
-import de.jpaw.bonaparte.core.MessageParserException;
-import de.jpaw.bonaparte.core.StringCSVParser;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
-import de.jpaw.dp.Jdp;
-import de.jpaw.json.JsonException;
-import de.jpaw.json.JsonParser;
 
 public class DocComponentBatchLoadRequestHandler extends AbstractRequestHandler<DocComponentBatchLoadRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DocComponentBatchLoadRequestHandler.class);

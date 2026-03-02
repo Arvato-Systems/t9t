@@ -20,28 +20,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.auth.jwt.JWT;
-import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.base.T9tUtil;
-import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.base.services.IFileUtil;
-import com.arvatosystems.t9t.base.vertx.IRestModule;
-import com.arvatosystems.t9t.base.vertx.IServiceModule;
-import com.arvatosystems.t9t.base.vertx.IVertxMetricsProvider;
-import com.arvatosystems.t9t.base.vertx.MultiThreadMessageCoderFactory2;
-import com.arvatosystems.t9t.cfg.be.ApplicationConfiguration;
-import com.arvatosystems.t9t.cfg.be.ConfigProvider;
-import com.arvatosystems.t9t.cfg.be.ServerConfiguration;
-import com.arvatosystems.t9t.cfg.be.StatusProvider;
-import com.arvatosystems.t9t.jdp.Init;
-
-import de.jpaw.bonaparte.api.codecs.IMessageCoderFactory;
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.util.DeprecationWarner;
-import de.jpaw.dp.Jdp;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Vertx;
@@ -59,10 +37,32 @@ import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.FileSystemAccess;
 import io.vertx.ext.web.handler.StaticHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
 import picocli.CommandLine.UnmatchedArgumentException;
+
+import de.jpaw.bonaparte.api.codecs.IMessageCoderFactory;
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.util.DeprecationWarner;
+import de.jpaw.dp.Jdp;
+
+import com.arvatosystems.t9t.auth.jwt.JWT;
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.services.IFileUtil;
+import com.arvatosystems.t9t.base.vertx.IRestModule;
+import com.arvatosystems.t9t.base.vertx.IServiceModule;
+import com.arvatosystems.t9t.base.vertx.IVertxMetricsProvider;
+import com.arvatosystems.t9t.base.vertx.MultiThreadMessageCoderFactory2;
+import com.arvatosystems.t9t.cfg.be.ApplicationConfiguration;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.cfg.be.ServerConfiguration;
+import com.arvatosystems.t9t.cfg.be.StatusProvider;
+import com.arvatosystems.t9t.jdp.Init;
 
 public class T9tServer extends AbstractVerticle {
     private static final Logger LOGGER = LoggerFactory.getLogger(T9tServer.class);

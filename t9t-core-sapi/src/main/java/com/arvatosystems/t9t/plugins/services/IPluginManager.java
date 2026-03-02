@@ -15,9 +15,9 @@
  */
 package com.arvatosystems.t9t.plugins.services;
 
-import com.arvatosystems.t9t.plugins.PluginInfo;
-
 import de.jpaw.util.ByteArray;
+
+import com.arvatosystems.t9t.plugins.PluginInfo;
 
 /**
  * Defines the Plugin Manager for loading and unloading Plugins and PluginMethods

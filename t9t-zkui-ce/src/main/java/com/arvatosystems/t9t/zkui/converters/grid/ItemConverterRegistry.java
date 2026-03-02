@@ -18,8 +18,9 @@ package com.arvatosystems.t9t.zkui.converters.grid;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import jakarta.annotation.Nonnull;
+
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 
 public final class ItemConverterRegistry {
     private static final Map<String, IItemConverter<?>> REGISTRY = new ConcurrentHashMap<String, IItemConverter<?>>(50);

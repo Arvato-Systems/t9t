@@ -19,9 +19,9 @@ import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.arvatosystems.t9t.base.search.SearchCriteria;
-
 import jakarta.annotation.Nonnull;
+
+import com.arvatosystems.t9t.base.search.SearchCriteria;
 
 public interface IJdbcCriteriaBuilder {
     /**

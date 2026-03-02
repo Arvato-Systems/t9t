@@ -29,22 +29,23 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.T9tUtil;
-import com.arvatosystems.t9t.io.T9tIOException;
-import com.arvatosystems.t9t.xml.namespaces.IStandardNamespaceWriter;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.dp.Jdp;
-import de.jpaw.util.ExceptionUtil;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.PropertyException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.dp.Jdp;
+import de.jpaw.util.ExceptionUtil;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.io.T9tIOException;
+import com.arvatosystems.t9t.xml.namespaces.IStandardNamespaceWriter;
 
 public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractFormatGeneratorXml.class);

@@ -22,8 +22,9 @@ import java.util.Map;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 
-import com.arvatosystems.t9t.zkui.viewmodel.beans.ComboBoxItem;
 import de.jpaw.bonaparte.util.FreezeTools;
+
+import com.arvatosystems.t9t.zkui.viewmodel.beans.ComboBoxItem;
 
 public class Dropdown28ComboBoxItem extends Combobox {
     private static final long serialVersionUID = 391144627872732669L;

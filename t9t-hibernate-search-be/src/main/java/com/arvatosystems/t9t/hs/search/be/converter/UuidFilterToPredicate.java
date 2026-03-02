@@ -1,16 +1,19 @@
 package com.arvatosystems.t9t.hs.search.be.converter;
 
-import com.arvatosystems.t9t.base.T9tUtil;
-import de.jpaw.bonaparte.pojos.api.UuidFilter;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
-import jakarta.annotation.Nonnull;
-import org.hibernate.search.engine.search.predicate.SearchPredicate;
-import org.hibernate.search.engine.search.predicate.dsl.SearchPredicateFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import jakarta.annotation.Nonnull;
+
+import org.hibernate.search.engine.search.predicate.SearchPredicate;
+import org.hibernate.search.engine.search.predicate.dsl.SearchPredicateFactory;
+
+import de.jpaw.bonaparte.pojos.api.UuidFilter;
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.T9tUtil;
 
 @Singleton
 @Named(UuidFilter.my$PQON)

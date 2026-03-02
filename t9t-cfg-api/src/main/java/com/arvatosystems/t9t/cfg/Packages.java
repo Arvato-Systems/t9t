@@ -20,10 +20,10 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
+import jakarta.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import jakarta.annotation.Nonnull;
 
 public final class Packages {
     private static final Logger LOGGER = LoggerFactory.getLogger(Packages.class);

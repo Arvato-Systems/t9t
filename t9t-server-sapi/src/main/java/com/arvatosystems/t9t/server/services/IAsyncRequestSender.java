@@ -15,11 +15,11 @@
  */
 package com.arvatosystems.t9t.server.services;
 
-import com.arvatosystems.t9t.base.api.RequestParameters;
-import com.arvatosystems.t9t.base.types.XTargetChannelType;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;
+
+import com.arvatosystems.t9t.base.api.RequestParameters;
+import com.arvatosystems.t9t.base.types.XTargetChannelType;
 
 public interface IAsyncRequestSender {
 

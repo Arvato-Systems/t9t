@@ -18,6 +18,8 @@ package com.arvatosystems.t9t.rep.be.request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
@@ -30,8 +32,6 @@ import com.arvatosystems.t9t.rep.jpa.entities.ReportParamsEntity;
 import com.arvatosystems.t9t.rep.jpa.mapping.IReportParamsDTOMapper;
 import com.arvatosystems.t9t.rep.jpa.persistence.IReportParamsEntityResolver;
 import com.arvatosystems.t9t.rep.request.ReportParamsCrudRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class ReportParamsCrudRequestHandler extends
         AbstractCrudSurrogateKeyRequestHandler<ReportParamsRef, ReportParamsDTO, FullTrackingWithVersion, ReportParamsCrudRequest, ReportParamsEntity> {

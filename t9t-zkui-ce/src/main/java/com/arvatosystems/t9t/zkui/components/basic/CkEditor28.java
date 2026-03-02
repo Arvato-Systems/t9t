@@ -40,15 +40,6 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vbox;
 
-import com.arvatosystems.t9t.base.CrudViewModel;
-import com.arvatosystems.t9t.base.FieldMappers;
-import com.arvatosystems.t9t.zkui.components.IDataFieldFactory;
-import com.arvatosystems.t9t.zkui.components.IViewModelOwner;
-import com.arvatosystems.t9t.zkui.components.datafields.DataFieldParameters;
-import com.arvatosystems.t9t.zkui.components.datafields.TextDataField;
-import com.arvatosystems.t9t.zkui.components.datafields.XenumDataField;
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
 import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
@@ -61,6 +52,15 @@ import de.jpaw.bonaparte.pojos.meta.Multiplicity;
 import de.jpaw.bonaparte.util.FieldGetter;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ByteArray;
+
+import com.arvatosystems.t9t.base.CrudViewModel;
+import com.arvatosystems.t9t.base.FieldMappers;
+import com.arvatosystems.t9t.zkui.components.IDataFieldFactory;
+import com.arvatosystems.t9t.zkui.components.IViewModelOwner;
+import com.arvatosystems.t9t.zkui.components.datafields.DataFieldParameters;
+import com.arvatosystems.t9t.zkui.components.datafields.TextDataField;
+import com.arvatosystems.t9t.zkui.components.datafields.XenumDataField;
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 /**
  * A row with 2 cells, a label and a field. The row has a generic getValue()

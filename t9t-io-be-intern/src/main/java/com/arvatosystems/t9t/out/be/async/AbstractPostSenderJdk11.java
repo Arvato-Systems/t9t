@@ -30,10 +30,12 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
-import com.arvatosystems.t9t.io.oauth.AccessTokenDTO;
-import com.arvatosystems.t9t.out.services.oauth.IAccessTokenClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.dp.Jdp;
+import de.jpaw.util.ExceptionUtil;
 
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
@@ -44,12 +46,10 @@ import com.arvatosystems.t9t.io.AsyncQueueDTO;
 import com.arvatosystems.t9t.io.CommunicationTargetChannelType;
 import com.arvatosystems.t9t.io.DataReference;
 import com.arvatosystems.t9t.io.InMemoryMessage;
+import com.arvatosystems.t9t.io.oauth.AccessTokenDTO;
 import com.arvatosystems.t9t.out.services.IAsyncIdempotencyHeader;
 import com.arvatosystems.t9t.out.services.IAsyncSender;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.dp.Jdp;
-import de.jpaw.util.ExceptionUtil;
+import com.arvatosystems.t9t.out.services.oauth.IAccessTokenClient;
 
 /**
  * The PostSender implements a simple client invocation via http POST of the JDK 11 HttpClient.

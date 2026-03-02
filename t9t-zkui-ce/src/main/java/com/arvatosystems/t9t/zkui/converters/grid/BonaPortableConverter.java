@@ -17,6 +17,9 @@ package com.arvatosystems.t9t.zkui.converters.grid;
 
 import java.util.List;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.DataAndMeta;
 import de.jpaw.bonaparte.core.FoldingComposer;
@@ -25,8 +28,6 @@ import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 @Singleton
 @Named("object")

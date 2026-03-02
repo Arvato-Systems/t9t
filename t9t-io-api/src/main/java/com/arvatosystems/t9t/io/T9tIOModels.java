@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.io;
 
+import de.jpaw.bonaparte.pojos.api.NoTracking;
+
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
@@ -31,8 +33,6 @@ import com.arvatosystems.t9t.io.request.DataSinkCrudRequest;
 import com.arvatosystems.t9t.io.request.DataSinkSearchRequest;
 import com.arvatosystems.t9t.io.request.SinkCrudRequest;
 import com.arvatosystems.t9t.io.request.SinkSearchRequest;
-
-import de.jpaw.bonaparte.pojos.api.NoTracking;
 
 public final class T9tIOModels implements IViewModelContainer {
 

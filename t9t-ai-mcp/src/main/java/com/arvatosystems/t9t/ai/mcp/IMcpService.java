@@ -17,16 +17,18 @@ package com.arvatosystems.t9t.ai.mcp;
 
 import java.util.Map;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+
 import com.arvatosystems.t9t.ai.request.AiGetPromptResponse;
 import com.arvatosystems.t9t.ai.request.AiGetPromptsResponse;
 import com.arvatosystems.t9t.ai.request.AiGetToolsResponse;
 import com.arvatosystems.t9t.ai.request.AiRunToolResponse;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.fasterxml.jackson.databind.JsonNode;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 public interface IMcpService {
 

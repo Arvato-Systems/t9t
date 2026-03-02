@@ -20,6 +20,10 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.auth.jwt.IJWT;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
@@ -28,10 +32,6 @@ import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
 import com.arvatosystems.t9t.server.services.IAuthenticate;
 import com.arvatosystems.t9t.server.services.ICachingAuthenticationProcessor;
-
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class CachingAuthenticationNoDbProcessor implements ICachingAuthenticationProcessor {

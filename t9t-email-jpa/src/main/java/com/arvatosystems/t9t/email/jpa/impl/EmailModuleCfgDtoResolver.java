@@ -15,13 +15,14 @@
  */
 package com.arvatosystems.t9t.email.jpa.impl;
 
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.core.jpa.impl.AbstractModuleConfigResolver;
 import com.arvatosystems.t9t.email.EmailModuleCfgDTO;
 import com.arvatosystems.t9t.email.jpa.entities.EmailModuleCfgEntity;
 import com.arvatosystems.t9t.email.jpa.mapping.IEmailModuleCfgDTOMapper;
 import com.arvatosystems.t9t.email.jpa.persistence.IEmailModuleCfgEntityResolver;
 import com.arvatosystems.t9t.email.services.IEmailModuleCfgDtoResolver;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class EmailModuleCfgDtoResolver extends AbstractModuleConfigResolver<EmailModuleCfgDTO, EmailModuleCfgEntity> implements IEmailModuleCfgDtoResolver {

@@ -20,13 +20,13 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.be.impl.DefaultRequestHandlerResolver;
 import com.arvatosystems.t9t.base.be.stubs.NoTenantCustomization;
 import com.arvatosystems.t9t.base.request.PauseRequest;
 import com.arvatosystems.t9t.base.services.IRequestHandlerResolver;
-
-import de.jpaw.dp.Jdp;
 
 public class NoTenantCustomizationTest {
 

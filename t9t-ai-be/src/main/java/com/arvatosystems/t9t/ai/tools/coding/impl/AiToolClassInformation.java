@@ -22,14 +22,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.reflections.Reflections;
 
-import com.arvatosystems.t9t.ai.service.IAiTool;
-import com.arvatosystems.t9t.ai.tools.coding.AiToolExplainClass;
-import com.arvatosystems.t9t.ai.tools.coding.AiToolExplainClassResult;
-import com.arvatosystems.t9t.ai.tools.coding.AiToolFieldDescription;
-import com.arvatosystems.t9t.base.MessagingUtil;
-import com.arvatosystems.t9t.base.T9tUtil;
-import com.arvatosystems.t9t.base.services.RequestContext;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
 import de.jpaw.bonaparte.core.BonaPortableFactory;
@@ -42,6 +34,14 @@ import de.jpaw.dp.Singleton;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
 import de.jpaw.xenums.init.ReflectionsPackageCache;
+
+import com.arvatosystems.t9t.ai.service.IAiTool;
+import com.arvatosystems.t9t.ai.tools.coding.AiToolExplainClass;
+import com.arvatosystems.t9t.ai.tools.coding.AiToolExplainClassResult;
+import com.arvatosystems.t9t.ai.tools.coding.AiToolFieldDescription;
+import com.arvatosystems.t9t.base.MessagingUtil;
+import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 @Named(AiToolExplainClass.my$PQON)
 @Singleton

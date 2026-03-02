@@ -15,10 +15,10 @@
  */
 package com.arvatosystems.t9t.zkui.components.datafields;
 
-import com.arvatosystems.t9t.zkui.inputelements.MicroUnitsBox;
-
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.fixedpoint.types.MicroUnits;
+
+import com.arvatosystems.t9t.zkui.inputelements.MicroUnitsBox;
 
 public class MicroUnitsDataField extends AbstractDataField<MicroUnitsBox, MicroUnits> {
     protected final MicroUnitsBox c = new MicroUnitsBox();

@@ -15,16 +15,17 @@
  */
 package com.arvatosystems.t9t.auth.services;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.AuthenticationIssuerType;
 import com.arvatosystems.t9t.auth.TenantDTO;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.base.types.SessionParameters;
-
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 /**
  * Various utility methods for authentication request handlers.

@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.jpaw.bonaparte.pojos.meta.DataCategory;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +45,15 @@ import org.zkoss.zul.Window;
 import org.zkoss.zul.event.ColSizeEvent;
 import org.zkoss.zul.event.ZulEvents;
 
+import de.jpaw.bonaparte.core.BonaPortableClass;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+import de.jpaw.bonaparte.pojos.meta.DataCategory;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.Multiplicity;
+import de.jpaw.bonaparte.util.FieldGetter;
+import de.jpaw.util.ApplicationException;
+
 import com.arvatosystems.t9t.base.uiprefs.UILeanGridPreferences;
 import com.arvatosystems.t9t.zkui.components.basic.Filter28;
 import com.arvatosystems.t9t.zkui.components.basic.Grid28;
@@ -53,14 +61,6 @@ import com.arvatosystems.t9t.zkui.components.basic.TwoSections28;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.T9tConfigConstants;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
-
-import de.jpaw.bonaparte.core.BonaPortableClass;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.meta.Multiplicity;
-import de.jpaw.bonaparte.util.FieldGetter;
-import de.jpaw.util.ApplicationException;
 
 public class ListHeadRenderer28 {
     private static final Logger LOGGER              = LoggerFactory.getLogger(ListHeadRenderer28.class);

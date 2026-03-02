@@ -18,6 +18,8 @@ package com.arvatosystems.t9t.plugins.be.request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -25,8 +27,6 @@ import com.arvatosystems.t9t.plugins.request.ExecutePluginV1Request;
 import com.arvatosystems.t9t.plugins.request.ExecutePluginV1Response;
 import com.arvatosystems.t9t.plugins.services.IPluginManager;
 import com.arvatosystems.t9t.plugins.services.IRequestHandlerPlugin;
-
-import de.jpaw.dp.Jdp;
 
 /**
  * This request handler is just a wrapper around functionality implemented in plugins.

@@ -23,11 +23,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.core.BonaPortableClass;
+
 import com.arvatosystems.t9t.in.services.IInputFormatConverter;
 import com.arvatosystems.t9t.in.services.IInputSession;
 import com.arvatosystems.t9t.io.DataSinkDTO;
-
-import de.jpaw.bonaparte.core.BonaPortableClass;
 
 /**
  * Superclass for IInputFormatConverter, i.e. implementations of the first step of conversion, which transform raw input

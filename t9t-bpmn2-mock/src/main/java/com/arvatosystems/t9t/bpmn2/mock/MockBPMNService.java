@@ -17,14 +17,14 @@ package com.arvatosystems.t9t.bpmn2.mock;
 
 import java.util.Map;
 
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.bpmn.ProcessDefinitionDTO;
 import com.arvatosystems.t9t.bpmn.ProcessDefinitionRef;
 import com.arvatosystems.t9t.bpmn.WorkflowReturnCode;
 import com.arvatosystems.t9t.bpmn.pojo.ProcessDefinition;
 import com.arvatosystems.t9t.bpmn.pojo.ProcessOutput;
 import com.arvatosystems.t9t.bpmn.services.IBpmTechnicalService;
-
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class MockBPMNService implements IBpmTechnicalService {

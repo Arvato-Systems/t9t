@@ -21,15 +21,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.auth.services.IAuthenticator;
-import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
-import com.arvatosystems.t9t.base.auth.AuthX500DistinguishedName;
-import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
-import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
-import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
-import com.arvatosystems.t9t.base.types.AuthenticationParameters;
-import com.arvatosystems.t9t.server.services.IAuthenticate;
-
 import de.jpaw.bonaparte.core.ObjectValidationException;
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
@@ -38,6 +29,15 @@ import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
+
+import com.arvatosystems.t9t.auth.services.IAuthenticator;
+import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
+import com.arvatosystems.t9t.base.auth.AuthX500DistinguishedName;
+import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
+import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
+import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
+import com.arvatosystems.t9t.base.types.AuthenticationParameters;
+import com.arvatosystems.t9t.server.services.IAuthenticate;
 
 @Fallback
 @Singleton

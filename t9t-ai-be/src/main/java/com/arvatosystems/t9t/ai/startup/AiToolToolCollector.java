@@ -20,14 +20,14 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.ai.service.AiToolRegistry;
-import com.arvatosystems.t9t.ai.service.IAiTool;
-
 import de.jpaw.bonaparte.core.BonaPortableClass;
 import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
+
+import com.arvatosystems.t9t.ai.service.AiToolRegistry;
+import com.arvatosystems.t9t.ai.service.IAiTool;
 
 @Startup(1234567)
 public class AiToolToolCollector implements StartupOnly {

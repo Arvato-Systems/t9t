@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.core.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.be.impl.AbstractCrudSurrogateKeyBERequestHandler;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
@@ -24,8 +26,6 @@ import com.arvatosystems.t9t.core.CannedRequestDTO;
 import com.arvatosystems.t9t.core.CannedRequestRef;
 import com.arvatosystems.t9t.core.request.CannedRequestCrudRequest;
 import com.arvatosystems.t9t.core.services.ICannedRequestResolver;
-
-import de.jpaw.dp.Jdp;
 
 public class CannedRequestCrudRequestHandler
         extends AbstractCrudSurrogateKeyBERequestHandler<CannedRequestRef, CannedRequestDTO, FullTrackingWithVersion, CannedRequestCrudRequest> {

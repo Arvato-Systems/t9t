@@ -26,6 +26,10 @@ import jakarta.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ExceptionUtil;
+
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.ExportStatusEnum;
@@ -37,10 +41,6 @@ import com.arvatosystems.t9t.io.jpa.entities.AsyncChannelEntity;
 import com.arvatosystems.t9t.io.jpa.entities.AsyncMessageEntity;
 import com.arvatosystems.t9t.io.jpa.entities.AsyncQueueEntity;
 import com.arvatosystems.t9t.out.services.IAsyncMessageUpdater;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ExceptionUtil;
 
 /**
  * Class which updates a single message entity.

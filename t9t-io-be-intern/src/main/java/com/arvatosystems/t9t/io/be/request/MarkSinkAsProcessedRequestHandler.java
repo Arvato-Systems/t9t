@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.io.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.request.MarkSinkAsProcessedRequest;
 import com.arvatosystems.t9t.out.services.IOutPersistenceAccess;
-
-import de.jpaw.dp.Jdp;
 
 public class MarkSinkAsProcessedRequestHandler extends AbstractRequestHandler<MarkSinkAsProcessedRequest> {
 

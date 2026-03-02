@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.io.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.jpa.impl.AbstractLeanSearchRequestHandler;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.io.jpa.entities.DataSinkEntity;
 import com.arvatosystems.t9t.io.jpa.persistence.IDataSinkEntityResolver;
 import com.arvatosystems.t9t.io.request.LeanDataSinkSearchRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class LeanDataSinkSearchRequestHandler extends AbstractLeanSearchRequestHandler<LeanDataSinkSearchRequest, DataSinkEntity> {
     public LeanDataSinkSearchRequestHandler() {

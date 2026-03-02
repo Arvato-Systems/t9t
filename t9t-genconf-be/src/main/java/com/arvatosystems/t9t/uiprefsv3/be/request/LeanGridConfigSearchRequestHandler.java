@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.uiprefsv3.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.be.impl.AbstractSearchBERequestHandler;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
@@ -22,8 +24,6 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.uiprefsv3.LeanGridConfigDTO;
 import com.arvatosystems.t9t.uiprefsv3.request.LeanGridConfigSearchRequest;
 import com.arvatosystems.t9t.uiprefsv3.services.ILeanGridConfigResolver;
-
-import de.jpaw.dp.Jdp;
 
 public class LeanGridConfigSearchRequestHandler extends
   AbstractSearchBERequestHandler<LeanGridConfigDTO, FullTrackingWithVersion, LeanGridConfigSearchRequest> {

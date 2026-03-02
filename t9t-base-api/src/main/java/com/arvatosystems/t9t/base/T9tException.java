@@ -225,6 +225,20 @@ public class T9tException extends ApplicationException {
     public static final int ENCRYPTION_DECRYPTION_FAILED     = OFFSET + 236;
     public static final int ENCRYPTION_ENCRYPTION_FAILED     = OFFSET + 237;
 
+    public static final int FILE_PATH_PREFIX_NOT_AVAILABLE = OFFSET + 250;
+    public static final int UNKNOWN_SYSTEM_PROPERTY_USER_HOME = OFFSET + 251;
+    public static final int UNKNOWN_SYSTEM_PROPERTY_USER_NAME = OFFSET + 252;
+
+    public static final int BAD_S3_BUCKET_NAME          = OFFSET + 255;
+    public static final int S3_WRITE_ERROR              = OFFSET + 256;
+    public static final int SQS_WRITE_ERROR             = OFFSET + 257;
+    public static final int INVALID_ELEMENT_ERROR       = OFFSET + 258;
+
+    // additional technical errors
+    public static final int NUMBER_FORMAT               = OFFSET_LOGIC_ERROR + 270;
+    public static final int ILLEGAL_ARGUMENT            = OFFSET_LOGIC_ERROR + 271;
+    public static final int CONCURRENT_MODIFICATION     = OFFSET_LOGIC_ERROR + 272;
+
     // http problems
     public static final int HTTP_MULTI_PART_NO_PARTS    = OFFSET_LOGIC_ERROR + 290;
     public static final int HTTP_MULTI_PART_EMPTY_KEY   = OFFSET_LOGIC_ERROR + 291;
@@ -325,15 +339,6 @@ public class T9tException extends ApplicationException {
     public static final int IOF_TIME_WINDOW_UPDATE_ERROR = OFFSET + 975;
     public static final int IOF_DUPLICATE = OFFSET + 976;
 
-    public static final int FILE_PATH_PREFIX_NOT_AVAILABLE = OFFSET + 250;
-    public static final int UNKNOWN_SYSTEM_PROPERTY_USER_HOME = OFFSET + 251;
-    public static final int UNKNOWN_SYSTEM_PROPERTY_USER_NAME = OFFSET + 252;
-
-    public static final int BAD_S3_BUCKET_NAME = OFFSET + 255;
-    public static final int S3_WRITE_ERROR = OFFSET + 256;
-    public static final int SQS_WRITE_ERROR = OFFSET + 257;
-    public static final int INVALID_ELEMENT_ERROR = OFFSET + 258;
-
     // General event handling errors
     public static final int INVALID_EVENT_TYPE = OFFSET + 980;
     public static final int THREAD_INTERRUPTED = OFFSET_TIMEOUT + 991;
@@ -431,6 +436,10 @@ public class T9tException extends ApplicationException {
         registerCode(ENCRYPTION_BAD_PARAMETER, "Bad parameter for encryption transformation");
         registerCode(ENCRYPTION_DECRYPTION_FAILED, "Decryption failed");
         registerCode(ENCRYPTION_ENCRYPTION_FAILED, "Encryption failed");
+
+        registerCode(NUMBER_FORMAT, "Number format exception (see logs)");
+        registerCode(ILLEGAL_ARGUMENT, "Illegal argument exception (see logs)");
+        registerCode(CONCURRENT_MODIFICATION, "Concurrent modification exception (see logs)");
 
         registerCode(HTTP_MULTI_PART_NO_PARTS, "http multipart publishers must see at least one part");
         registerCode(HTTP_MULTI_PART_EMPTY_DATA, "A part of http multipart cannot be null or empty");

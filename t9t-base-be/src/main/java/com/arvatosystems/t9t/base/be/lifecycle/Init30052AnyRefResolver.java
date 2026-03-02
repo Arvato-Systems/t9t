@@ -21,17 +21,17 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.MessagingUtil;
-import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.base.search.LeanSearchRequest;
-import com.arvatosystems.t9t.base.services.ICustomization;
-import com.arvatosystems.t9t.base.services.ITenantCustomization;
-
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.ReflectionsPackageCache;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
 import de.jpaw.util.ExceptionUtil;
+
+import com.arvatosystems.t9t.base.MessagingUtil;
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.search.LeanSearchRequest;
+import com.arvatosystems.t9t.base.services.ICustomization;
+import com.arvatosystems.t9t.base.services.ITenantCustomization;
 
 
 /**

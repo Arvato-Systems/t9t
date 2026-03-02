@@ -25,14 +25,14 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.monitoring.request.QuerySystemParamsRequest;
 import com.arvatosystems.t9t.monitoring.request.QuerySystemParamsResponse;
 import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.viewmodel.GenericVM;
-
-import de.jpaw.dp.Jdp;
 
 @Init(superclass = true)
 public class SessionInfoVM extends GenericVM {

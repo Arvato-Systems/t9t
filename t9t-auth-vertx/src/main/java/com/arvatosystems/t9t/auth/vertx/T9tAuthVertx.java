@@ -15,21 +15,14 @@
  */
 package com.arvatosystems.t9t.auth.vertx;
 
+import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpHeaders;
+import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.authc.api.GetTenantLogoRequest;
-import com.arvatosystems.t9t.authc.api.GetTenantLogoResponse;
-import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.base.auth.AuthenticationInfo;
-import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
-import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
-import com.arvatosystems.t9t.base.types.SessionParameters;
-import com.arvatosystems.t9t.base.vertx.IServiceModule;
-import com.arvatosystems.t9t.base.vertx.impl.HttpUtils;
-import com.arvatosystems.t9t.server.services.IAuthenticate;
-import com.arvatosystems.t9t.server.services.ICachingAuthenticationProcessor;
-import com.arvatosystems.t9t.server.services.IRequestProcessor;
 
 import de.jpaw.bonaparte.api.codecs.IMessageCoderFactory;
 import de.jpaw.bonaparte.api.codecs.IMessageDecoder;
@@ -43,12 +36,19 @@ import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.util.ApplicationException;
-import io.vertx.core.Handler;
-import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.http.HttpHeaders;
-import io.vertx.ext.web.Router;
-import io.vertx.ext.web.RoutingContext;
+
+import com.arvatosystems.t9t.authc.api.GetTenantLogoRequest;
+import com.arvatosystems.t9t.authc.api.GetTenantLogoResponse;
+import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.auth.AuthenticationInfo;
+import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
+import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
+import com.arvatosystems.t9t.base.types.SessionParameters;
+import com.arvatosystems.t9t.base.vertx.IServiceModule;
+import com.arvatosystems.t9t.base.vertx.impl.HttpUtils;
+import com.arvatosystems.t9t.server.services.IAuthenticate;
+import com.arvatosystems.t9t.server.services.ICachingAuthenticationProcessor;
+import com.arvatosystems.t9t.server.services.IRequestProcessor;
 
 @Named("auth")
 @Dependent

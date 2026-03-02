@@ -15,11 +15,11 @@
  */
 package com.arvatosystems.t9t.base.be.stubs;
 
-import com.arvatosystems.t9t.base.services.IPasswordResetNotificationService;
-import com.arvatosystems.t9t.base.services.RequestContext;
-
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.services.IPasswordResetNotificationService;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 @Fallback
 @Singleton

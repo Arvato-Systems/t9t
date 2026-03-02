@@ -19,8 +19,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.pojos.api.AsciiFilter;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import de.jpaw.bonaparte.pojos.api.FieldFilter;
+import de.jpaw.bonaparte.pojos.api.LongFilter;
+import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.api.media.MediaType;
+import de.jpaw.bonaparte.pojos.apiw.Ref;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
 
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
@@ -32,18 +44,6 @@ import com.arvatosystems.t9t.io.DataSinkCategoryType;
 import com.arvatosystems.t9t.rep.ReportConfigDTO;
 import com.arvatosystems.t9t.rep.be.request.restriction.IReportSinkSearchFilterRestriction;
 import com.arvatosystems.t9t.rep.request.ReportConfigSearchRequest;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-
-import de.jpaw.bonaparte.pojos.api.AsciiFilter;
-import de.jpaw.bonaparte.pojos.api.FieldFilter;
-import de.jpaw.bonaparte.pojos.api.LongFilter;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 /**
  * implementation of {@link IReportSinkSearchFilterRestriction}

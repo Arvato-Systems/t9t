@@ -20,8 +20,25 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
+import jakarta.ws.rs.container.AsyncResponse;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.api.media.MediaTypeInfo;
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.DataConverter;
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ApplicationException;
+import de.jpaw.util.ExceptionUtil;
 
 import com.arvatosystems.t9t.base.IRemoteConnection;
 import com.arvatosystems.t9t.base.MessagingUtil;
@@ -38,22 +55,6 @@ import com.arvatosystems.t9t.rest.services.IGatewayStringSanitizerFactory;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.arvatosystems.t9t.xml.auth.AuthenticationResult;
-
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.DataConverter;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ApplicationException;
-import de.jpaw.util.ExceptionUtil;
-import jakarta.ws.rs.container.AsyncResponse;
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 
 @Singleton
 public class T9tRestProcessor implements IT9tRestProcessor {

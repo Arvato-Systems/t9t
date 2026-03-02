@@ -18,16 +18,16 @@ package com.arvatosystems.t9t.base.be.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.core.DataConverter;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.CommonStringSanitizer;
 import com.arvatosystems.t9t.base.StringSanitizer;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.services.IBackendStringSanitizerFactory;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.ServerConfiguration;
-
-import de.jpaw.bonaparte.core.DataConverter;
-import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class BackendStringSanitizerFactory implements IBackendStringSanitizerFactory {

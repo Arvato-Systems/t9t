@@ -17,13 +17,13 @@ package com.arvatosystems.t9t.zkui.converters.grid;
 
 import java.time.Instant;
 
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 @Singleton
 @Named("instant")

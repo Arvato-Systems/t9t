@@ -29,17 +29,18 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.slf4j.Logger;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
-import com.arvatosystems.t9t.base.request.AggregationGranularityType;
+import org.slf4j.Logger;
 
 import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.enums.TokenizableEnum;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+
+import com.arvatosystems.t9t.base.request.AggregationGranularityType;
 /**
  * Utility class for common checks and operations.
  */

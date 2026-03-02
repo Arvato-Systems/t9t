@@ -20,12 +20,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.arvatosystems.t9t.base.api.RequestParameters;
-import com.arvatosystems.t9t.in.services.IInputSession;
+import jakarta.annotation.Nonnull;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
-import jakarta.annotation.Nonnull;
+
+import com.arvatosystems.t9t.base.api.RequestParameters;
+import com.arvatosystems.t9t.in.services.IInputSession;
 
 /**
  * Chunking transformer, simple variant, without transformation.

@@ -15,9 +15,22 @@
  */
 package com.arvatosystems.t9t.mcp.vertx.impl;
 
+import io.vertx.core.AsyncResult;
+import io.vertx.core.MultiMap;
+import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpHeaders;
+import io.vertx.ext.web.Router;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+
+import de.jpaw.bonaparte.api.codecs.IMessageCoderFactory;
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.dp.Dependent;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Named;
+import de.jpaw.util.ApplicationException;
 
 import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
 import com.arvatosystems.t9t.base.MessagingUtil;
@@ -27,19 +40,6 @@ import com.arvatosystems.t9t.base.auth.AuthenticationInfo;
 import com.arvatosystems.t9t.base.services.T9tInternalConstants;
 import com.arvatosystems.t9t.base.vertx.IServiceModule;
 import com.arvatosystems.t9t.server.services.ICachingAuthenticationProcessor;
-
-import de.jpaw.bonaparte.api.codecs.IMessageCoderFactory;
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.dp.Dependent;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Named;
-import de.jpaw.util.ApplicationException;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.MultiMap;
-import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpHeaders;
-import io.vertx.ext.web.Router;
 
 @Dependent
 @Named(T9tAiMcpConstants.ENDPOINT_MCP)

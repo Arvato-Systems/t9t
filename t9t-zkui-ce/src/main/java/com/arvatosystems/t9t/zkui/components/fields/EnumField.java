@@ -17,15 +17,15 @@ package com.arvatosystems.t9t.zkui.components.fields;
 
 import org.zkoss.zul.Comboitem;
 
-import com.arvatosystems.t9t.base.search.EnumFilter;
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.ui.UIFilter;
 import de.jpaw.bonaparte.pojos.ui.UIFilterType;
+
+import com.arvatosystems.t9t.base.search.EnumFilter;
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 public class EnumField extends EnumBaseField {
     protected final EnumDefinition ed;

@@ -15,9 +15,9 @@
  */
 package com.arvatosystems.t9t.auth.services;
 
-import com.arvatosystems.t9t.auth.OidClaims;
-
 import jakarta.annotation.Nonnull;
+
+import com.arvatosystems.t9t.auth.OidClaims;
 
 /** Validate external access tokens. */
 public interface IExternalTokenValidation {

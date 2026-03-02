@@ -15,14 +15,14 @@
  */
 package com.arvatosystems.t9t.mediaresolver.impl;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.mediaresolver.IMediaResolver;
-import com.arvatosystems.t9t.mediaresolver.IMediaResolverSub;
-
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ByteArray;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.mediaresolver.IMediaResolver;
+import com.arvatosystems.t9t.mediaresolver.IMediaResolverSub;
 
 @Singleton
 public class MediaResolver implements IMediaResolver {

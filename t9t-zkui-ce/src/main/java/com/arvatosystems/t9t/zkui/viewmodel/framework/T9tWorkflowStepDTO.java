@@ -15,8 +15,9 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel.framework;
 
-import com.arvatosystems.t9t.bpmn.T9tAbstractWorkflowStep;
 import java.util.Map;
+
+import com.arvatosystems.t9t.bpmn.T9tAbstractWorkflowStep;
 
 public class T9tWorkflowStepDTO extends T9tAbstractWorkflowStep {
      /**

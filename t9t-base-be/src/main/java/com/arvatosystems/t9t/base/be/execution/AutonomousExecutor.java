@@ -27,6 +27,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ApplicationException;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
@@ -38,10 +42,6 @@ import com.arvatosystems.t9t.cfg.be.ApplicationConfiguration;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.server.InternalHeaderParameters;
 import com.arvatosystems.t9t.server.services.IRequestProcessor;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ApplicationException;
 
 @Singleton
 public class AutonomousExecutor implements IAutonomousExecutor {

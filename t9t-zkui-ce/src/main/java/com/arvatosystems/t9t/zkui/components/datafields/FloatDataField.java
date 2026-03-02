@@ -17,9 +17,9 @@ package com.arvatosystems.t9t.zkui.components.datafields;
 
 import org.zkoss.zul.Doublebox;
 
-import com.arvatosystems.t9t.base.T9tUtil;
-
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
+
+import com.arvatosystems.t9t.base.T9tUtil;
 
 public class FloatDataField extends AbstractDataField<Doublebox, Float> {
     protected final Doublebox c = new Doublebox();

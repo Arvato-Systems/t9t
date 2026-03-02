@@ -19,9 +19,9 @@ import java.sql.Connection;
 
 import jakarta.persistence.EntityManager;
 
-import com.arvatosystems.t9t.base.jpa.ormspecific.IJpaJdbcConnectionProvider;
-
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.jpa.ormspecific.IJpaJdbcConnectionProvider;
 
 @Singleton
 public class JDBCConnectionProvider implements IJpaJdbcConnectionProvider {

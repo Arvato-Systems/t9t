@@ -21,10 +21,10 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Menuseparator;
 
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 /** Component which creates a context menu by comma separated list of IDs.
  * The IDs are used to look up the translations for the entry as well as to identify the action.
@@ -58,7 +58,7 @@ public class Context28 extends Menupopup {
             } else {
                 final String itemId = myPrefix + option;
                 final Permissionset perms = session.getPermissions(itemId);
-                if (perms.contains(OperationType.EXECUTE)) {
+                if (perms.contains(OperationType.EXECUTE) || perms.contains(OperationType.READ)) {
                     LOGGER.debug("Installing context option {} for {}", option, getId());
                     Menuitem item = new Menuitem();
                     item.setId(itemId);

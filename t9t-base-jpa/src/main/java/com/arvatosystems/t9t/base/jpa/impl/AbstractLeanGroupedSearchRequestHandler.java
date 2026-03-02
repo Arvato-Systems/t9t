@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import de.jpaw.bonaparte.jpa.BonaPersistableKey;
+import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
+
 import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.base.search.DescriptionList;
@@ -28,9 +31,6 @@ import com.arvatosystems.t9t.base.search.LeanGroupedSearchRequest;
 import com.arvatosystems.t9t.base.search.LeanGroupedSearchResponse;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.bonaparte.jpa.BonaPersistableKey;
-import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 
 public abstract class AbstractLeanGroupedSearchRequestHandler<
   S extends LeanGroupedSearchRequest,

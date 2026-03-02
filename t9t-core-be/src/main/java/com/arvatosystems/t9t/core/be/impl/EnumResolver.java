@@ -15,20 +15,23 @@
  */
 package com.arvatosystems.t9t.core.be.impl;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.services.IEnumResolver;
-import com.arvatosystems.t9t.init.InitContainers;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.common.base.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
 import de.jpaw.bonaparte.pojos.meta.EnumSetDefinition;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.bonaparte.pojos.meta.XEnumSetDefinition;
 import de.jpaw.dp.Singleton;
 import de.jpaw.enums.XEnumFactory;
-import java.util.ArrayList;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.services.IEnumResolver;
+import com.arvatosystems.t9t.init.InitContainers;
 
 @Singleton
 public class EnumResolver implements IEnumResolver {

@@ -17,14 +17,14 @@ package com.arvatosystems.t9t.doc.be.converters.impl;
 
 import java.util.Map;
 
-import com.arvatosystems.t9t.doc.services.IDocComponentConverter;
-
 import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.pojos.api.media.MediaCategory;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.doc.services.IDocComponentConverter;
 
 // extend this class to add conversions from additional format types
 @Singleton

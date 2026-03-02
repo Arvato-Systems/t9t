@@ -15,11 +15,13 @@
  */
 package com.arvatosystems.t9t.event.jpa.impl;
 
-import com.arvatosystems.t9t.base.services.IAsyncRequestProcessor;
-import com.arvatosystems.t9t.base.services.IEventHandler;
-import com.arvatosystems.t9t.base.services.impl.EventSubscriptionCache;
-import com.arvatosystems.t9t.cfg.be.ConfigProvider;
-import com.arvatosystems.t9t.event.jpa.entities.SubscriberConfigEntity;
+import java.util.List;
+
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.TypedQuery;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.dp.Jdp;
@@ -28,13 +30,11 @@ import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
 import de.jpaw.util.ExceptionUtil;
 
-import java.util.List;
-
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.TypedQuery;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.arvatosystems.t9t.base.services.IAsyncRequestProcessor;
+import com.arvatosystems.t9t.base.services.IEventHandler;
+import com.arvatosystems.t9t.base.services.impl.EventSubscriptionCache;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.event.jpa.entities.SubscriberConfigEntity;
 
 @Startup(55333)
 public class EventSubscriptionLoader implements StartupOnly {

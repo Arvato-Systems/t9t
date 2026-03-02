@@ -19,10 +19,10 @@ import java.util.Map;
 
 import org.zkoss.zk.ui.Component;
 
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.Multiplicity;
+
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 public abstract class AbstractCoreDataField<E extends Component, T> implements IDataField<E, T> {
     protected final FieldDefinition cfg;

@@ -19,20 +19,20 @@ import java.io.InputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.aws.AwsClientBuilder;
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.mediaresolver.IMediaDataSource;
-import com.arvatosystems.t9t.mediaresolver.IMediaResolverSub;
-
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ByteArray;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3ClientBuilder;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ByteArray;
+
+import com.arvatosystems.t9t.aws.AwsClientBuilder;
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.mediaresolver.IMediaDataSource;
+import com.arvatosystems.t9t.mediaresolver.IMediaResolverSub;
 
 // file download handler implementation for S3 buckets
 @Singleton

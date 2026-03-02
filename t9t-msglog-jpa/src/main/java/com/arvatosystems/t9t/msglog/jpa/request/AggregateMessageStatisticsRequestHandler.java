@@ -19,8 +19,12 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+import jakarta.persistence.Query;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.TransactionOriginType;
@@ -34,9 +38,6 @@ import com.arvatosystems.t9t.msglog.jpa.entities.MessageStatisticsEntity;
 import com.arvatosystems.t9t.msglog.jpa.persistence.IMessageStatisticsEntityResolver;
 import com.arvatosystems.t9t.msglog.request.AggregateMessageStatisticsRequest;
 import com.arvatosystems.t9t.statistics.services.IStatisticsService;
-
-import de.jpaw.dp.Jdp;
-import jakarta.persistence.Query;
 
 public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHandler<AggregateMessageStatisticsRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AggregateMessageStatisticsRequestHandler.class);

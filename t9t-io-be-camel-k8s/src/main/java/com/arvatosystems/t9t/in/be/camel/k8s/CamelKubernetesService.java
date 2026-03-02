@@ -20,10 +20,10 @@ import org.apache.camel.component.kubernetes.cluster.KubernetesClusterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.io.be.camel.service.impl.CamelService;
-
 import de.jpaw.dp.Singleton;
 import de.jpaw.dp.Specializes;
+
+import com.arvatosystems.t9t.io.be.camel.service.impl.CamelService;
 
 @Singleton
 @Specializes

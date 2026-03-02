@@ -34,12 +34,12 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.ListModelList;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28Db;
 import com.arvatosystems.t9t.zkui.services.ISelectionsResolver;
 import com.arvatosystems.t9t.zkui.util.Constants;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
-
-import de.jpaw.dp.Jdp;
 
 public class SelectionsViewModel {
 

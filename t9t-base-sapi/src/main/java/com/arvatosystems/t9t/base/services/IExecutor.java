@@ -17,11 +17,11 @@ package com.arvatosystems.t9t.base.services;
 
 import java.util.Set;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.event.EventParameters;
-
-import de.jpaw.bonaparte.core.BonaPortable;
 
 /**
  * Implementations serve as key entry points for intra-module communication.

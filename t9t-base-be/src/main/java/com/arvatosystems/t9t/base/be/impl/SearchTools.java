@@ -23,9 +23,6 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import com.arvatosystems.t9t.base.search.SearchCriteria;
-import com.arvatosystems.t9t.base.services.ISearchTools;
-
 import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.AndFilter;
 import de.jpaw.bonaparte.pojos.api.AsciiFilter;
@@ -37,6 +34,9 @@ import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 import de.jpaw.bonaparte.pojos.api.UuidFilter;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.search.SearchCriteria;
+import com.arvatosystems.t9t.base.services.ISearchTools;
 
 @Singleton
 public class SearchTools implements ISearchTools {

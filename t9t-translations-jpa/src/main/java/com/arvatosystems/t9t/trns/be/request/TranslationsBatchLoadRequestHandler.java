@@ -20,6 +20,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.core.CSVConfiguration;
+import de.jpaw.bonaparte.core.StringCSVParser;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
@@ -32,11 +37,6 @@ import com.arvatosystems.t9t.trns.TranslationsKey;
 import com.arvatosystems.t9t.trns.request.TranslationsBatchLoadRequest;
 import com.arvatosystems.t9t.trns.request.TranslationsCrudRequest;
 import com.arvatosystems.t9t.trns.request.TranslationsResource;
-
-import de.jpaw.bonaparte.core.CSVConfiguration;
-import de.jpaw.bonaparte.core.StringCSVParser;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.dp.Jdp;
 
 public class TranslationsBatchLoadRequestHandler extends AbstractRequestHandler<TranslationsBatchLoadRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(TranslationsBatchLoadRequestHandler.class);

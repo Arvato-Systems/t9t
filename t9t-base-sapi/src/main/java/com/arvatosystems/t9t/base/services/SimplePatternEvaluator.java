@@ -29,9 +29,9 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.T9tUtil;
-
 import de.jpaw.util.CharTestsASCII;
+
+import com.arvatosystems.t9t.base.T9tUtil;
 
 public final class SimplePatternEvaluator {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimplePatternEvaluator.class);

@@ -15,9 +15,9 @@
  */
 package com.arvatosystems.t9t.zkui.components.datafields;
 
-import com.arvatosystems.t9t.zkui.components.basic.Permissions28;
-
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+
+import com.arvatosystems.t9t.zkui.components.basic.Permissions28;
 
 public class PermissionsetDataField extends AbstractCoreDataField<Permissions28, Permissionset> {
     protected final Permissions28 c = new Permissions28();

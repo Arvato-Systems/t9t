@@ -15,10 +15,11 @@
  */
 package com.arvatosystems.t9t.zkui.converters.grid;
 
+import jakarta.annotation.Nonnull;
+
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
-import jakarta.annotation.Nonnull;
 
 @Singleton
 @Named("double")

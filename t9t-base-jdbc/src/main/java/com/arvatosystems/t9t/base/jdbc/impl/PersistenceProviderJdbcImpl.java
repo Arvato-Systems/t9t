@@ -21,11 +21,11 @@ import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.api.PersistenceProviders;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.IJdbcDataSource;
 import com.arvatosystems.t9t.base.services.IPersistenceProviderJdbc;
-
-import de.jpaw.bonaparte.pojos.api.PersistenceProviders;
 
 class PersistenceProviderJdbcImpl implements IPersistenceProviderJdbc {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceProviderJdbcImpl.class);

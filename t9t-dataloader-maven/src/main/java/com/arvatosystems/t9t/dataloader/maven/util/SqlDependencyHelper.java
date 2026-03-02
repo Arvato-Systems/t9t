@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.dataloader.maven.util;
 
-import com.arvatosystems.t9t.dataloader.maven.config.SqlArtifact;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -26,6 +25,8 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
+
+import com.arvatosystems.t9t.dataloader.maven.config.SqlArtifact;
 
 public class SqlDependencyHelper {
 

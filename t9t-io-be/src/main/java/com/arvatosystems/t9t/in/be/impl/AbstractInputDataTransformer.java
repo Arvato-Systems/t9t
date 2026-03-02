@@ -18,12 +18,12 @@ package com.arvatosystems.t9t.in.be.impl;
 import java.util.Collections;
 import java.util.Map;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.BonaPortableClass;
+
 import com.arvatosystems.t9t.in.services.IInputDataTransformer;
 import com.arvatosystems.t9t.in.services.IInputSession;
 import com.arvatosystems.t9t.io.DataSinkDTO;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.BonaPortableClass;
 
 /**
  * Superclass for IInputDataTransformers, which transform BonaPortables into import requests (second step of conversion).

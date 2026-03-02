@@ -20,8 +20,15 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
 
 import com.arvatosystems.t9t.ariba.AribaException;
 import com.arvatosystems.t9t.ariba.MetricsFlat001;
@@ -34,12 +41,6 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.out.be.jackson.T9tJacksonGenericSerializer;
 import com.arvatosystems.t9t.out.jpa.impl.GenericRemoterViaDirectHttp;
 import com.arvatosystems.t9t.out.services.IGenericRemoter;
-
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Provider;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
 
 /**
  * Handles the export of metrics to Ariba by querying database views for metrics data

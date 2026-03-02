@@ -17,9 +17,10 @@ package com.arvatosystems.t9t.event.services;
 
 import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
+
 import com.arvatosystems.t9t.base.types.ListenerConfig;
 import com.arvatosystems.t9t.event.ListenerConfigDTO;
-import com.google.common.collect.ImmutableSet;
 
 public final class ListenerConfigConverter {
     private ListenerConfigConverter() { }

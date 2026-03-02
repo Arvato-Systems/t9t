@@ -22,11 +22,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-import com.arvatosystems.t9t.zkui.viewmodel.beans.Navi;
-
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.viewmodel.beans.Navi;
 
 public final class MenuUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(MenuUtil.class);
@@ -62,7 +62,7 @@ public final class MenuUtil {
             for (Object menu : menuLines) {
                 menuitems = String.valueOf(menu).toString().trim().split("\\s*,\\s*"); // trim and split each element
                 Permissionset perms = as.getPermissions(String.valueOf(menuitems[NAVI_ID]));
-                if (perms != null && perms.contains(OperationType.EXECUTE)) {
+                if (perms != null && (perms.contains(OperationType.EXECUTE) || perms.contains(OperationType.READ))) {
                     String thisCategory = String.valueOf(menuitems[CATEGORY]);
 
                     Navi navi = new Navi();

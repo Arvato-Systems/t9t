@@ -28,13 +28,13 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
 
-import com.arvatosystems.t9t.base.IHaveZField;
-import com.arvatosystems.t9t.base.JsonUtil;
-import com.arvatosystems.t9t.base.T9tUtil;
-
 import de.jpaw.bonaparte.core.BonaparteJsonEscaper;
 import de.jpaw.json.JsonException;
 import de.jpaw.json.JsonParser;
+
+import com.arvatosystems.t9t.base.IHaveZField;
+import com.arvatosystems.t9t.base.JsonUtil;
+import com.arvatosystems.t9t.base.T9tUtil;
 
 // java -jar target/t9t-microbenchmarks.jar -i 3 -f 3 -wf 1 -wi 3 ".*ZFieldProcessing.*"
 // (takes about 12 minutes)

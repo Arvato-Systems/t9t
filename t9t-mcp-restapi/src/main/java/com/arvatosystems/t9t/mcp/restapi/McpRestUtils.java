@@ -17,15 +17,18 @@ package com.arvatosystems.t9t.mcp.restapi;
 
 import java.util.List;
 
-import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
-import com.arvatosystems.t9t.ai.mcp.McpProtocolVersion;
-import com.fasterxml.jackson.databind.JsonNode;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.core.Response;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaType;
+
+import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
+import com.arvatosystems.t9t.ai.mcp.McpProtocolVersion;
 
 public final class McpRestUtils {
 

@@ -18,18 +18,18 @@ package com.arvatosystems.t9t.ai.openai.be.request;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.ai.openai.OpenAIChatCompletionChoice;
 import com.arvatosystems.t9t.ai.openai.OpenAIChatCompletionReq;
-import com.arvatosystems.t9t.ai.openai.OpenAIObjectChatCompletion;
 import com.arvatosystems.t9t.ai.openai.OpenAIMessage;
+import com.arvatosystems.t9t.ai.openai.OpenAIObjectChatCompletion;
 import com.arvatosystems.t9t.ai.openai.OpenAIRoleType;
 import com.arvatosystems.t9t.ai.openai.request.OpenAISimpleRequest;
 import com.arvatosystems.t9t.ai.openai.request.OpenAISimpleResponse;
 import com.arvatosystems.t9t.ai.openai.service.IOpenAIClient;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
 
 public class OpenAISimpleRequestHandler extends AbstractRequestHandler<OpenAISimpleRequest> {
 

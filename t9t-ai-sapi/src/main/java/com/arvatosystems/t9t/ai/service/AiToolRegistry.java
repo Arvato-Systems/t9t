@@ -19,13 +19,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
+import jakarta.annotation.Nonnull;
+
+import de.jpaw.bonaparte.core.BonaPortableClass;
+
 import com.arvatosystems.t9t.ai.tools.AbstractAiTool;
 import com.arvatosystems.t9t.ai.tools.AbstractAiToolResult;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.bonaparte.core.BonaPortableClass;
-import jakarta.annotation.Nonnull;
 
 public final class AiToolRegistry {
     private static final Map<String, AiToolDescriptor<?, ?>> TOOLS = new ConcurrentHashMap<>();

@@ -15,14 +15,14 @@
  */
 package com.arvatosystems.t9t.msglog.jpa.request;
 
+import de.jpaw.util.ApplicationException;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.msglog.jpa.entities.MessageEntity;
 import com.arvatosystems.t9t.msglog.request.RerunRequest;
-
-import de.jpaw.util.ApplicationException;
 
 public class RerunRequestHandler extends AbstractRerunRequestHandler<RerunRequest> {
 

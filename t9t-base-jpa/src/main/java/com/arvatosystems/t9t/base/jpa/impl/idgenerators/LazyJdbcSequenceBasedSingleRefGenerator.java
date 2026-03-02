@@ -20,18 +20,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import jakarta.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.services.IJdbcConnectionProvider;
-import com.arvatosystems.t9t.base.services.ISingleRefGenerator;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ExceptionUtil;
-import jakarta.annotation.Nonnull;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.services.IJdbcConnectionProvider;
+import com.arvatosystems.t9t.base.services.ISingleRefGenerator;
 
 @Singleton
 @Named("lazySequenceJDBC")  // only acquires an ID once the first request has been seen

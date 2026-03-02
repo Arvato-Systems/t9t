@@ -15,9 +15,9 @@
  */
 package com.arvatosystems.t9t.server.services;
 
-import com.arvatosystems.t9t.base.types.XTargetChannelType;
-
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
+
+import com.arvatosystems.t9t.base.types.XTargetChannelType;
 
 public interface IEvent {
     /** Sends data to the specified target. Just checks availability of the target if data is null.

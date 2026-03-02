@@ -23,6 +23,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.base.trns.TextCategory;
@@ -33,10 +37,6 @@ import com.arvatosystems.t9t.trns.TranslationsUtil;
 import com.arvatosystems.t9t.trns.TrnsModuleCfgDTO;
 import com.arvatosystems.t9t.trns.services.ITrnsModuleCfgDtoResolver;
 import com.arvatosystems.t9t.trns.services.ITrnsPersistenceAccess;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Provider;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class TranslatorService implements ITranslator {

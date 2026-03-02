@@ -18,10 +18,10 @@ package com.arvatosystems.t9t.kafka.service;
 import java.util.Collection;
 import java.util.List;
 
+import jakarta.annotation.Nonnull;
+
 import org.apache.kafka.clients.consumer.ConsumerRebalanceListener;
 import org.apache.kafka.common.PartitionInfo;
-
-import jakarta.annotation.Nonnull;
 
 public interface IKafkaRebalancer extends ConsumerRebalanceListener {
     /** Does nothing except some initial logging. */

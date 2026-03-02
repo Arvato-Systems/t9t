@@ -18,26 +18,27 @@ package com.arvatosystems.t9t.core.jpa.impl;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.arvatosystems.t9t.base.jpa.IEntityMapper;
+import jakarta.annotation.Nonnull;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.jpa.BonaPersistableData;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
+import com.arvatosystems.t9t.base.jpa.IEntityMapper;
 import com.arvatosystems.t9t.base.jpa.IResolverStringKey;
 import com.arvatosystems.t9t.base.moduleCfg.ModuleConfigDTO;
 import com.arvatosystems.t9t.base.services.ICacheInvalidationRegistry;
 import com.arvatosystems.t9t.core.jpa.entities.ModuleConfigEntity;
 import com.arvatosystems.t9t.server.services.IModuleConfigResolver;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.jpa.BonaPersistableData;
-import de.jpaw.dp.Jdp;
-import jakarta.annotation.Nonnull;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
 
 /** Implementation of a class which reads module tenant configuration (and caches the entries). */
 public abstract class AbstractModuleConfigResolver<D extends ModuleConfigDTO, E extends ModuleConfigEntity & BonaPersistableData<D>>

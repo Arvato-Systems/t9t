@@ -17,10 +17,10 @@ package com.arvatosystems.t9t.vdb.service;
 
 import java.util.List;
 
-import com.arvatosystems.t9t.base.types.FloatVector;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
+import com.arvatosystems.t9t.base.types.FloatVector;
 
 /**
  * Generic API to perform low level operations on vector databases.

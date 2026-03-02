@@ -15,6 +15,11 @@
  */
 package com.arvatosystems.t9t.io.jpa.request;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
@@ -24,11 +29,6 @@ import com.arvatosystems.t9t.io.AsyncChannelKey;
 import com.arvatosystems.t9t.io.jpa.entities.AsyncChannelEntity;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncChannelEntityResolver;
 import com.arvatosystems.t9t.io.request.PerformAsyncRequest;
-
-import de.jpaw.dp.Jdp;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PerformAsyncRequestHandler extends AbstractRequestHandler<PerformAsyncRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(PerformAsyncRequestHandler.class);

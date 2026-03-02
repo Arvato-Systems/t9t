@@ -18,9 +18,9 @@ package com.arvatosystems.t9t.base.jpa.entityListeners;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 
-import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
+
+import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 
 public class FullTrackingVEntityListener extends AbstractEntityListener<FullTrackingWithVersion> {
 

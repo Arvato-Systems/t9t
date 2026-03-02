@@ -32,15 +32,15 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.MimeTypes;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.UplinkConfiguration;
 import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.out.services.IGenericRemoter;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.MimeTypes;
 
 /**
  * Implements sync via HTTP to a remote system.

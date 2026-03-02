@@ -18,16 +18,17 @@ package com.arvatosystems.t9t.server.services;
 import java.io.Closeable;
 import java.util.function.Function;
 
-import com.arvatosystems.t9t.base.api.RequestParameters;
-import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.server.ExecutionSummary;
-import com.arvatosystems.t9t.server.InternalHeaderParameters;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
 import de.jpaw.util.ApplicationException;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+
+import com.arvatosystems.t9t.base.api.RequestParameters;
+import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.server.ExecutionSummary;
+import com.arvatosystems.t9t.server.InternalHeaderParameters;
 
 /**
  * API used by the central request dispatcher to log requests conditionally (based on settings of logLevel in the JWT).

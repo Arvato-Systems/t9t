@@ -17,11 +17,11 @@ package com.arvatosystems.t9t.zkui.components.datafields;
 
 import java.math.RoundingMode;
 
-import com.arvatosystems.t9t.zkui.inputelements.MilliUnitsBox;
-import com.arvatosystems.t9t.zkui.util.CurrencyUtil;
-
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.fixedpoint.types.MilliUnits;
+
+import com.arvatosystems.t9t.zkui.inputelements.MilliUnitsBox;
+import com.arvatosystems.t9t.zkui.util.CurrencyUtil;
 
 public class MilliUnitsDataField extends AbstractDataField<MilliUnitsBox, MilliUnits> {
     protected final MilliUnitsBox c = new MilliUnitsBox();

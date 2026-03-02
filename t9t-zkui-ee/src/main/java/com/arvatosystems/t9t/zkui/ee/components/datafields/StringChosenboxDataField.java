@@ -15,21 +15,24 @@
  */
 package com.arvatosystems.t9t.zkui.ee.components.datafields;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import jakarta.annotation.Nonnull;
+
+import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zkmax.zul.Chosenbox;
+import org.zkoss.zul.ListModelList;
+
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.zkui.components.IStringListModel;
 import com.arvatosystems.t9t.zkui.components.datafields.AbstractCoreDataField;
 import com.arvatosystems.t9t.zkui.components.datafields.DataFieldParameters;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
-import de.jpaw.dp.Jdp;
-import jakarta.annotation.Nonnull;
-import org.zkoss.zk.ui.event.InputEvent;
-import org.zkoss.zkmax.zul.Chosenbox;
-import org.zkoss.zul.ListModelList;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
 public class StringChosenboxDataField extends AbstractCoreDataField<Chosenbox, String> {
 

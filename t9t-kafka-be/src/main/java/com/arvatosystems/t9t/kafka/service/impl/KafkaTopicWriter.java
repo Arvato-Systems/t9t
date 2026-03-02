@@ -27,11 +27,11 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.kafka.service.IKafkaTopicWriter;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.util.ExceptionUtil;
+
+import com.arvatosystems.t9t.kafka.service.IKafkaTopicWriter;
 
 public class KafkaTopicWriter implements IKafkaTopicWriter {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaTopicWriter.class);

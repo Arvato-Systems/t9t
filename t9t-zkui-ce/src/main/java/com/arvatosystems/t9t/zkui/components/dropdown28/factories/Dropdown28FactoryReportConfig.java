@@ -15,15 +15,15 @@
  */
 package com.arvatosystems.t9t.zkui.components.dropdown28.factories;
 
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.search.LeanSearchRequest;
 import com.arvatosystems.t9t.rep.ReportConfigDTO;
 import com.arvatosystems.t9t.rep.ReportConfigKey;
 import com.arvatosystems.t9t.rep.ReportConfigRef;
 import com.arvatosystems.t9t.rep.request.LeanReportConfigSearchRequest;
 import com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28Db;
-
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
 
 @Named("reportConfigId")
 @Singleton

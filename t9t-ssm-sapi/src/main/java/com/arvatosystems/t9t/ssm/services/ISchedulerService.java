@@ -15,12 +15,13 @@
  */
 package com.arvatosystems.t9t.ssm.services;
 
-import com.arvatosystems.t9t.base.services.RequestContext;
-import com.arvatosystems.t9t.ssm.SchedulerSetupDTO;
-
-import de.jpaw.bonaparte.pojos.api.OperationType;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
+import de.jpaw.bonaparte.pojos.api.OperationType;
+
+import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.ssm.SchedulerSetupDTO;
 
 
 public interface ISchedulerService {

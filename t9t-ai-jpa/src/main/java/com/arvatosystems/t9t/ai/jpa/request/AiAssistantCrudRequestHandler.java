@@ -15,6 +15,11 @@
  */
 package com.arvatosystems.t9t.ai.jpa.request;
 
+import jakarta.annotation.Nonnull;
+
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.ai.AiAssistantDTO;
 import com.arvatosystems.t9t.ai.AiAssistantDescription;
 import com.arvatosystems.t9t.ai.AiAssistantRef;
@@ -31,10 +36,6 @@ import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandle
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.vdb.service.IVectorIO;
-
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.dp.Jdp;
-import jakarta.annotation.Nonnull;
 
 public class AiAssistantCrudRequestHandler
     extends AbstractCrudSurrogateKeyRequestHandler<AiAssistantRef, AiAssistantDTO, FullTrackingWithVersion, AiAssistantCrudRequest, AiAssistantEntity> {

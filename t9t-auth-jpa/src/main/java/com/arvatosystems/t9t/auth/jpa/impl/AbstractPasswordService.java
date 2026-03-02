@@ -18,17 +18,18 @@ package com.arvatosystems.t9t.auth.jpa.impl;
 import java.util.List;
 import java.util.Locale;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+
+import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
+
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.auth.jpa.entities.PasswordBlacklistEntity;
 import com.arvatosystems.t9t.auth.services.IAuthModuleCfgDtoResolver;
 import com.arvatosystems.t9t.base.T9tException;
-
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Provider;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
 
 public class AbstractPasswordService {
 

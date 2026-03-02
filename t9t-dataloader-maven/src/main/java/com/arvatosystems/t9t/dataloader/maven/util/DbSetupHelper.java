@@ -15,10 +15,7 @@
  */
 package com.arvatosystems.t9t.dataloader.maven.util;
 
-import com.arvatosystems.t9t.dataloader.maven.config.Database;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,8 +23,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.StringUtils;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
+import com.arvatosystems.t9t.dataloader.maven.config.Database;
 
 public class DbSetupHelper {
 

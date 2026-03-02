@@ -19,12 +19,13 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.UUID;
 
+import jakarta.annotation.Nonnull;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.io.DataSinkDTO;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import jakarta.annotation.Nonnull;
 
 /**
  * A processor for input records.

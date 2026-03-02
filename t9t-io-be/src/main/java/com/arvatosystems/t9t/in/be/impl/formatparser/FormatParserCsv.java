@@ -17,11 +17,6 @@ package com.arvatosystems.t9t.in.be.impl.formatparser;
 
 import java.util.Map;
 
-import com.arvatosystems.t9t.in.be.impl.AbstractTextFormatConverter;
-import com.arvatosystems.t9t.in.services.IInputSession;
-import com.arvatosystems.t9t.io.CSVTools;
-import com.arvatosystems.t9t.io.CsvConfigurationDTO;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
 import de.jpaw.bonaparte.core.CSVConfiguration;
@@ -29,6 +24,11 @@ import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.core.StringCSVParser;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
+
+import com.arvatosystems.t9t.in.be.impl.AbstractTextFormatConverter;
+import com.arvatosystems.t9t.in.services.IInputSession;
+import com.arvatosystems.t9t.io.CSVTools;
+import com.arvatosystems.t9t.io.CsvConfigurationDTO;
 
 /**
  * Common implementation which works for delimiter separated text files and also for fixed width files.

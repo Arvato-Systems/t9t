@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.monitoring.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.monitoring.request.SetJvmDebugFlagsRequest;
 import com.arvatosystems.t9t.monitoring.services.IDebugFlags;
-
-import de.jpaw.dp.Jdp;
 
 public class SetJvmDebugFlagsRequestHandler extends AbstractReadOnlyRequestHandler<SetJvmDebugFlagsRequest> {
     private final IDebugFlags debugFlags = Jdp.getRequired(IDebugFlags.class);

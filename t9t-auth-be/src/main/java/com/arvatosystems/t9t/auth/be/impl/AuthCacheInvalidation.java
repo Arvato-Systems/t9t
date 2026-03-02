@@ -15,12 +15,12 @@
  */
 package com.arvatosystems.t9t.auth.be.impl;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.services.IAuthCacheInvalidation;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class AuthCacheInvalidation implements IAuthCacheInvalidation {

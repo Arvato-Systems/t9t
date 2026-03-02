@@ -23,13 +23,13 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.services.IRefGenerator;
-import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
-
 import de.jpaw.dp.Any;
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.services.IRefGenerator;
+import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
 
 /**
  * This implementation serves as a stub in case no jpa module is available.

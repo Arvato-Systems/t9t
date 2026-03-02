@@ -24,6 +24,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
 import org.apache.camel.CamelContext;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
@@ -33,18 +34,17 @@ import org.apache.camel.component.file.GenericFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.services.SimplePatternEvaluator;
-import com.arvatosystems.t9t.io.CamelPostProcStrategy;
-import com.arvatosystems.t9t.io.DataSinkDTO;
-import com.arvatosystems.t9t.io.T9tIOException;
-import com.arvatosystems.t9t.out.services.IFileToCamelProducer;
-import com.google.common.collect.ImmutableMap;
-
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.util.ApplicationException;
+
+import com.arvatosystems.t9t.base.services.SimplePatternEvaluator;
+import com.arvatosystems.t9t.io.CamelPostProcStrategy;
+import com.arvatosystems.t9t.io.DataSinkDTO;
+import com.arvatosystems.t9t.io.T9tIOException;
+import com.arvatosystems.t9t.out.services.IFileToCamelProducer;
 
 /**
  *

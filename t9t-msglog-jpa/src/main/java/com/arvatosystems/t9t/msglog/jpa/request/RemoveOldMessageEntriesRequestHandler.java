@@ -17,8 +17,13 @@ package com.arvatosystems.t9t.msglog.jpa.request;
 
 import java.time.Instant;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -28,10 +33,6 @@ import com.arvatosystems.t9t.batch.StatisticsDTO;
 import com.arvatosystems.t9t.msglog.jpa.persistence.IMessageEntityResolver;
 import com.arvatosystems.t9t.msglog.request.RemoveOldMessageEntriesRequest;
 import com.arvatosystems.t9t.statistics.services.IStatisticsService;
-
-import de.jpaw.dp.Jdp;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
 
 public class RemoveOldMessageEntriesRequestHandler extends AbstractRequestHandler<RemoveOldMessageEntriesRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(RemoveOldMessageEntriesRequestHandler.class);

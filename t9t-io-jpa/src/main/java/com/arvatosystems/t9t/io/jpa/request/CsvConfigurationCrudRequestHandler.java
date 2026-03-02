@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.io.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
@@ -25,8 +27,6 @@ import com.arvatosystems.t9t.io.jpa.entities.CsvConfigurationEntity;
 import com.arvatosystems.t9t.io.jpa.mapping.ICsvConfigurationDTOMapper;
 import com.arvatosystems.t9t.io.jpa.persistence.ICsvConfigurationEntityResolver;
 import com.arvatosystems.t9t.io.request.CsvConfigurationCrudRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class CsvConfigurationCrudRequestHandler extends AbstractCrudSurrogateKeyRequestHandler<CsvConfigurationRef, CsvConfigurationDTO,
   FullTrackingWithVersion, CsvConfigurationCrudRequest, CsvConfigurationEntity> {

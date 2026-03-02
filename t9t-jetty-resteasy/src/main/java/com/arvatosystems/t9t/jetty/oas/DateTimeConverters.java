@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JavaType;
-
 import io.swagger.v3.core.converter.AnnotatedType;
 import io.swagger.v3.core.converter.ModelConverter;
 import io.swagger.v3.core.converter.ModelConverterContext;

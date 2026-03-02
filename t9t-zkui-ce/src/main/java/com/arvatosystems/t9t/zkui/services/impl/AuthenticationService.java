@@ -15,10 +15,12 @@
  */
 package com.arvatosystems.t9t.zkui.services.impl;
 
-import com.arvatosystems.t9t.zkui.session.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
 
 import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.base.T9tException;
@@ -28,10 +30,8 @@ import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 import com.arvatosystems.t9t.zkui.services.IAuthenticationService;
 import com.arvatosystems.t9t.zkui.services.IUserDAO;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.session.UserInfo;
 import com.arvatosystems.t9t.zkui.util.Constants;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class AuthenticationService implements IAuthenticationService {

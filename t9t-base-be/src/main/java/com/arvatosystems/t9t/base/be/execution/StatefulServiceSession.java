@@ -21,6 +21,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Dependent;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.IStatefulServiceSession;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
@@ -31,9 +34,6 @@ import com.arvatosystems.t9t.base.types.AuthenticationParameters;
 import com.arvatosystems.t9t.base.types.SessionParameters;
 import com.arvatosystems.t9t.server.services.IAuthenticate;
 import com.arvatosystems.t9t.server.services.IRequestProcessor;
-
-import de.jpaw.dp.Dependent;
-import de.jpaw.dp.Jdp;
 
 /**
  * This class implements a stateful session. It connects to a stateless backend.

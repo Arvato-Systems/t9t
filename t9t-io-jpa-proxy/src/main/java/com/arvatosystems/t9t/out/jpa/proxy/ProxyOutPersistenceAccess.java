@@ -18,6 +18,12 @@ package com.arvatosystems.t9t.out.jpa.proxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
+import de.jpaw.dp.Singleton;
+import de.jpaw.dp.Specializes;
+import de.jpaw.util.ApplicationException;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.be.impl.SimpleCallOutExecutor;
@@ -29,12 +35,6 @@ import com.arvatosystems.t9t.io.OutboundMessageDTO;
 import com.arvatosystems.t9t.io.SinkDTO;
 import com.arvatosystems.t9t.io.request.StoreSinkRequest;
 import com.arvatosystems.t9t.out.jpa.impl.OutPersistenceAccess;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Provider;
-import de.jpaw.dp.Singleton;
-import de.jpaw.dp.Specializes;
-import de.jpaw.util.ApplicationException;
 
 @Specializes
 @Singleton

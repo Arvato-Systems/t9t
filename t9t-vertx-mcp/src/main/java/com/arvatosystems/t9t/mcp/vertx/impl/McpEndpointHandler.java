@@ -18,9 +18,19 @@ package com.arvatosystems.t9t.mcp.vertx.impl;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.RequestBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.ai.T9tAiException;
 import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
@@ -45,15 +55,6 @@ import com.arvatosystems.t9t.base.auth.AuthenticationInfo;
 import com.arvatosystems.t9t.base.services.T9tInternalConstants;
 import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.arvatosystems.t9t.server.services.IRequestProcessor;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.dp.Jdp;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.RequestBody;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 
 public class McpEndpointHandler {

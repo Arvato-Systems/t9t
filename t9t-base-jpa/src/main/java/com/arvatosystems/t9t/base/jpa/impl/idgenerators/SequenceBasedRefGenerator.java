@@ -20,8 +20,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.LongSupplier;
 
+import jakarta.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
 
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.services.IRefGenerator;
@@ -29,10 +34,6 @@ import com.arvatosystems.t9t.base.services.ISingleRefGenerator;
 import com.arvatosystems.t9t.cfg.be.DatabaseBrandType;
 import com.arvatosystems.t9t.cfg.be.KeyPrefetchConfiguration;
 import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import jakarta.annotation.Nonnull;
 
 /**
  * Provides generators for technical Ids (database table primary keys). Standard JPA auto generated keys cannot be used for several reasons:

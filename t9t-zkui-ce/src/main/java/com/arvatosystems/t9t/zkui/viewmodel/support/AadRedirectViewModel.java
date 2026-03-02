@@ -19,11 +19,16 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
+import com.microsoft.aad.msal4j.AuthorizationCodeParameters;
+import com.microsoft.aad.msal4j.ConfidentialClientApplication;
+import com.microsoft.aad.msal4j.IAuthenticationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
+
+import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.zkui.azure.ad.AadAuthUtil;
 import com.arvatosystems.t9t.zkui.azure.ad.AadConstants;
@@ -31,11 +36,6 @@ import com.arvatosystems.t9t.zkui.azure.ad.IdentityContextData;
 import com.arvatosystems.t9t.zkui.services.IAuthenticationService;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.Constants;
-import com.microsoft.aad.msal4j.AuthorizationCodeParameters;
-import com.microsoft.aad.msal4j.ConfidentialClientApplication;
-import com.microsoft.aad.msal4j.IAuthenticationResult;
-
-import de.jpaw.dp.Jdp;
 
 public class AadRedirectViewModel {
 

@@ -44,6 +44,12 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+import de.jpaw.dp.Startup;
+import de.jpaw.dp.StartupShutdown;
+import de.jpaw.util.ExceptionUtil;
+
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tUtil;
@@ -57,12 +63,6 @@ import com.arvatosystems.t9t.io.CommunicationTargetChannelType;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.event.DataSinkChangedEvent;
 import com.arvatosystems.t9t.out.services.IOutPersistenceAccess;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import de.jpaw.dp.Startup;
-import de.jpaw.dp.StartupShutdown;
-import de.jpaw.util.ExceptionUtil;
 
 @Startup(95001)
 @Singleton

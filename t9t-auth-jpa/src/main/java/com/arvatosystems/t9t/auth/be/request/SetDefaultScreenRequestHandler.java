@@ -18,14 +18,14 @@ package com.arvatosystems.t9t.auth.be.request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.jpa.entities.UserEntity;
 import com.arvatosystems.t9t.auth.jpa.persistence.IUserEntityResolver;
 import com.arvatosystems.t9t.auth.request.SetDefaultScreenRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
 
 public class SetDefaultScreenRequestHandler extends AbstractRequestHandler<SetDefaultScreenRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SetDefaultScreenRequestHandler.class);

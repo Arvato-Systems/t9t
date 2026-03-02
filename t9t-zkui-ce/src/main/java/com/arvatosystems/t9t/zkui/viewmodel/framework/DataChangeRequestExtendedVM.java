@@ -15,6 +15,32 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel.framework;
 
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
+
+import jakarta.annotation.Nonnull;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zkoss.bind.annotation.AfterCompose;
+import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.select.Selectors;
+import org.zkoss.zul.Messagebox;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.JsonComposerPrettyPrint;
+import de.jpaw.bonaparte.pojos.api.DataWithTracking;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.crud.CrudAnyKeyRequest;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
@@ -35,29 +61,6 @@ import com.arvatosystems.t9t.zkui.services.IChangeWorkFlowConfigDAO;
 import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 import com.arvatosystems.t9t.zkui.util.JumpTool;
 import com.arvatosystems.t9t.zkui.viewmodel.ViewOnlyVM;
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.JsonComposerPrettyPrint;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-import de.jpaw.dp.Jdp;
-import jakarta.annotation.Nonnull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zkoss.bind.annotation.AfterCompose;
-import org.zkoss.bind.annotation.Command;
-import org.zkoss.bind.annotation.Init;
-import org.zkoss.bind.annotation.NotifyChange;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.select.Selectors;
-import org.zkoss.zul.Messagebox;
-
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
 
 @Init(superclass = true)
 public class DataChangeRequestExtendedVM extends ViewOnlyVM<DataChangeRequestExtendedDTO, FullTrackingWithVersion> {

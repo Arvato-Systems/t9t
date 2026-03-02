@@ -15,15 +15,15 @@
  */
 package com.arvatosystems.t9t.zkui.converters.grid;
 
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-import com.arvatosystems.t9t.zkui.util.Constants;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.enums.BonaEnum;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.Constants;
 
 @Singleton
 @Named("enum")

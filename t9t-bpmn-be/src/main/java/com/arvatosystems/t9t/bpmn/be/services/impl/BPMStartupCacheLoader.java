@@ -18,11 +18,11 @@ package com.arvatosystems.t9t.bpmn.be.services.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.bpmn.services.IWorkflowStepCache;
-
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
+
+import com.arvatosystems.t9t.bpmn.services.IWorkflowStepCache;
 
 @Startup(50080)
 public class BPMStartupCacheLoader implements StartupOnly {

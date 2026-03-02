@@ -15,12 +15,13 @@
  */
 package com.arvatosystems.t9t.authc.be.api;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.services.IUserResolver;
 import com.arvatosystems.t9t.authc.api.UserData;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
-import de.jpaw.dp.Jdp;
 
 public abstract class AbstractGetUserDataRequestHandler<T extends RequestParameters> extends AbstractReadOnlyRequestHandler<T> {
     protected final IUserResolver resolver = Jdp.getRequired(IUserResolver.class);

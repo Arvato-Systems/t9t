@@ -18,10 +18,11 @@ package com.arvatosystems.t9t.in.be.impl;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.arvatosystems.t9t.io.services.IIOHook;
+import jakarta.annotation.Nonnull;
 
 import de.jpaw.dp.Jdp;
-import jakarta.annotation.Nonnull;
+
+import com.arvatosystems.t9t.io.services.IIOHook;
 
 /**
  * This class implements buffered reading and input decompression.

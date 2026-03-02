@@ -17,14 +17,14 @@ package com.arvatosystems.t9t.authz.be.api;
 
 import java.util.List;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
 import com.arvatosystems.t9t.authc.api.UserData;
 import com.arvatosystems.t9t.authz.api.QueryUsersWithPermissionRequest;
 import com.arvatosystems.t9t.authz.api.QueryUsersWithPermissionResponse;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
 
 public class QueryUsersWithPermissionRequestHandler extends AbstractReadOnlyRequestHandler<QueryUsersWithPermissionRequest> {
 

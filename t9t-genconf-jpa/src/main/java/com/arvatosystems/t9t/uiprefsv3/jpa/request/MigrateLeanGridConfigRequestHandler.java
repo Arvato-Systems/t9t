@@ -15,6 +15,14 @@
  */
 package com.arvatosystems.t9t.uiprefsv3.jpa.request;
 
+import java.util.List;
+
+import de.jpaw.bonaparte.core.JsonComposer;
+import de.jpaw.bonaparte.core.MapParser;
+import de.jpaw.bonaparte.core.StaticMeta;
+import de.jpaw.dp.Jdp;
+import de.jpaw.json.JsonParser;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -22,12 +30,6 @@ import com.arvatosystems.t9t.base.uiprefs.UILeanGridPreferences;
 import com.arvatosystems.t9t.uiprefsv3.jpa.entities.LeanGridConfigEntity;
 import com.arvatosystems.t9t.uiprefsv3.jpa.persistence.ILeanGridConfigEntityResolver;
 import com.arvatosystems.t9t.uiprefsv3.request.MigrateLeanGridConfigRequest;
-import de.jpaw.bonaparte.core.JsonComposer;
-import de.jpaw.bonaparte.core.MapParser;
-import de.jpaw.bonaparte.core.StaticMeta;
-import de.jpaw.dp.Jdp;
-import de.jpaw.json.JsonParser;
-import java.util.List;
 
 public class MigrateLeanGridConfigRequestHandler extends AbstractRequestHandler<MigrateLeanGridConfigRequest> {
 

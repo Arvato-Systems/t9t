@@ -15,10 +15,10 @@
  */
 package com.arvatosystems.t9t.base;
 
-import com.arvatosystems.t9t.base.api.RequestParameters;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
+import com.arvatosystems.t9t.base.api.RequestParameters;
 
 @FunctionalInterface
 public interface IInputQueuePartitioner {

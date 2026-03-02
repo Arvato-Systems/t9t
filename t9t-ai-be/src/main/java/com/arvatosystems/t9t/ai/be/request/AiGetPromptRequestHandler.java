@@ -15,6 +15,18 @@
  */
 package com.arvatosystems.t9t.ai.be.request;
 
+import java.util.Map;
+
+import jakarta.annotation.Nonnull;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.pojos.api.AsciiFilter;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.ai.AiPromptDTO;
 import com.arvatosystems.t9t.ai.AiPromptParameter;
 import com.arvatosystems.t9t.ai.T9tAiException;
@@ -29,15 +41,6 @@ import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.server.services.IAuthorize;
-import de.jpaw.bonaparte.pojos.api.AsciiFilter;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-import de.jpaw.dp.Jdp;
-import jakarta.annotation.Nonnull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Map;
 
 public class AiGetPromptRequestHandler extends AbstractReadOnlyRequestHandler<AiGetPromptRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AiGetPromptRequestHandler.class);

@@ -26,33 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.output.OutputSessionParameters;
-import com.arvatosystems.t9t.base.search.SinkCreatedResponse;
-import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
-import com.arvatosystems.t9t.base.services.IFileUtil;
-import com.arvatosystems.t9t.base.services.IOutputSession;
-import com.arvatosystems.t9t.base.services.RequestContext;
-import com.arvatosystems.t9t.doc.T9tDocTools;
-import com.arvatosystems.t9t.rep.ReportConfigDTO;
-import com.arvatosystems.t9t.rep.ReportParamsDTO;
-import com.arvatosystems.t9t.rep.T9tRepException;
-import com.arvatosystems.t9t.rep.be.IJasperReportFiller;
-import com.arvatosystems.t9t.rep.request.RunReportRequest;
-import com.arvatosystems.t9t.rep.services.IJasperParameterEnricher;
-import com.arvatosystems.t9t.rep.services.IRepPersistenceAccess;
-import com.arvatosystems.t9t.rep.services.IReportMailNotifier;
-import com.arvatosystems.t9t.rep.services.impl.T9tJasperParameterEnricher;
 import com.google.common.base.Strings;
-
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
-import de.jpaw.bonaparte.pojos.api.media.MediaXType;
-import de.jpaw.bonaparte.util.FreezeTools;
-import de.jpaw.dp.Jdp;
 import net.sf.jasperreports.crosstabs.JRCrosstab;
 import net.sf.jasperreports.engine.JRBreak;
 import net.sf.jasperreports.engine.JRComponentElement;
@@ -73,8 +47,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
-import net.sf.jasperreports.pdf.JRPdfExporter;
-import net.sf.jasperreports.poi.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.util.JRElementsVisitor;
 import net.sf.jasperreports.engine.util.JRLoader;
@@ -85,6 +57,34 @@ import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
+import net.sf.jasperreports.pdf.JRPdfExporter;
+import net.sf.jasperreports.poi.export.JRXlsExporter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.pojos.api.media.MediaType;
+import de.jpaw.bonaparte.pojos.api.media.MediaXType;
+import de.jpaw.bonaparte.util.FreezeTools;
+import de.jpaw.dp.Jdp;
+
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.output.OutputSessionParameters;
+import com.arvatosystems.t9t.base.search.SinkCreatedResponse;
+import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
+import com.arvatosystems.t9t.base.services.IFileUtil;
+import com.arvatosystems.t9t.base.services.IOutputSession;
+import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.doc.T9tDocTools;
+import com.arvatosystems.t9t.rep.ReportConfigDTO;
+import com.arvatosystems.t9t.rep.ReportParamsDTO;
+import com.arvatosystems.t9t.rep.T9tRepException;
+import com.arvatosystems.t9t.rep.be.IJasperReportFiller;
+import com.arvatosystems.t9t.rep.request.RunReportRequest;
+import com.arvatosystems.t9t.rep.services.IJasperParameterEnricher;
+import com.arvatosystems.t9t.rep.services.IRepPersistenceAccess;
+import com.arvatosystems.t9t.rep.services.IReportMailNotifier;
+import com.arvatosystems.t9t.rep.services.impl.T9tJasperParameterEnricher;
 
 /** No new functionality, just an extension in order to avoid conflicts of CDI. */
 public class RunReportRequestHandler extends AbstractRequestHandler<RunReportRequest> {

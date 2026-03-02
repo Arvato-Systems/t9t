@@ -15,16 +15,16 @@
  */
 package com.arvatosystems.t9t.core.be.request;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.api.RequestParameters;
-import com.arvatosystems.t9t.core.CannedRequestDTO;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.bonaparte.core.MapComposer;
 import de.jpaw.bonaparte.core.MapParser;
 import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.api.RequestParameters;
+import com.arvatosystems.t9t.core.CannedRequestDTO;
 
 /**
  * The CannedRequestParameterEvaluator normalizes the parameters in the CannedRequestDTO.

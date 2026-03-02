@@ -15,10 +15,10 @@
  */
 package com.arvatosystems.t9t.base;
 
-import com.arvatosystems.t9t.base.api.ServiceRequest;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
+import com.arvatosystems.t9t.base.api.ServiceRequest;
 
 /**
  * Interface to use for writing request messages to t9t server nodes. (The payloads are of type <code>ServiceRequest</code>.)

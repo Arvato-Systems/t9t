@@ -17,6 +17,10 @@ package com.arvatosystems.t9t.msglog.jpa.request;
 
 import java.util.List;
 
+import jakarta.persistence.TypedQuery;
+
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -24,9 +28,6 @@ import com.arvatosystems.t9t.msglog.jpa.entities.MessageEntity;
 import com.arvatosystems.t9t.msglog.jpa.persistence.IMessageEntityResolver;
 import com.arvatosystems.t9t.msglog.request.QueryRequestResultRequest;
 import com.arvatosystems.t9t.msglog.request.QueryRequestResultResponse;
-
-import de.jpaw.dp.Jdp;
-import jakarta.persistence.TypedQuery;
 
 public class QueryRequestResultRequestHandler extends AbstractReadOnlyRequestHandler<QueryRequestResultRequest> {
     private final IMessageEntityResolver resolver = Jdp.getRequired(IMessageEntityResolver.class);

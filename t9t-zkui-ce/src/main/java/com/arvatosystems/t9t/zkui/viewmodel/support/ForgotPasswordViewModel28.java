@@ -27,6 +27,9 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Messagebox;
 
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.authc.api.ResetPasswordRequest;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
@@ -35,9 +38,6 @@ import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.Constants;
 import com.arvatosystems.t9t.zkui.util.UiConfigurationProvider;
 import com.arvatosystems.t9t.zkui.viewmodel.AbstractViewOnlyVM;
-
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.dp.Jdp;
 
 public class ForgotPasswordViewModel28 extends AbstractViewOnlyVM<ResetPasswordRequest, TrackingBase> {
 

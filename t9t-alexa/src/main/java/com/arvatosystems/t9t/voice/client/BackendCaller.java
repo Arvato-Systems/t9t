@@ -18,8 +18,13 @@ package com.arvatosystems.t9t.voice.client;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
 
 import com.arvatosystems.t9t.base.IRemoteConnection;
 import com.arvatosystems.t9t.base.T9tConstants;
@@ -33,11 +38,6 @@ import com.arvatosystems.t9t.base.types.SessionParameters;
 import com.arvatosystems.t9t.voice.VoiceProvider;
 import com.arvatosystems.t9t.voice.request.ProvideSessionRequest;
 import com.arvatosystems.t9t.voice.request.ProvideSessionResponse;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class BackendCaller implements IBackendCaller {

@@ -21,6 +21,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
@@ -31,8 +33,6 @@ import com.arvatosystems.t9t.bpmn.request.TriggerSingleProcessNowRequest;
 import com.arvatosystems.t9t.bpmn.services.IBpmnPersistenceAccess;
 import com.arvatosystems.t9t.statistics.services.IAutonomousRunner;
 import com.arvatosystems.t9t.statistics.services.IStatisticsService;
-
-import de.jpaw.dp.Jdp;
 
 public class RestartSpecificActiveProcessesRequestHandler extends AbstractRequestHandler<RestartSpecificActiveProcessesRequest> {
     private static final Logger LOGGER  = LoggerFactory.getLogger(RestartSpecificActiveProcessesRequestHandler.class);

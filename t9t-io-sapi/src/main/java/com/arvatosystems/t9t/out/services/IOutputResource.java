@@ -18,12 +18,13 @@ package com.arvatosystems.t9t.out.services;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
+import jakarta.annotation.Nullable;
+
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.io.DataSinkDTO;
-
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import jakarta.annotation.Nullable;
 
 /**
  * Represents an output destination. An output destination can be a file, a JMS queue, a socket server etc.

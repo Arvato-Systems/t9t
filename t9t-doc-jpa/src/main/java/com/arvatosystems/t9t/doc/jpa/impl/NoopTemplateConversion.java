@@ -15,10 +15,10 @@
  */
 package com.arvatosystems.t9t.doc.jpa.impl;
 
-import com.arvatosystems.t9t.doc.services.ITemplateConversion;
-
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.doc.services.ITemplateConversion;
 
 @Singleton
 @Fallback

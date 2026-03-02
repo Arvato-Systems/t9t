@@ -18,18 +18,18 @@ package com.arvatosystems.t9t.out.be.jackson;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.dp.Dependent;
+import de.jpaw.dp.Named;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.arvatosystems.t9t.out.be.impl.formatgenerator.AbstractFormatGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.dp.Dependent;
-import de.jpaw.dp.Named;
 
 /**
  * Implementation of {@linkplain ITextDataGenerator} which generates output data in JSON format.

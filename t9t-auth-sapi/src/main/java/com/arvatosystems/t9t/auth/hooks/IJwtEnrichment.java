@@ -18,11 +18,11 @@ package com.arvatosystems.t9t.auth.hooks;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.TenantDTO;
 import com.arvatosystems.t9t.auth.UserDTO;
-
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 
 /** Hook for enrichment of a Jwt during logins.
  * A prepopulated modifiable JWT is passed, just before it is signed (session ID / Ref and expiration timestamps will still be missing).

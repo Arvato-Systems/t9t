@@ -18,12 +18,13 @@ package com.arvatosystems.t9t.base.be.request;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.jpaw.bonaparte.util.FreezeTools;
+
 import com.arvatosystems.t9t.base.request.QueryConfigRequest;
 import com.arvatosystems.t9t.base.request.QueryConfigResponse;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
-import de.jpaw.bonaparte.util.FreezeTools;
 
 /**
  * A request handler to query backend configuration values.

@@ -21,12 +21,12 @@ import java.util.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.IKafkaRequestTransmitter;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.services.IClusterEnvironment;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 /**
  * Simple form of a cluster manager, which does not attempt to group partitions for the same tenant on the same node.

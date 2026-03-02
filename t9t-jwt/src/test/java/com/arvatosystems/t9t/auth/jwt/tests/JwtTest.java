@@ -17,13 +17,14 @@ package com.arvatosystems.t9t.auth.jwt.tests;
 
 
 import java.time.Instant;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+
 import com.arvatosystems.t9t.auth.jwt.IJWT;
 import com.arvatosystems.t9t.auth.jwt.JWT;
-
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 
 public class JwtTest {
 

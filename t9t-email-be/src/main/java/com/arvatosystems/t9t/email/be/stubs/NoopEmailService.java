@@ -15,18 +15,18 @@
  */
 package com.arvatosystems.t9t.email.be.stubs;
 
-import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.email.EmailModuleCfgDTO;
-import com.arvatosystems.t9t.email.api.EmailMessage;
-import com.arvatosystems.t9t.email.services.IEmailSender;
-
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
-
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.email.EmailModuleCfgDTO;
+import com.arvatosystems.t9t.email.api.EmailMessage;
+import com.arvatosystems.t9t.email.services.IEmailSender;
 
 /**
  * Implementation of IEmailSender using a /dev/null (stub).

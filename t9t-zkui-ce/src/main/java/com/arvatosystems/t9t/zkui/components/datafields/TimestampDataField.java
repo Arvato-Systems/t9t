@@ -19,10 +19,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 
-import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 import org.zkoss.zul.Datebox;
 
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 
 public class TimestampDataField extends AbstractDataField<Datebox, LocalDateTime> {
     protected final Datebox c = new Datebox();

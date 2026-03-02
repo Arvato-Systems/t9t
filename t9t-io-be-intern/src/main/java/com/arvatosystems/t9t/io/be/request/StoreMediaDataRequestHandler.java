@@ -21,6 +21,9 @@ import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.IUploadChecker;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -30,9 +33,6 @@ import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IOutputSession;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.request.StoreMediaDataRequest;
-
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.dp.Jdp;
 
 /**
  * An example implementation of a file export service request. For simplicity, we inherit from an existing method which provides the required data. Rev. 2,

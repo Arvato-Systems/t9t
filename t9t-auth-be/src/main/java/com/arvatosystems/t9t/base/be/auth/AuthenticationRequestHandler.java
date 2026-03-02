@@ -21,6 +21,11 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.dp.Jdp;
+import de.jpaw.util.ApplicationException;
+
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.AuthenticationIssuerType;
@@ -52,11 +57,6 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.base.types.AuthenticationParameters;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.LdapConfiguration;
-
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.dp.Jdp;
-import de.jpaw.util.ApplicationException;
 
 public class AuthenticationRequestHandler extends AbstractRequestHandler<AuthenticationRequest> {
 

@@ -15,14 +15,15 @@
  */
 package com.arvatosystems.t9t.rest.services;
 
-import com.arvatosystems.t9t.base.StringTrimmer;
-import com.arvatosystems.t9t.base.T9tException;
+import jakarta.ws.rs.core.HttpHeaders;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.DataConverter;
 import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
-import jakarta.ws.rs.core.HttpHeaders;
+
+import com.arvatosystems.t9t.base.StringTrimmer;
+import com.arvatosystems.t9t.base.T9tException;
 
 /** Marker interface to allow collection of REST end points. */
 public interface IT9tRestEndpoint {

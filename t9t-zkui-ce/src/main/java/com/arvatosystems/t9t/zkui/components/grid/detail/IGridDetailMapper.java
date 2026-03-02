@@ -17,8 +17,9 @@ package com.arvatosystems.t9t.zkui.components.grid.detail;
 
 import java.util.List;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 import jakarta.annotation.Nonnull;
+
+import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 
 public interface IGridDetailMapper<MAIN extends DataWithTracking<?, ?>, DETAIL extends DataWithTracking<?, ?>> {
 

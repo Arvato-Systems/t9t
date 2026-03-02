@@ -18,21 +18,20 @@ package com.arvatosystems.t9t.base.jpa.jta.impl;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PersistenceContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
-import com.arvatosystems.t9t.init.InitContainers;
 
 import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
+import com.arvatosystems.t9t.init.InitContainers;
 
 @Startup(12000)
 public class InitJpa implements StartupOnly {

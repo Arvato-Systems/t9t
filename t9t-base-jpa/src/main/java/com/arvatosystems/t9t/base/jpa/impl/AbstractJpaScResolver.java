@@ -22,11 +22,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
 
-import com.arvatosystems.t9t.base.jpa.IEntityMapper;
-import com.arvatosystems.t9t.base.jpa.IResolverSuperclassKey;
-import com.arvatosystems.t9t.base.search.DummySearchCriteria;
-import com.arvatosystems.t9t.base.search.SearchCriteria;
-
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 import de.jpaw.bonaparte.pojos.api.AbstractRef;
@@ -37,6 +32,11 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.refs.PersistenceException;
 import de.jpaw.bonaparte.refsc.RefResolver;
 import de.jpaw.dp.Jdp;
+
+import com.arvatosystems.t9t.base.jpa.IEntityMapper;
+import com.arvatosystems.t9t.base.jpa.IResolverSuperclassKey;
+import com.arvatosystems.t9t.base.search.DummySearchCriteria;
+import com.arvatosystems.t9t.base.search.SearchCriteria;
 
 public abstract class AbstractJpaScResolver<
   REF extends AbstractRef,

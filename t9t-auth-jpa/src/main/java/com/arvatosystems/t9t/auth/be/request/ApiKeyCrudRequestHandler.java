@@ -15,6 +15,10 @@
  */
 package com.arvatosystems.t9t.auth.be.request;
 
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.ApiKeyRef;
 import com.arvatosystems.t9t.auth.T9tAuthTools;
@@ -27,10 +31,6 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.IAuthCacheInvalidation;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.dp.Jdp;
 
 public class ApiKeyCrudRequestHandler extends
   AbstractCrudSurrogateKeyRequestHandler<ApiKeyRef, ApiKeyDTO, FullTrackingWithVersion, ApiKeyCrudRequest, ApiKeyEntity> {

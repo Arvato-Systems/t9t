@@ -15,6 +15,10 @@
  */
 package com.arvatosystems.t9t.genconf.jpa.request;
 
+import java.util.List;
+
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -23,10 +27,6 @@ import com.arvatosystems.t9t.genconf.jpa.mapping.IConfigDTOMapper;
 import com.arvatosystems.t9t.genconf.jpa.persistence.IConfigEntityResolver;
 import com.arvatosystems.t9t.genconf.request.ReadConfigMultipleEntriesRequest;
 import com.arvatosystems.t9t.genconf.request.ReadConfigMultipleEntriesResponse;
-
-import de.jpaw.dp.Jdp;
-
-import java.util.List;
 
 public class ReadConfigMultipleEntriesRequestHandler extends AbstractRequestHandler<ReadConfigMultipleEntriesRequest> {
     private final IConfigEntityResolver resolver = Jdp.getRequired(IConfigEntityResolver.class);

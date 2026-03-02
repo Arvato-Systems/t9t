@@ -33,16 +33,16 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Window;
 
+import de.jpaw.bonaparte.pojos.ui.UIFilter;
+import de.jpaw.bonaparte.pojos.ui.UIFilterType;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.IGridConfigContainer;
 import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 import com.arvatosystems.t9t.zkui.components.grid.ILeanGridConfigResolver;
 import com.arvatosystems.t9t.zkui.components.grid.LeanGridConfigResolver;
 import com.arvatosystems.t9t.zkui.services.ISearchFilterConfigCreator;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
-import de.jpaw.bonaparte.pojos.ui.UIFilter;
-import de.jpaw.bonaparte.pojos.ui.UIFilterType;
-import de.jpaw.dp.Jdp;
 
 public class EditSearchFiltersViewModel {
     private int isSelectedCounter = 0;

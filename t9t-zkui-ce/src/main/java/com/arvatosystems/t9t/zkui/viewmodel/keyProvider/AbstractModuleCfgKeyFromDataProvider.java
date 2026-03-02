@@ -15,15 +15,15 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel.keyProvider;
 
-import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.base.moduleCfg.ModuleConfigDTO;
-import com.arvatosystems.t9t.zkui.IKeyFromDataProvider;
-
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.moduleCfg.ModuleConfigDTO;
+import com.arvatosystems.t9t.zkui.IKeyFromDataProvider;
 
 public abstract class AbstractModuleCfgKeyFromDataProvider<T extends ModuleConfigDTO> implements IKeyFromDataProvider<T, TrackingBase> {
 

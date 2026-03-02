@@ -17,11 +17,11 @@ package com.arvatosystems.t9t.doc.services;
 
 import java.util.function.Function;
 
-import com.arvatosystems.t9t.base.types.Recipient;
-import com.arvatosystems.t9t.doc.api.DocumentSelector;
-
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;
+
+import com.arvatosystems.t9t.base.types.Recipient;
+import com.arvatosystems.t9t.doc.api.DocumentSelector;
 
 public interface IDocUnknownDistributor {
     void transmit(

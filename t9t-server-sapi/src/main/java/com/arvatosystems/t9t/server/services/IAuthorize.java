@@ -17,12 +17,12 @@ package com.arvatosystems.t9t.server.services;
 
 import java.util.List;
 
-import com.arvatosystems.t9t.base.auth.PermissionEntry;
-import com.arvatosystems.t9t.base.auth.PermissionType;
-
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+
+import com.arvatosystems.t9t.base.auth.PermissionEntry;
+import com.arvatosystems.t9t.base.auth.PermissionType;
 
 public interface IAuthorize {
     Permissionset NO_PERMISSIONS = new Permissionset();

@@ -22,9 +22,10 @@ import java.util.TreeSet;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import de.jpaw.util.CharTestsASCII;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
+import de.jpaw.util.CharTestsASCII;
 
 /**
  * A utility class which converts between strings which contain comma separated values and sorted sets.

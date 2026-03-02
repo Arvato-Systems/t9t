@@ -25,10 +25,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.arvatosystems.t9t.base.T9tUtil;
-import com.arvatosystems.t9t.hs.configurate.be.core.service.EntityConfigCache;
-import de.jpaw.bonaparte.util.FreezeTools;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import org.hibernate.search.engine.backend.types.Sortable;
 import org.hibernate.search.mapper.orm.mapping.HibernateOrmMappingConfigurationContext;
 import org.hibernate.search.mapper.orm.mapping.HibernateOrmSearchMappingConfigurer;
@@ -39,14 +38,16 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.TypeMapp
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.util.FreezeTools;
+
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.HibernateSearchConfiguration;
+import com.arvatosystems.t9t.hs.configurate.be.core.service.EntityConfigCache;
+import com.arvatosystems.t9t.hs.configurate.be.core.util.ConfigurationLoader;
 import com.arvatosystems.t9t.hs.configurate.model.EmbeddedIndexEntityConfig;
 import com.arvatosystems.t9t.hs.configurate.model.EntityConfig;
 import com.arvatosystems.t9t.hs.configurate.model.FieldConfig;
-import com.arvatosystems.t9t.hs.configurate.be.core.util.ConfigurationLoader;
-
-import jakarta.annotation.Nullable;
 
 public class EntityConfigurer implements HibernateOrmSearchMappingConfigurer {
     private static final Logger LOGGER = LoggerFactory.getLogger(EntityConfigurer.class);

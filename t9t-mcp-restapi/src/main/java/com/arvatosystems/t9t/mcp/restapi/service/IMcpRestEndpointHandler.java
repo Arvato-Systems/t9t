@@ -15,10 +15,11 @@
  */
 package com.arvatosystems.t9t.mcp.restapi.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.annotation.Nonnull;
 import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.core.HttpHeaders;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 public interface IMcpRestEndpointHandler {
 

@@ -31,8 +31,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper.Builder;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.common.base.Charsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.api.media.MediaTypeInfo;
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.MimeTypes;
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.Multiplicity;
+import de.jpaw.bonaparte.util.FreezeTools;
+import de.jpaw.bonaparte.util.ToStringHelper;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ExceptionUtil;
 
 import com.arvatosystems.t9t.ai.AiChatLogDTO;
 import com.arvatosystems.t9t.ai.AiConversationRef;
@@ -97,31 +123,6 @@ import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.UplinkConfiguration;
 import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.arvatosystems.t9t.jackson.JpawModule;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper.Builder;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.google.common.base.Charsets;
-
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.MimeTypes;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
-import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.meta.Multiplicity;
-import de.jpaw.bonaparte.util.FreezeTools;
-import de.jpaw.bonaparte.util.ToStringHelper;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ExceptionUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 @Singleton
 public class OpenAIClient implements IOpenAIClient {

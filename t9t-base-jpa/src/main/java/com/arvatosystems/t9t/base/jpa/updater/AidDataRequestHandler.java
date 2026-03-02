@@ -17,13 +17,13 @@ package com.arvatosystems.t9t.base.jpa.updater;
 
 import java.util.EnumSet;
 
+import de.jpaw.bonaparte.pojos.api.OperationType;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.crud.CrudAnyKeyRequest;
 import com.arvatosystems.t9t.base.crud.CrudAnyKeyResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.base.updater.AidDataRequest;
-
-import de.jpaw.bonaparte.pojos.api.OperationType;
 
 public class AidDataRequestHandler extends AbstractDataRequestHandler<AidDataRequest> {
     private static final EnumSet<OperationType> ALLOWED_TYPES = EnumSet.of(

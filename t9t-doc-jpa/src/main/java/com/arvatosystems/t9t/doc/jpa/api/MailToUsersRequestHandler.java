@@ -22,6 +22,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.authc.api.GetMultipleUserDataResponse;
 import com.arvatosystems.t9t.authc.api.GetUserDataByUserIdsRequest;
 import com.arvatosystems.t9t.authc.api.UserData;
@@ -37,8 +39,6 @@ import com.arvatosystems.t9t.doc.api.NewDocumentRequest;
 import com.arvatosystems.t9t.doc.jpa.entities.MailingGroupEntity;
 import com.arvatosystems.t9t.doc.jpa.persistence.IMailingGroupEntityResolver;
 import com.arvatosystems.t9t.email.api.RecipientEmail;
-
-import de.jpaw.dp.Jdp;
 
 public class MailToUsersRequestHandler extends AbstractRequestHandler<MailToUsersRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(MailToUsersRequestHandler.class);

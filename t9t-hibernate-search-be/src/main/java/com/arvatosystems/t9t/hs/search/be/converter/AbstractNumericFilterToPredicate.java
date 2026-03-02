@@ -1,13 +1,16 @@
 package com.arvatosystems.t9t.hs.search.be.converter;
 
-import com.arvatosystems.t9t.base.T9tUtil;
-import de.jpaw.bonaparte.pojos.api.FieldFilter;
+import java.util.List;
+
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.SearchPredicateFactory;
 
-import java.util.List;
+import de.jpaw.bonaparte.pojos.api.FieldFilter;
+
+import com.arvatosystems.t9t.base.T9tUtil;
 
 public abstract class AbstractNumericFilterToPredicate<FILTER extends FieldFilter, FIELD_TYPE extends Number> implements ISearchFilterToPredicate<FILTER> {
 

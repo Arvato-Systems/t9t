@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.io.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.output.ExportStatusEnum;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
@@ -24,8 +26,6 @@ import com.arvatosystems.t9t.io.AsyncMessageRef;
 import com.arvatosystems.t9t.io.jpa.entities.AsyncMessageEntity;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncMessageEntityResolver;
 import com.arvatosystems.t9t.io.request.UpdateAsyncMessageStatusRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class UpdateAsyncMessageStatusRequestHandler extends AbstractRequestHandler<UpdateAsyncMessageStatusRequest> {
     private final IAsyncMessageEntityResolver messageResolver   = Jdp.getRequired(IAsyncMessageEntityResolver.class);

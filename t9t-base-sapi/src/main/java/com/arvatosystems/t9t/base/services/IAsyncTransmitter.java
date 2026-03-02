@@ -15,9 +15,10 @@
  */
 package com.arvatosystems.t9t.base.services;
 
-import de.jpaw.bonaparte.core.BonaPortable;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
+import de.jpaw.bonaparte.core.BonaPortable;
 
 /**
  * This is the application API Interface to send a message asynchronously.

@@ -15,22 +15,9 @@
  */
 package com.arvatosystems.t9t.email.be.smtp.impl;
 
-import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.email.EmailModuleCfgDTO;
-import com.arvatosystems.t9t.email.T9tEmailException;
-import com.arvatosystems.t9t.email.api.EmailMessage;
-import com.arvatosystems.t9t.email.api.RecipientEmail;
-import com.arvatosystems.t9t.email.services.IEmailSender;
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.api.media.MediaTypes;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
 import java.util.Properties;
 import java.util.UUID;
+
 import jakarta.activation.DataHandler;
 import jakarta.mail.Address;
 import jakarta.mail.Authenticator;
@@ -46,8 +33,25 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.api.media.MediaTypeInfo;
+import de.jpaw.bonaparte.api.media.MediaTypes;
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.email.EmailModuleCfgDTO;
+import com.arvatosystems.t9t.email.T9tEmailException;
+import com.arvatosystems.t9t.email.api.EmailMessage;
+import com.arvatosystems.t9t.email.api.RecipientEmail;
+import com.arvatosystems.t9t.email.services.IEmailSender;
 
 @Singleton
 @Named("SMTP")

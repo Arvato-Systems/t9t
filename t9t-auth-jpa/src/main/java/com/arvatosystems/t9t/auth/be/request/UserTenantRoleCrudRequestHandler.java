@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.auth.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.UserTenantRoleDTO;
 import com.arvatosystems.t9t.auth.UserTenantRoleInternalKey;
 import com.arvatosystems.t9t.auth.UserTenantRoleRef;
@@ -26,8 +28,6 @@ import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudCompositeRefKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
 
 public class UserTenantRoleCrudRequestHandler extends AbstractCrudCompositeRefKeyRequestHandler<
     UserTenantRoleRef, UserTenantRoleInternalKey, UserTenantRoleDTO, FullTrackingWithVersion,

@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.rep.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
@@ -25,8 +27,6 @@ import com.arvatosystems.t9t.rep.jpa.entities.ReportConfigEntity;
 import com.arvatosystems.t9t.rep.jpa.mapping.IReportConfigDTOMapper;
 import com.arvatosystems.t9t.rep.jpa.persistence.IReportConfigEntityResolver;
 import com.arvatosystems.t9t.rep.request.ReportConfigSearchRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class ReportConfigSearchRequestHandler extends AbstractSearchWithTotalsRequestHandler<Long, ReportConfigDTO, FullTrackingWithVersion,
   ReportConfigSearchRequest, ReportConfigEntity> {

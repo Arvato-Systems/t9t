@@ -15,13 +15,14 @@
  */
 package com.arvatosystems.t9t.authc.be.api;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.services.ITenantLogoDtoResolver;
 import com.arvatosystems.t9t.authc.api.GetTenantLogoRequest;
 import com.arvatosystems.t9t.authc.api.GetTenantLogoResponse;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-import de.jpaw.dp.Jdp;
 
 public class GetTenantLogoRequestHandler extends AbstractReadOnlyRequestHandler<GetTenantLogoRequest> {
 

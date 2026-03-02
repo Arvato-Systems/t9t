@@ -17,13 +17,13 @@ package com.arvatosystems.t9t.doc.services;
 
 import java.util.Map;
 
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+
 import com.arvatosystems.t9t.doc.DocConfigDTO;
 import com.arvatosystems.t9t.doc.DocEmailCfgDTO;
 import com.arvatosystems.t9t.doc.DocModuleCfgDTO;
 import com.arvatosystems.t9t.doc.DocTemplateDTO;
 import com.arvatosystems.t9t.doc.api.DocumentSelector;
-
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
 
 /** Defines the communication layer between the backend modules (business logic / persistence layer). */
 public interface IDocPersistenceAccess {

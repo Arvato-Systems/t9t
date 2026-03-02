@@ -17,9 +17,9 @@ package com.arvatosystems.t9t.zkui.components.datafields;
 
 import org.zkoss.zul.Textbox;
 
-import com.arvatosystems.t9t.base.T9tUtil;
-
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+
+import com.arvatosystems.t9t.base.T9tUtil;
 
 public class TextDataField extends AbstractDataField<Textbox, String> {
     protected final Textbox c = new Textbox();

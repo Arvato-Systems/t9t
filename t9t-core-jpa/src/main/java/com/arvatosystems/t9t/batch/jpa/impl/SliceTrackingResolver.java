@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.batch.jpa.impl;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractJpaResolver;
 import com.arvatosystems.t9t.batch.SliceTrackingDTO;
@@ -23,9 +26,6 @@ import com.arvatosystems.t9t.batch.jpa.entities.SliceTrackingEntity;
 import com.arvatosystems.t9t.batch.jpa.mapping.ISliceTrackingDTOMapper;
 import com.arvatosystems.t9t.batch.jpa.persistence.ISliceTrackingEntityResolver;
 import com.arvatosystems.t9t.batch.services.ISliceTrackingResolver;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class SliceTrackingResolver extends AbstractJpaResolver<SliceTrackingRef, SliceTrackingDTO, FullTrackingWithVersion, SliceTrackingEntity>

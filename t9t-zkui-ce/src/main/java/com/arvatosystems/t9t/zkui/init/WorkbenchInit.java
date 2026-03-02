@@ -17,14 +17,14 @@ package com.arvatosystems.t9t.zkui.init;
 
 import java.util.Map;
 
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-import com.arvatosystems.t9t.zkui.util.Constants;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.util.Initiator;
+
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.Constants;
 
 /**
  * This is a class which catches the initialization of a ZK page and

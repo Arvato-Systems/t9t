@@ -15,6 +15,11 @@
  */
 package com.arvatosystems.t9t.uiprefsv3.jpa.request;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -22,9 +27,6 @@ import com.arvatosystems.t9t.base.uiprefs.UILeanGridPreferences;
 import com.arvatosystems.t9t.uiprefsv3.jpa.entities.LeanGridConfigEntity;
 import com.arvatosystems.t9t.uiprefsv3.jpa.persistence.ILeanGridConfigEntityResolver;
 import com.arvatosystems.t9t.uiprefsv3.request.DeleteLeanGridConfigFieldReferenceRequest;
-import de.jpaw.dp.Jdp;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DeleteLeanGridConfigFieldReferenceRequestHandler
     extends AbstractRequestHandler<DeleteLeanGridConfigFieldReferenceRequest> {

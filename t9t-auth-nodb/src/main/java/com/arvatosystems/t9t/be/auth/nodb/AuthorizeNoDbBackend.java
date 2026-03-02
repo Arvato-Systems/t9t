@@ -22,6 +22,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.request.PingRequest;
@@ -30,12 +36,6 @@ import com.arvatosystems.t9t.base.request.RetrieveComponentInfoRequest;
 import com.arvatosystems.t9t.base.request.TerminateProcessRequest;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.server.services.IAuthorize;
-
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class AuthorizeNoDbBackend implements IAuthorize {

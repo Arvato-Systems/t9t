@@ -15,21 +15,6 @@
  */
 package com.arvatosystems.t9t.out.be.oauth;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.io.T9tIOException;
-import com.arvatosystems.t9t.io.oauth.AccessTokenDTO;
-import com.arvatosystems.t9t.jackson.JacksonTools;
-import com.arvatosystems.t9t.out.services.oauth.IAccessTokenClient;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import de.jpaw.dp.Dependent;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -39,6 +24,24 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Map;
+
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Dependent;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.io.T9tIOException;
+import com.arvatosystems.t9t.io.oauth.AccessTokenDTO;
+import com.arvatosystems.t9t.jackson.JacksonTools;
+import com.arvatosystems.t9t.out.services.oauth.IAccessTokenClient;
 
 @Dependent
 public class AccessTokenClient<KEY> implements IAccessTokenClient<KEY> {

@@ -17,9 +17,8 @@ package com.arvatosystems.t9t.zkui.components.datafields;
 
 import java.util.UUID;
 
-import org.zkoss.zul.Textbox;
-
 import com.google.common.base.Strings;
+import org.zkoss.zul.Textbox;
 
 public class UUIDDataField extends AbstractDataField<Textbox, UUID> {
     protected final Textbox c = new Textbox();

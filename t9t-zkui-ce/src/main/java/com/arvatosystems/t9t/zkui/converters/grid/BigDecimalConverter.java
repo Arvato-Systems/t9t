@@ -16,13 +16,14 @@
 package com.arvatosystems.t9t.zkui.converters.grid;
 
 import java.math.BigDecimal;
-
 import java.text.DecimalFormat;
-import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
+
 import jakarta.annotation.Nonnull;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.util.resource.Labels;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
@@ -30,7 +31,8 @@ import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.util.BigDecimalTools;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
-import org.zkoss.util.resource.Labels;
+
+import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 
 @Singleton
 @Named("decimal")  // java.math.BigDecimal

@@ -18,16 +18,16 @@ package com.arvatosystems.t9t.ipblocker.services.impl;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.ipblocker.services.IIPAddressBlocker;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.api.ConfigurationReader;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ConfigurationReaderFactory;
+
+import com.arvatosystems.t9t.ipblocker.services.IIPAddressBlocker;
 
 @Singleton
 public class IPAddressBlocker implements IIPAddressBlocker {

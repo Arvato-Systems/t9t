@@ -15,14 +15,17 @@
  */
 package com.arvatosystems.t9t.msglog.jpa.impl;
 
+import java.util.List;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.msglog.MessageDTO;
 import com.arvatosystems.t9t.msglog.jpa.entities.MessageEntity;
 import com.arvatosystems.t9t.msglog.services.IMsglogPersistenceAccess;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import java.util.List;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 
 /**
  * Class which writes message log entities.

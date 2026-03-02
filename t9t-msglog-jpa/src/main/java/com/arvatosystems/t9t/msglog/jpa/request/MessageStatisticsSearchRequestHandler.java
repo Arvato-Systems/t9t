@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.msglog.jpa.request;
 
+import de.jpaw.bonaparte.pojos.api.NoTracking;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.jpa.impl.AbstractMonitoringSearchRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -22,9 +25,6 @@ import com.arvatosystems.t9t.msglog.MessageStatisticsDTO;
 import com.arvatosystems.t9t.msglog.jpa.mapping.IMessageStatisticsDTOMapper;
 import com.arvatosystems.t9t.msglog.jpa.persistence.IMessageStatisticsEntityResolver;
 import com.arvatosystems.t9t.msglog.request.MessageStatisticsSearchRequest;
-
-import de.jpaw.bonaparte.pojos.api.NoTracking;
-import de.jpaw.dp.Jdp;
 
 public class MessageStatisticsSearchRequestHandler extends AbstractMonitoringSearchRequestHandler<MessageStatisticsSearchRequest> {
 

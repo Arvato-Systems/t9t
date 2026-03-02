@@ -20,17 +20,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import com.arvatosystems.t9t.base.output.OutputSessionParameters;
-import com.arvatosystems.t9t.io.DataSinkDTO;
-import com.arvatosystems.t9t.out.services.FoldableParams;
-import com.arvatosystems.t9t.out.services.IPreOutputDataTransformer;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
 import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
+
+import com.arvatosystems.t9t.base.output.OutputSessionParameters;
+import com.arvatosystems.t9t.io.DataSinkDTO;
+import com.arvatosystems.t9t.out.services.FoldableParams;
+import com.arvatosystems.t9t.out.services.IPreOutputDataTransformer;
 
 @Dependent
 @Named("defaultFoldableTransformer")

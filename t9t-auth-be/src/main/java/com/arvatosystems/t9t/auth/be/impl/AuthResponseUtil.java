@@ -15,6 +15,17 @@
  */
 package com.arvatosystems.t9t.auth.be.impl;
 
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
+import de.jpaw.bonaparte.util.ToStringHelper;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.ApiKeyRef;
 import com.arvatosystems.t9t.auth.AuthenticationIssuerType;
@@ -33,14 +44,6 @@ import com.arvatosystems.t9t.base.services.T9tInternalConstants;
 import com.arvatosystems.t9t.base.types.SessionParameters;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
-import de.jpaw.bonaparte.util.ToStringHelper;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import java.util.UUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class AuthResponseUtil implements IAuthResponseUtil {

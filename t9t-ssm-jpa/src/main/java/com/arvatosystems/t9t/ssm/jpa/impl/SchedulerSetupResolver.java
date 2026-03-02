@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.ssm.jpa.impl;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractJpaResolver;
 import com.arvatosystems.t9t.ssm.SchedulerSetupDTO;
@@ -25,9 +28,6 @@ import com.arvatosystems.t9t.ssm.jpa.mapping.ISchedulerSetupDTOMapper;
 import com.arvatosystems.t9t.ssm.jpa.persistence.ISchedulerSetupEntityResolver;
 import com.arvatosystems.t9t.ssm.services.ISchedulerService;
 import com.arvatosystems.t9t.ssm.services.ISchedulerSetupResolver;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class SchedulerSetupResolver extends AbstractJpaResolver<SchedulerSetupRef, SchedulerSetupDTO, FullTrackingWithVersion, SchedulerSetupEntity>

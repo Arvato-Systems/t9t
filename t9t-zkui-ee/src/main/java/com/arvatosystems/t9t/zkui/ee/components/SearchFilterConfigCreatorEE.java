@@ -36,17 +36,17 @@ import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
-import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
-import com.arvatosystems.t9t.zkui.components.dropdown28.SimpleListModelFullList;
-import com.arvatosystems.t9t.zkui.services.impl.DefaultSearchFilterConfigCreator;
-import com.arvatosystems.t9t.zkui.util.Constants;
-import com.arvatosystems.t9t.zkui.viewmodel.support.SearchFilterRowVM;
-
 import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
 import de.jpaw.bonaparte.pojos.ui.UIFilter;
 import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Specializes;
+
+import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
+import com.arvatosystems.t9t.zkui.components.dropdown28.SimpleListModelFullList;
+import com.arvatosystems.t9t.zkui.services.impl.DefaultSearchFilterConfigCreator;
+import com.arvatosystems.t9t.zkui.util.Constants;
+import com.arvatosystems.t9t.zkui.viewmodel.support.SearchFilterRowVM;
 
 @Dependent
 @Specializes

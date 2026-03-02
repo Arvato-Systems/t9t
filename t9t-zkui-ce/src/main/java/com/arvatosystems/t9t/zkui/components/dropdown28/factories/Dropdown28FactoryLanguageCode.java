@@ -15,10 +15,10 @@
  */
 package com.arvatosystems.t9t.zkui.components.dropdown28.factories;
 
-import com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28LanguageCode;
-
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28LanguageCode;
 
 @Named("languageCode")
 @Singleton

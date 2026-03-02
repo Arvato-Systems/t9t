@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.io.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.WriteTrackingMs;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
@@ -25,8 +27,6 @@ import com.arvatosystems.t9t.io.jpa.entities.AsyncMessageEntity;
 import com.arvatosystems.t9t.io.jpa.mapping.IAsyncMessageDTOMapper;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncMessageEntityResolver;
 import com.arvatosystems.t9t.io.request.AsyncMessageCrudRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class AsyncMessageCrudRequestHandler extends
         AbstractCrudSurrogateKeyRequestHandler<AsyncMessageRef, AsyncMessageDTO, WriteTrackingMs, AsyncMessageCrudRequest, AsyncMessageEntity> {

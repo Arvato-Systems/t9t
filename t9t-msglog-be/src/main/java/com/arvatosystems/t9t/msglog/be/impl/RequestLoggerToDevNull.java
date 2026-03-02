@@ -21,11 +21,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.msglog.MessageDTO;
-import com.arvatosystems.t9t.msglog.services.IMsglogPersistenceAccess;
-
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.msglog.MessageDTO;
+import com.arvatosystems.t9t.msglog.services.IMsglogPersistenceAccess;
 
 @Fallback
 @Singleton

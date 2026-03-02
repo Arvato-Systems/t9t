@@ -19,8 +19,12 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+import jakarta.persistence.Query;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -35,9 +39,6 @@ import com.arvatosystems.t9t.io.jpa.entities.AsyncMessageStatisticsEntity;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncMessageStatisticsEntityResolver;
 import com.arvatosystems.t9t.io.request.AsyncMessageAggregationRequest;
 import com.arvatosystems.t9t.statistics.services.IStatisticsService;
-
-import de.jpaw.dp.Jdp;
-import jakarta.persistence.Query;
 
 public class AsyncMessageAggregationRequestHandler extends AbstractRequestHandler<AsyncMessageAggregationRequest> {
 

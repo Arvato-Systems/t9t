@@ -17,14 +17,14 @@ package com.arvatosystems.t9t.voice.client.alexa;
 
 import java.util.Map;
 
+import de.jpaw.bonaparte.pojos.api.alexa.AlexaIntentIn;
+import de.jpaw.bonaparte.pojos.api.alexa.AlexaSlotIn;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.voice.client.IBackendCaller;
 import com.arvatosystems.t9t.voice.client.VoiceSessionContext;
-
-import de.jpaw.bonaparte.pojos.api.alexa.AlexaIntentIn;
-import de.jpaw.bonaparte.pojos.api.alexa.AlexaSlotIn;
-import de.jpaw.dp.Jdp;
 
 /**
  * Abstract intent, for all implementations.

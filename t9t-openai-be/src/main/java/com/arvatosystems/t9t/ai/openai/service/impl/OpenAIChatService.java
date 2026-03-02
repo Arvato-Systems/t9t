@@ -22,6 +22,15 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.api.media.MediaTypeInfo;
+import de.jpaw.bonaparte.pojos.api.media.MediaCategory;
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+import de.jpaw.bonaparte.util.ToStringHelper;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.ai.AiAssistantDTO;
 import com.arvatosystems.t9t.ai.AiConversationDTO;
 import com.arvatosystems.t9t.ai.openai.OpenAIObjectFile;
@@ -50,15 +59,6 @@ import com.arvatosystems.t9t.ai.service.IAiChatService;
 import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.pojos.api.media.MediaCategory;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import de.jpaw.bonaparte.util.ToStringHelper;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 @Named("OpenAI")

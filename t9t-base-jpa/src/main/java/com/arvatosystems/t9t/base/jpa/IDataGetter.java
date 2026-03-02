@@ -18,11 +18,11 @@ package com.arvatosystems.t9t.base.jpa;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-import com.arvatosystems.t9t.base.search.GetDataResponse;
-
 import de.jpaw.bonaparte.jpa.BonaData;
 import de.jpaw.bonaparte.jpa.BonaKey;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
+
+import com.arvatosystems.t9t.base.search.GetDataResponse;
 
 public interface IDataGetter {
     /** Query data using a POJO constructor. */

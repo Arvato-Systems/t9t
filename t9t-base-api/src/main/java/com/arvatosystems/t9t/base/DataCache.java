@@ -21,11 +21,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import com.arvatosystems.t9t.base.cache.DataMap;
-
-import de.jpaw.bonaparte.pojos.apiw.Ref;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
+import de.jpaw.bonaparte.pojos.apiw.Ref;
+
+import com.arvatosystems.t9t.base.cache.DataMap;
 
 /**
  * Cache data block for 2 maps of type DataMap, once indexed by objectRef, once by primary ID,

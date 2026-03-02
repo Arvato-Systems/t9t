@@ -18,14 +18,14 @@ package com.arvatosystems.t9t.cluster.be.request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.IClusterEnvironment;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cluster.request.KafkaClusterManagerRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class KafkaClusterManagerRequestHandler extends AbstractReadOnlyRequestHandler<KafkaClusterManagerRequest> {
 

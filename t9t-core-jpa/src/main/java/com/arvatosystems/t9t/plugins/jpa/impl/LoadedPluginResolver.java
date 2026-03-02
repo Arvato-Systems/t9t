@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.plugins.jpa.impl;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractJpaResolver;
 import com.arvatosystems.t9t.plugins.LoadedPluginDTO;
@@ -23,9 +26,6 @@ import com.arvatosystems.t9t.plugins.jpa.entities.LoadedPluginEntity;
 import com.arvatosystems.t9t.plugins.jpa.mapping.ILoadedPluginDTOMapper;
 import com.arvatosystems.t9t.plugins.jpa.persistence.ILoadedPluginEntityResolver;
 import com.arvatosystems.t9t.plugins.services.ILoadedPluginResolver;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class LoadedPluginResolver extends AbstractJpaResolver<LoadedPluginRef, LoadedPluginDTO, FullTrackingWithVersion, LoadedPluginEntity>

@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.io.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
@@ -28,8 +30,6 @@ import com.arvatosystems.t9t.io.jpa.entities.SinkEntity;
 import com.arvatosystems.t9t.io.jpa.mapping.ISinkDTOMapper;
 import com.arvatosystems.t9t.io.jpa.persistence.ISinkEntityResolver;
 import com.arvatosystems.t9t.io.request.SinkCrudRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class SinkCrudRequestHandler extends AbstractCrudSurrogateKeyRequestHandler<SinkRef, SinkDTO, FullTrackingWithVersion, SinkCrudRequest, SinkEntity> {
 

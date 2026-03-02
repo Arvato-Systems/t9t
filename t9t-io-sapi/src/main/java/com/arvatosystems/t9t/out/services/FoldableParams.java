@@ -17,9 +17,9 @@ package com.arvatosystems.t9t.out.services;
 
 import java.util.List;
 
-import com.arvatosystems.t9t.base.output.EnumOutputType;
-
 import jakarta.annotation.Nullable;
+
+import com.arvatosystems.t9t.base.output.EnumOutputType;
 
 /** Immutable data class, mostly boilerplate code. */
 public record FoldableParams(

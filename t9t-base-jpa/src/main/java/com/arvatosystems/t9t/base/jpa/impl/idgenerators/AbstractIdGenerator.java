@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.base.jpa.impl.idgenerators;
 
+import jakarta.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.cfg.be.DatabaseBrandType;
-
-import jakarta.annotation.Nonnull;
 
 public abstract class AbstractIdGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractIdGenerator.class);

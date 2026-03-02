@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.auth.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.RoleToPermissionDTO;
 import com.arvatosystems.t9t.auth.RoleToPermissionInternalKey;
 import com.arvatosystems.t9t.auth.RoleToPermissionRef;
@@ -26,8 +28,6 @@ import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudCompositeRefKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
 
 public class RoleToPermissionCrudRequestHandler extends AbstractCrudCompositeRefKeyRequestHandler<
     RoleToPermissionRef, RoleToPermissionInternalKey, RoleToPermissionDTO, FullTrackingWithVersion,

@@ -21,12 +21,12 @@ import java.sql.Connection;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
-import com.arvatosystems.t9t.base.jpa.ormspecific.IJpaJdbcConnectionProvider;
-import com.arvatosystems.t9t.base.services.IIndependentJdbcConnectionProvider;
-
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Jdp;
+
+import com.arvatosystems.t9t.base.jpa.ormspecific.IJpaJdbcConnectionProvider;
+import com.arvatosystems.t9t.base.services.IIndependentJdbcConnectionProvider;
 
 
 // did not work for the scheduler

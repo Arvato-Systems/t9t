@@ -29,6 +29,8 @@ import org.apache.kafka.common.TopicPartition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
@@ -41,8 +43,6 @@ import com.arvatosystems.t9t.cfg.be.StatusProvider;
 import com.arvatosystems.t9t.kafka.service.IKafkaTopicReader;
 import com.arvatosystems.t9t.kafka.service.impl.KafkaTopicReader;
 import com.arvatosystems.t9t.server.services.IUnauthenticatedServiceRequestExecutor;
-
-import de.jpaw.dp.Jdp;
 
 final class KafkaRequestProcessor implements KafkaProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaRequestProcessor.class);

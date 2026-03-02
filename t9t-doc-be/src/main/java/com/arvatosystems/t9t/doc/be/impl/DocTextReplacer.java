@@ -20,15 +20,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import jakarta.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Singleton;
 
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.doc.services.IDocTextReplacer;
-
-import de.jpaw.dp.Singleton;
-import jakarta.annotation.Nonnull;
 
 @Singleton
 public class DocTextReplacer implements IDocTextReplacer {

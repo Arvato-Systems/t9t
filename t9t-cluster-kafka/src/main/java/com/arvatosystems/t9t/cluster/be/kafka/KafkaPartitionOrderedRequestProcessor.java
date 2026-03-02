@@ -35,6 +35,8 @@ import org.apache.kafka.common.TopicPartition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.util.FreezeTools;
+
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
 import com.arvatosystems.t9t.base.types.AuthenticationParameters;
@@ -42,7 +44,6 @@ import com.arvatosystems.t9t.cfg.be.KafkaConfiguration;
 import com.arvatosystems.t9t.cfg.be.StatusProvider;
 import com.arvatosystems.t9t.kafka.service.IKafkaTopicReader;
 import com.arvatosystems.t9t.kafka.service.impl.KafkaTopicReader;
-import de.jpaw.bonaparte.util.FreezeTools;
 
 /**
  * Kafka prossing implementation with following key features:

@@ -18,6 +18,9 @@ package com.arvatosystems.t9t.out.be.impl.formatgenerator;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.media.MediaXType;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.io.DataSinkDTO;
@@ -25,9 +28,6 @@ import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.out.services.FoldableParams;
 import com.arvatosystems.t9t.out.services.ICommunicationFormatGenerator;
 import com.arvatosystems.t9t.out.services.IOutputResource;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 
 public abstract class AbstractFormatGenerator implements ICommunicationFormatGenerator {
 

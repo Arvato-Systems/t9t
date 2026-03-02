@@ -15,6 +15,11 @@
  */
 package com.arvatosystems.t9t.genconf.jpa.request;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -24,11 +29,6 @@ import com.arvatosystems.t9t.genconf.jpa.mapping.IConfigDTOMapper;
 import com.arvatosystems.t9t.genconf.jpa.persistence.IConfigEntityResolver;
 import com.arvatosystems.t9t.genconf.request.ReadConfigWithDefaultsRequest;
 import com.arvatosystems.t9t.genconf.request.ReadConfigWithDefaultsResponse;
-
-import de.jpaw.dp.Jdp;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ReadConfigWithDefaultsRequestHandler extends AbstractRequestHandler<ReadConfigWithDefaultsRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReadConfigWithDefaultsRequestHandler.class);

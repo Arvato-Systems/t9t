@@ -18,16 +18,16 @@ package com.arvatosystems.t9t.ssm.be.request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.RandomNumberGenerators;
 import com.arvatosystems.t9t.base.event.EventParameters;
 import com.arvatosystems.t9t.base.services.IEventHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.ssm.event.SchedulerChangedEvent;
 import com.arvatosystems.t9t.ssm.services.ISchedulerService;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
 
 /**
  * Event to be executed on other nodes if a scheduler change has been performed.

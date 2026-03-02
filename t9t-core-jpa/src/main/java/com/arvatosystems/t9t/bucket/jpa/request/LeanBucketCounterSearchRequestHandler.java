@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.bucket.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.jpa.impl.AbstractLeanSearchRequestHandler;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.bucket.jpa.entities.BucketCounterEntity;
 import com.arvatosystems.t9t.bucket.jpa.persistence.IBucketCounterEntityResolver;
 import com.arvatosystems.t9t.bucket.request.LeanBucketCounterSearchRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class LeanBucketCounterSearchRequestHandler extends AbstractLeanSearchRequestHandler<LeanBucketCounterSearchRequest, BucketCounterEntity> {
     public LeanBucketCounterSearchRequestHandler() {

@@ -15,11 +15,6 @@
  */
 package com.arvatosystems.t9t.in.be.camel;
 
-import com.arvatosystems.t9t.base.services.IFileUtil;
-import com.arvatosystems.t9t.base.services.SimplePatternEvaluator;
-import com.arvatosystems.t9t.in.services.IInputSession;
-import com.arvatosystems.t9t.io.DataSinkDTO;
-import de.jpaw.dp.Jdp;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,6 +25,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.support.DefaultProducer;
@@ -37,6 +33,13 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
+
+import com.arvatosystems.t9t.base.services.IFileUtil;
+import com.arvatosystems.t9t.base.services.SimplePatternEvaluator;
+import com.arvatosystems.t9t.in.services.IInputSession;
+import com.arvatosystems.t9t.io.DataSinkDTO;
 
 public class CamelT9tProducer extends DefaultProducer {
     private static final Logger LOGGER = LoggerFactory.getLogger(CamelT9tProducer.class);

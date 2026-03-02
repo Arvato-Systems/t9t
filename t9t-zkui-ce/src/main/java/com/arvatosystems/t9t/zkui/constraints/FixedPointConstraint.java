@@ -22,9 +22,9 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.mesg.MZul;
 
-import com.arvatosystems.t9t.zkui.inputelements.Fixedpointbox;
-
 import de.jpaw.fixedpoint.types.MicroUnits;
+
+import com.arvatosystems.t9t.zkui.inputelements.Fixedpointbox;
 
 public class FixedPointConstraint implements Constraint, Serializable {
 

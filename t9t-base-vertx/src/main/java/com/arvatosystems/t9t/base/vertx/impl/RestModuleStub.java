@@ -15,14 +15,14 @@
  */
 package com.arvatosystems.t9t.base.vertx.impl;
 
+import io.vertx.core.Vertx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.vertx.IRestModule;
-
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
-import io.vertx.core.Vertx;
+
+import com.arvatosystems.t9t.base.vertx.IRestModule;
 
 @Singleton
 @Fallback

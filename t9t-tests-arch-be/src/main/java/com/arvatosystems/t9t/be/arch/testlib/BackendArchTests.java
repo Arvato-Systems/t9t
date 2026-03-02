@@ -21,14 +21,15 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.fields;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 
-import com.arvatosystems.t9t.arch.testlib.StandardArchTests;
-import com.arvatosystems.t9t.base.services.IRequestHandler;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Inject;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.arch.testlib.StandardArchTests;
+import com.arvatosystems.t9t.base.services.IRequestHandler;
 
 public class BackendArchTests extends StandardArchTests {
 

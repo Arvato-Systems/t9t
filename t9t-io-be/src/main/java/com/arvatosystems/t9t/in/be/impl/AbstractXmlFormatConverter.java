@@ -15,25 +15,26 @@
  */
 package com.arvatosystems.t9t.in.be.impl;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.in.services.IInputSession;
-import com.arvatosystems.t9t.io.T9tIOException;
-import com.arvatosystems.t9t.xml.namespaces.IStandardNamespaceWriter;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.xml.stream.XMLStreamReader;
+
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.BonaPortableClass;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ExceptionUtil;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Unmarshaller;
-import javax.xml.stream.XMLStreamReader;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.in.services.IInputSession;
+import com.arvatosystems.t9t.io.T9tIOException;
+import com.arvatosystems.t9t.xml.namespaces.IStandardNamespaceWriter;
 
 public abstract class AbstractXmlFormatConverter extends AbstractInputFormatConverter {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractXmlFormatConverter.class);

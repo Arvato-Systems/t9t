@@ -21,10 +21,10 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.services.ICacheInvalidationRegistry;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.services.ICacheInvalidationRegistry;
 
 /**
  * This class implements a central repository for cache invalidation.

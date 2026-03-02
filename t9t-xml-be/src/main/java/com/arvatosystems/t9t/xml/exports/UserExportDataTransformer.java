@@ -15,6 +15,13 @@
  */
 package com.arvatosystems.t9t.xml.exports;
 
+import java.util.Collections;
+import java.util.List;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.dp.Dependent;
+import de.jpaw.dp.Named;
+
 import com.arvatosystems.t9t.auth.RoleDTO;
 import com.arvatosystems.t9t.auth.RoleKey;
 import com.arvatosystems.t9t.auth.RoleRef;
@@ -26,13 +33,6 @@ import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.DataSinkPresets;
 import com.arvatosystems.t9t.out.services.IPreOutputDataTransformer;
 import com.arvatosystems.t9t.xml.User001;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.dp.Dependent;
-import de.jpaw.dp.Named;
-
-import java.util.Collections;
-import java.util.List;
 
 @Named("xmlUserExport")
 @Dependent

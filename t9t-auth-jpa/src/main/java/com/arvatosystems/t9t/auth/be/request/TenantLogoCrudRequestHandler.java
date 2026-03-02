@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.auth.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.TenantLogoDTO;
 import com.arvatosystems.t9t.auth.jpa.entities.TenantLogoEntity;
 import com.arvatosystems.t9t.auth.jpa.mapping.ITenantLogoDTOMapper;
@@ -24,8 +26,6 @@ import com.arvatosystems.t9t.base.IUploadChecker;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudModuleCfgRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
 
 public class TenantLogoCrudRequestHandler extends AbstractCrudModuleCfgRequestHandler<TenantLogoDTO, TenantLogoCrudRequest, TenantLogoEntity> {
 

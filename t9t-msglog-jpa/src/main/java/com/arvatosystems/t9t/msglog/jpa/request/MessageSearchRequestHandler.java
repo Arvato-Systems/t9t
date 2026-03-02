@@ -15,6 +15,13 @@
  */
 package com.arvatosystems.t9t.msglog.jpa.request;
 
+import de.jpaw.bonaparte.api.SearchFilters;
+import de.jpaw.bonaparte.pojos.api.NoTracking;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractMonitoringSearchRequestHandler;
@@ -25,13 +32,6 @@ import com.arvatosystems.t9t.msglog.jpa.mapping.IMessageDTOMapper;
 import com.arvatosystems.t9t.msglog.jpa.persistence.IMessageEntityResolver;
 import com.arvatosystems.t9t.msglog.request.MessageSearchRequest;
 import com.arvatosystems.t9t.server.services.IAuthorize;
-
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.NoTracking;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-import de.jpaw.dp.Jdp;
 
 // do not use the searchWithTotals super class because the result is very likely HUGE. Instead, use the shadow DB if available
 public class MessageSearchRequestHandler extends AbstractMonitoringSearchRequestHandler<MessageSearchRequest> {

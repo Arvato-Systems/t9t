@@ -31,7 +31,7 @@
 
     <!-- useful commands to check current versions:
          mvn dependency:resolve
-         mvn versions:display-dependency-updates
+         mvn versions:display-dependency-updates -Dmaven.version.ignore=".*-(alpha|beta|Alpha|Beta|rc|cr|m|RC|CR|M|milestone).*,4\\..*" -DallowMajorUpdates=false
     -->
     <properties>
         <jodatime.version>2.14.0</jodatime.version>
@@ -40,8 +40,8 @@
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
-        <jpaw-bom.version>3.7.0</jpaw-bom.version>
-        <bonaparte-bom.version>6.3.5</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
+        <jpaw-bom.version>3.7.1</jpaw-bom.version>
+        <bonaparte-bom.version>6.3.6</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
 
         <!-- Versions of Xtext & Xtend -->
         <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings", where the variable xtext.version is defined -->
@@ -181,14 +181,14 @@
         <reload4j.version>1.2.26</reload4j.version>
 
         <!-- Spring core -->
-        <spring-bom.version>7.0.1</spring-bom.version>
+        <spring-bom.version>7.0.5</spring-bom.version>
         <!-- Spring data -->
-        <spring-data-jpa.version>4.0.0</spring-data-jpa.version>
+        <spring-data-jpa.version>4.0.3</spring-data-jpa.version>
         <!-- Spring boot -->
-        <spring-boot.version>4.0.0</spring-boot.version>
+        <spring-boot.version>4.0.3</spring-boot.version>
 
-        <netty.version>4.2.7.Final</netty.version>
-        <vertx4.version>5.0.5</vertx4.version>
+        <netty.version>4.2.10.Final</netty.version>
+        <vertx4.version>5.0.8</vertx4.version>
         <hazelcast-kubernetes.version>2.2.3</hazelcast-kubernetes.version>
 
         <snakeyaml.version>2.3</snakeyaml.version>
@@ -201,7 +201,7 @@
         <maven-plugin-api.version>3.9.11</maven-plugin-api.version>
         <jackson.version>2.20.1</jackson.version>
         <solr.version>8.11.1</solr.version>
-        <camel.version>4.14.2</camel.version>
+        <camel.version>4.14.4</camel.version>
         <jsch.version>2.27.6</jsch.version>
         <kafka.version>3.9.1</kafka.version>
         <error-prone.version>2.44.0</error-prone.version>

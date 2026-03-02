@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.batch.jpa.impl;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.entities.WriteTracking;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractJpaResolver;
 import com.arvatosystems.t9t.batch.RecordEventsDTO;
@@ -23,8 +26,6 @@ import com.arvatosystems.t9t.batch.jpa.entities.RecordEventsEntity;
 import com.arvatosystems.t9t.batch.jpa.mapping.IRecordEventsDTOMapper;
 import com.arvatosystems.t9t.batch.jpa.persistence.IRecordEventsEntityResolver;
 import com.arvatosystems.t9t.batch.services.IRecordEventsResolver;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class RecordEventsResolver extends AbstractJpaResolver<RecordEventsRef, RecordEventsDTO, WriteTracking, RecordEventsEntity>

@@ -15,16 +15,6 @@
  */
 package com.arvatosystems.t9t.hs.configurate.be.core.util;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.hs.T9tHibernateSearchException;
-import com.arvatosystems.t9t.hs.configurate.model.EntitySearchConfiguration;
-import com.arvatosystems.t9t.hs.configurate.be.core.service.EntityConfigCache;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -32,6 +22,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
+
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.hs.T9tHibernateSearchException;
+import com.arvatosystems.t9t.hs.configurate.be.core.service.EntityConfigCache;
+import com.arvatosystems.t9t.hs.configurate.model.EntitySearchConfiguration;
 
 /**
  * Utility class for loading Hibernate Search configuration.

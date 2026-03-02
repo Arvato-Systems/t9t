@@ -15,11 +15,11 @@
  */
 package com.arvatosystems.t9t.ai.service;
 
+import jakarta.annotation.Nonnull;
+
 import com.arvatosystems.t9t.ai.tools.AbstractAiTool;
 import com.arvatosystems.t9t.ai.tools.AbstractAiToolResult;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import jakarta.annotation.Nonnull;
 
 /** Interface defining the available tools for AI tool calling. */
 public interface IAiTool<R extends  AbstractAiTool, U extends AbstractAiToolResult> {

@@ -15,11 +15,23 @@
  */
 package com.arvatosystems.t9t.base.be.execution;
 
+import java.util.ConcurrentModificationException;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.BonaPortableClass;
+import de.jpaw.bonaparte.core.ObjectValidationException;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ApplicationException;
+import de.jpaw.util.ExceptionUtil;
 
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tException;
@@ -40,17 +52,6 @@ import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
 import com.arvatosystems.t9t.server.InternalHeaderParameters;
 import com.arvatosystems.t9t.server.services.IAuthorize;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.BonaPortableClass;
-import de.jpaw.bonaparte.core.ObjectValidationException;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Provider;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ApplicationException;
-import de.jpaw.util.ExceptionUtil;
 
 /**
  * Class serving as key entry point for intra-module communication.
@@ -188,6 +189,15 @@ public class Executor implements IExecutor {
         } catch (final IndexOutOfBoundsException ioobe) {
             LOGGER.error("IndexOutOfBoundsException: ", ioobe);  // lists stack trace!
             return MessagingUtil.createServiceResponse(T9tException.INDEX_OUT_OF_BOUNDS, null);
+        } catch (final NumberFormatException nfe) {
+            LOGGER.error("NumberFormatException: ", nfe);  // lists stack trace!
+            return MessagingUtil.createServiceResponse(T9tException.NUMBER_FORMAT, null);
+        } catch (final IllegalArgumentException iae) {
+            LOGGER.error("IllegalArgumentException: ", iae);  // lists stack trace!
+            return MessagingUtil.createServiceResponse(T9tException.ILLEGAL_ARGUMENT, null);
+        } catch (final ConcurrentModificationException cme) {
+            LOGGER.error("ConcurrentModificationException: ", cme);  // lists stack trace!
+            return MessagingUtil.createServiceResponse(T9tException.NUMBER_FORMAT, null);
         } catch (final Throwable e) {
             // provide full stack trace to the log
             final String causeChain = ExceptionUtil.causeChain(e);

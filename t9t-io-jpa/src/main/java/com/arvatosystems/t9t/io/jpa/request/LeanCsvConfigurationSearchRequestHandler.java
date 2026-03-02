@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.io.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.jpa.impl.AbstractLeanSearchRequestHandler;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.io.jpa.entities.CsvConfigurationEntity;
 import com.arvatosystems.t9t.io.jpa.persistence.ICsvConfigurationEntityResolver;
 import com.arvatosystems.t9t.io.request.LeanCsvConfigurationSearchRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class LeanCsvConfigurationSearchRequestHandler extends AbstractLeanSearchRequestHandler<LeanCsvConfigurationSearchRequest, CsvConfigurationEntity> {
     public LeanCsvConfigurationSearchRequestHandler() {

@@ -15,8 +15,9 @@
  */
 package com.arvatosystems.t9t.base.jpa;
 
-import de.jpaw.bonaparte.refs.PersistenceProvider;
 import jakarta.persistence.EntityManager;
+
+import de.jpaw.bonaparte.refs.PersistenceProvider;
 
 public interface IPersistenceProviderJPAShadow extends PersistenceProvider {
     EntityManager getEntityManager();

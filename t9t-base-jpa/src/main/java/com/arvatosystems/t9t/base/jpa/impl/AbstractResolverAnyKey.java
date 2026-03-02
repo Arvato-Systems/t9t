@@ -25,18 +25,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import com.arvatosystems.t9t.base.T9tUtil;
 import jakarta.persistence.Column;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Selection;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.jpa.IDataProcessor;
-import com.arvatosystems.t9t.base.jpa.IResolverAnyKey;
-import com.arvatosystems.t9t.base.search.DummySearchCriteria;
-import com.arvatosystems.t9t.base.search.SearchCriteria;
-import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
@@ -55,17 +58,15 @@ import de.jpaw.dp.Alternative;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.enums.TokenizableEnum;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.LockModeType;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Expression;
-import jakarta.persistence.criteria.Order;
-import jakarta.persistence.criteria.Path;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Selection;
+
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.base.jpa.IDataProcessor;
+import com.arvatosystems.t9t.base.jpa.IResolverAnyKey;
+import com.arvatosystems.t9t.base.search.DummySearchCriteria;
+import com.arvatosystems.t9t.base.search.SearchCriteria;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 /** base implementation of the IEntityResolver interface, only suitable for simple configuration data tables */
 @Alternative

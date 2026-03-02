@@ -18,6 +18,13 @@ package com.arvatosystems.t9t.rep.be.request.restriction.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
+
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.authz.api.QueryPermissionsRequest;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
@@ -28,12 +35,6 @@ import com.arvatosystems.t9t.rep.be.request.restriction.IReportConfigResolverRes
 import com.arvatosystems.t9t.rep.jpa.entities.ReportConfigEntity;
 import com.arvatosystems.t9t.rep.jpa.persistence.IReportConfigEntityResolver;
 import com.arvatosystems.t9t.server.services.IAuthorize;
-import com.google.common.collect.ImmutableList;
-
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 
 /**

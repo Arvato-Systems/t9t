@@ -15,15 +15,16 @@
  */
 package com.arvatosystems.t9t.genconf.jpa.persistence.impl;
 
+import jakarta.persistence.Query;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.genconf.ConfigDTO;
 import com.arvatosystems.t9t.genconf.jpa.entities.ConfigEntity;
 import com.arvatosystems.t9t.genconf.jpa.mapping.IConfigDTOMapper;
 import com.arvatosystems.t9t.genconf.jpa.persistence.IConfigEntityResolver;
 import com.arvatosystems.t9t.genconf.services.IConfigUpdater;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import jakarta.persistence.Query;
 
 @Singleton
 public class ConfigUpdater implements IConfigUpdater {

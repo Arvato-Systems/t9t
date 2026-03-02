@@ -17,15 +17,15 @@ package com.arvatosystems.t9t.zkui.converters;
 
 import java.util.List;
 
+import com.google.common.base.Strings;
 import org.zkoss.bind.BindContext;
 import org.zkoss.bind.Converter;
 import org.zkoss.zul.Comboitem;
 
+import de.jpaw.bonaparte.pojos.apiw.Ref;
+
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28Db;
-import com.google.common.base.Strings;
-
-import de.jpaw.bonaparte.pojos.apiw.Ref;
 
 public class DropdownConverter implements Converter<Object, Object, Dropdown28Db<?>> {
 

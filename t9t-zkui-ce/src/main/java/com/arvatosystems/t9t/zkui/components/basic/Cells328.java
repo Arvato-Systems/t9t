@@ -26,15 +26,15 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.impl.InputElement;
 
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.util.FieldGetter;
+
 import com.arvatosystems.t9t.base.FieldMappers;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.entities.InternalTenantId;
 import com.arvatosystems.t9t.zkui.components.datafields.DecimalDataField;
 import com.arvatosystems.t9t.zkui.components.datafields.IDataField;
 import com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28ComboBoxItem;
-
-import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.util.FieldGetter;
 
 // a short form for the below explicit code:
 // Example: Instead of

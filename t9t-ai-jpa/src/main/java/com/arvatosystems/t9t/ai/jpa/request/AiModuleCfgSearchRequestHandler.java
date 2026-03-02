@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.ai.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.ai.AiModuleCfgDTO;
 import com.arvatosystems.t9t.ai.jpa.entities.AiModuleCfgEntity;
 import com.arvatosystems.t9t.ai.jpa.mapping.IAiModuleCfgDTOMapper;
@@ -24,8 +26,6 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
 
 public class AiModuleCfgSearchRequestHandler extends
   AbstractSearchWithTotalsRequestHandler<String, AiModuleCfgDTO, FullTrackingWithVersion, AiModuleCfgSearchRequest, AiModuleCfgEntity> {

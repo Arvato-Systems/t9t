@@ -15,12 +15,13 @@
  */
 package com.arvatosystems.t9t.voice.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.jpa.impl.AbstractLeanSearchRequestHandler;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.voice.jpa.entities.VoiceApplicationEntity;
 import com.arvatosystems.t9t.voice.jpa.persistence.IVoiceApplicationEntityResolver;
 import com.arvatosystems.t9t.voice.request.LeanVoiceApplicationSearchRequest;
-import de.jpaw.dp.Jdp;
 
 public class LeanVoiceApplicationSearchRequestHandler extends AbstractLeanSearchRequestHandler<LeanVoiceApplicationSearchRequest, VoiceApplicationEntity> {
     public LeanVoiceApplicationSearchRequestHandler() {

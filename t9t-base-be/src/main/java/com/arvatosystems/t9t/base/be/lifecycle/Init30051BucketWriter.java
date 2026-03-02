@@ -18,11 +18,11 @@ package com.arvatosystems.t9t.base.be.lifecycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.services.IBucketWriter;
-
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupShutdown;
+
+import com.arvatosystems.t9t.base.services.IBucketWriter;
 
 
 // start and stop the bucket writer service at the desired point in time

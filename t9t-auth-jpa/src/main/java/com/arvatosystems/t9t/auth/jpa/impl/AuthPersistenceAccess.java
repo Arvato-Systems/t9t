@@ -25,8 +25,26 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import jakarta.annotation.Nonnull;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
+
+import com.google.common.collect.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import de.jpaw.bonaparte.pojos.api.OperationTypes;
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ByteArray;
 
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
@@ -66,23 +84,6 @@ import com.arvatosystems.t9t.base.services.IHighRiskSituationNotificationService
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.OidConfiguration;
-import com.google.common.collect.ImmutableList;
-
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.OperationTypes;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Provider;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ByteArray;
-import jakarta.annotation.Nonnull;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
 
 @Singleton
 public class AuthPersistenceAccess implements IAuthPersistenceAccess {

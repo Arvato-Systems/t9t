@@ -15,14 +15,14 @@
  */
 package com.arvatosystems.t9t.ai.jpa.impl;
 
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.ai.AiModuleCfgDTO;
 import com.arvatosystems.t9t.ai.jpa.entities.AiModuleCfgEntity;
 import com.arvatosystems.t9t.ai.jpa.mapping.IAiModuleCfgDTOMapper;
 import com.arvatosystems.t9t.ai.jpa.persistence.IAiModuleCfgEntityResolver;
 import com.arvatosystems.t9t.ai.service.IAiModuleCfgDtoResolver;
 import com.arvatosystems.t9t.core.jpa.impl.AbstractModuleConfigResolver;
-
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class AiModuleCfgDtoResolver extends AbstractModuleConfigResolver<AiModuleCfgDTO, AiModuleCfgEntity> implements IAiModuleCfgDtoResolver {

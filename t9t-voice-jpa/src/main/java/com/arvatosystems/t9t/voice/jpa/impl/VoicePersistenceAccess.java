@@ -15,15 +15,18 @@
  */
 package com.arvatosystems.t9t.voice.jpa.impl;
 
+import java.util.List;
+
+import jakarta.persistence.TypedQuery;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.voice.VoiceUserDTO;
 import com.arvatosystems.t9t.voice.jpa.entities.VoiceUserEntity;
 import com.arvatosystems.t9t.voice.jpa.mapping.IVoiceUserDTOMapper;
 import com.arvatosystems.t9t.voice.jpa.persistence.IVoiceUserEntityResolver;
 import com.arvatosystems.t9t.voice.services.IVoicePersistenceAccess;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import java.util.List;
-import jakarta.persistence.TypedQuery;
 
 @Singleton
 public class VoicePersistenceAccess implements IVoicePersistenceAccess {

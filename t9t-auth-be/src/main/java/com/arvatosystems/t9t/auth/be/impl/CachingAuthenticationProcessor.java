@@ -21,8 +21,14 @@ import java.util.Base64;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
 
 import com.arvatosystems.t9t.auth.jwt.IJWT;
 import com.arvatosystems.t9t.base.T9tConstants;
@@ -30,17 +36,11 @@ import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
 import com.arvatosystems.t9t.base.auth.AuthenticationInfo;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
+import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
 import com.arvatosystems.t9t.base.services.IAuthCacheInvalidation;
 import com.arvatosystems.t9t.base.services.ICacheInvalidationRegistry;
 import com.arvatosystems.t9t.server.services.IAuthenticate;
 import com.arvatosystems.t9t.server.services.ICachingAuthenticationProcessor;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
-
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class CachingAuthenticationProcessor implements ICachingAuthenticationProcessor {

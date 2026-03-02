@@ -17,6 +17,10 @@ package com.arvatosystems.t9t.auth.jpa.request;
 
 import java.util.Locale;
 
+import de.jpaw.bonaparte.pojos.api.NoTracking;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.PasswordBlacklistDTO;
 import com.arvatosystems.t9t.auth.jpa.entities.PasswordBlacklistEntity;
@@ -28,10 +32,6 @@ import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
 import com.arvatosystems.t9t.base.crud.CrudStringKeyResponse;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudStringKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.bonaparte.pojos.api.NoTracking;
-import de.jpaw.bonaparte.pojos.api.OperationType;
 
 public class PasswordBlacklistCrudRequestHandler
         extends AbstractCrudStringKeyRequestHandler<PasswordBlacklistDTO, NoTracking, PasswordBlacklistCrudRequest, PasswordBlacklistEntity> {

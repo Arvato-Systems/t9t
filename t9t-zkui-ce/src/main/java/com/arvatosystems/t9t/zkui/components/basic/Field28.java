@@ -27,6 +27,12 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.impl.InputElement;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.util.FieldGetter;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.FieldMappers;
 import com.arvatosystems.t9t.zkui.components.IDataFieldFactory;
@@ -36,12 +42,6 @@ import com.arvatosystems.t9t.zkui.components.datafields.DecimalDataField;
 import com.arvatosystems.t9t.zkui.components.datafields.GroupedDropdownDataField;
 import com.arvatosystems.t9t.zkui.components.datafields.IDataField;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.util.FieldGetter;
-import de.jpaw.dp.Jdp;
 
 /** A field in a cell. Used in modal dialogs or grid detail views.
  * The superclass must set a view model which references a data object.

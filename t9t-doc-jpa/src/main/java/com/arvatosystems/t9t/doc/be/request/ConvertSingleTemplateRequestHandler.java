@@ -18,6 +18,8 @@ package com.arvatosystems.t9t.doc.be.request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -25,8 +27,6 @@ import com.arvatosystems.t9t.doc.T9tDocException;
 import com.arvatosystems.t9t.doc.request.ConvertSingleTemplateRequest;
 import com.arvatosystems.t9t.doc.request.ConvertSingleTemplateResponse;
 import com.arvatosystems.t9t.doc.services.ITemplateConversion;
-
-import de.jpaw.dp.Jdp;
 
 public class ConvertSingleTemplateRequestHandler extends AbstractRequestHandler<ConvertSingleTemplateRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConvertSingleTemplateRequestHandler.class);

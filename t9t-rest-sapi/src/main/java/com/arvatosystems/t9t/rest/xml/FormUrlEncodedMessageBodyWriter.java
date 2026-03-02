@@ -28,11 +28,11 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.MessageBodyWriter;
 import jakarta.ws.rs.ext.Provider;
 
-import com.arvatosystems.t9t.base.T9tHttpClientExtensions;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MapComposer;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.T9tHttpClientExtensions;
 
 /**
  * Special {@link MessageBodyWriter} for

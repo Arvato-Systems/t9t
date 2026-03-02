@@ -15,15 +15,15 @@
  */
 package com.arvatosystems.t9t.zkui.components.dropdown28.factories;
 
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.search.LeanSearchRequest;
 import com.arvatosystems.t9t.bucket.BucketCounterDTO;
 import com.arvatosystems.t9t.bucket.BucketCounterKey;
 import com.arvatosystems.t9t.bucket.BucketCounterRef;
 import com.arvatosystems.t9t.bucket.request.LeanBucketCounterSearchRequest;
 import com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28Db;
-
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
 
 @Named("bucketId")
 @Singleton

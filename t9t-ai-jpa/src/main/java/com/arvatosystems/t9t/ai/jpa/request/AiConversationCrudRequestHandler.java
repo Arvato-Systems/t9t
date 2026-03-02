@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.ai.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.ai.AiConversationDTO;
 import com.arvatosystems.t9t.ai.AiConversationRef;
 import com.arvatosystems.t9t.ai.jpa.entities.AiConversationEntity;
@@ -25,8 +27,6 @@ import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
 
 public class AiConversationCrudRequestHandler extends AbstractCrudSurrogateKeyRequestHandler<AiConversationRef, AiConversationDTO,
   FullTrackingWithVersion, AiConversationCrudRequest, AiConversationEntity> {

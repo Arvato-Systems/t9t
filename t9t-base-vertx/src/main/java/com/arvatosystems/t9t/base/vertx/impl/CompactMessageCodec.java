@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.base.vertx.impl;
 
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.eventbus.MessageCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,8 +26,6 @@ import de.jpaw.bonaparte.core.CompactByteArrayParser;
 import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.util.ByteUtil;
 import de.jpaw.util.ExceptionUtil;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.eventbus.MessageCodec;
 
 public class CompactMessageCodec implements MessageCodec<BonaPortable, BonaPortable> {
     private static final Logger LOGGER = LoggerFactory.getLogger(CompactMessageCodec.class);

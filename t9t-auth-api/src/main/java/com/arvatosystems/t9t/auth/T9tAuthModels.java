@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.auth;
 
+import de.jpaw.bonaparte.pojos.api.NoTracking;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+
 import com.arvatosystems.t9t.auth.request.ApiKeyCrudRequest;
 import com.arvatosystems.t9t.auth.request.ApiKeySearchRequest;
 import com.arvatosystems.t9t.auth.request.AuthModuleCfgCrudRequest;
@@ -39,9 +42,6 @@ import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.entities.SessionTracking;
-
-import de.jpaw.bonaparte.pojos.api.NoTracking;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
 public final class T9tAuthModels implements IViewModelContainer {
 

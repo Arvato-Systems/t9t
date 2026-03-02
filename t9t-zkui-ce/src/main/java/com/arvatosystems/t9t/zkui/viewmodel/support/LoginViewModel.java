@@ -27,8 +27,16 @@ import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import com.arvatosystems.t9t.zkui.session.UserInfo;
 import jakarta.annotation.Nonnull;
+import jakarta.servlet.http.HttpServletRequest;
+
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.google.common.base.Strings;
+import com.microsoft.aad.msal4j.AuthorizationRequestUrlParameters;
+import com.microsoft.aad.msal4j.ConfidentialClientApplication;
+import com.microsoft.aad.msal4j.Prompt;
+import com.microsoft.aad.msal4j.ResponseMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.BindingParam;
@@ -42,6 +50,8 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.zkui.azure.ad.AadAuthUtil;
@@ -51,20 +61,11 @@ import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 import com.arvatosystems.t9t.zkui.services.IAuthenticationService;
 import com.arvatosystems.t9t.zkui.services.IUserDAO;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.session.UserInfo;
 import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 import com.arvatosystems.t9t.zkui.util.Constants;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
 import com.arvatosystems.t9t.zkui.viewmodel.beans.ComboBoxItem;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.google.common.base.Strings;
-import com.microsoft.aad.msal4j.AuthorizationRequestUrlParameters;
-import com.microsoft.aad.msal4j.ConfidentialClientApplication;
-import com.microsoft.aad.msal4j.Prompt;
-import com.microsoft.aad.msal4j.ResponseMode;
-
-import de.jpaw.dp.Jdp;
-import jakarta.servlet.http.HttpServletRequest;
 
 
 

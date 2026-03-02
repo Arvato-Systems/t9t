@@ -15,6 +15,19 @@
  */
 package com.arvatosystems.t9t.changeRequest.service.impl;
 
+import java.util.Objects;
+
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.RequestParameters;
@@ -30,16 +43,6 @@ import com.arvatosystems.t9t.changeRequest.jpa.persistence.IChangeWorkFlowConfig
 import com.arvatosystems.t9t.changeRequest.jpa.persistence.IDataChangeRequestEntityResolver;
 import com.arvatosystems.t9t.changeRequest.services.IChangeWorkFlowConfigCache;
 import com.arvatosystems.t9t.changeRequest.services.IDataChangeRequestEmailService;
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Objects;
 
 @Singleton
 public class DataChangeRequestFlow implements IDataChangeRequestFlow {

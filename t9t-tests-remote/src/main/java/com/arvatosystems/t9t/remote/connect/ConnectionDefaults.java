@@ -18,15 +18,16 @@ package com.arvatosystems.t9t.remote.connect;
 import java.io.FileInputStream;
 import java.util.Properties;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.types.SessionParameters;
-
 import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.util.ExceptionUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+
+import com.arvatosystems.t9t.base.types.SessionParameters;
 
 public class ConnectionDefaults {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionDefaults.class);

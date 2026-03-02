@@ -20,14 +20,14 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Dependent;
+import de.jpaw.dp.Named;
+
 import com.arvatosystems.t9t.io.AsyncChannelDTO;
 import com.arvatosystems.t9t.io.AsyncHttpResponse;
 import com.arvatosystems.t9t.io.AsyncQueueDTO;
 import com.arvatosystems.t9t.io.InMemoryMessage;
 import com.arvatosystems.t9t.out.services.IAsyncSender;
-
-import de.jpaw.dp.Dependent;
-import de.jpaw.dp.Named;
 
 /**
  * The ThrottledOkSender has been created for testing purposes. It always returns OK, but takes the maximum time allowed.

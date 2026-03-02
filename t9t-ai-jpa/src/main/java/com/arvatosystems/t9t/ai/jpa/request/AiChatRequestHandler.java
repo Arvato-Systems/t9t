@@ -23,6 +23,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.api.media.MediaTypeInfo;
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.ai.AiAssistantDTO;
 import com.arvatosystems.t9t.ai.AiChatLogDTO;
 import com.arvatosystems.t9t.ai.AiConversationDTO;
@@ -39,8 +44,8 @@ import com.arvatosystems.t9t.ai.jpa.persistence.IAiConversationEntityResolver;
 import com.arvatosystems.t9t.ai.jpa.persistence.IAiUserStatusEntityResolver;
 import com.arvatosystems.t9t.ai.request.AiChatRequest;
 import com.arvatosystems.t9t.ai.request.AiChatResponse;
-import com.arvatosystems.t9t.ai.service.IAiChatService;
 import com.arvatosystems.t9t.ai.service.IAiChatLogService;
+import com.arvatosystems.t9t.ai.service.IAiChatService;
 import com.arvatosystems.t9t.base.IUploadChecker;
 import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.base.MessagingUtil;
@@ -48,11 +53,6 @@ import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import de.jpaw.dp.Jdp;
 
 public class AiChatRequestHandler extends AbstractRequestHandler<AiChatRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AiChatRequestHandler.class);

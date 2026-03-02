@@ -28,6 +28,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import de.jpaw.bonaparte.core.StringBuilderParser;
+import de.jpaw.dp.Jdp;
+import de.jpaw.util.ApplicationException;
+import de.jpaw.util.ExceptionUtil;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
@@ -46,11 +51,6 @@ import com.arvatosystems.t9t.ssm.SchedulerConcurrencyType;
 import com.arvatosystems.t9t.ssm.request.DealWithPriorJobInstancesRequest;
 import com.arvatosystems.t9t.ssm.request.DealWithPriorJobInstancesResponse;
 import com.arvatosystems.t9t.ssm.request.PerformScheduledJobWithCheckRequest;
-
-import de.jpaw.bonaparte.core.StringBuilderParser;
-import de.jpaw.dp.Jdp;
-import de.jpaw.util.ApplicationException;
-import de.jpaw.util.ExceptionUtil;
 
 /**
  * This class implements the Quartz {@link Job} interface and therefore the method {@link Job#execute(JobExecutionContext)}.

@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.io.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.jpa.impl.AbstractLeanSearchRequestHandler;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.io.jpa.entities.AsyncChannelEntity;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncChannelEntityResolver;
 import com.arvatosystems.t9t.io.request.LeanAsyncChannelSearchRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class LeanAsyncChannelSearchRequestHandler extends AbstractLeanSearchRequestHandler<LeanAsyncChannelSearchRequest, AsyncChannelEntity> {
     public LeanAsyncChannelSearchRequestHandler() {

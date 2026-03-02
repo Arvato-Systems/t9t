@@ -18,13 +18,13 @@ package com.arvatosystems.t9t.ssm.be.request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.ssm.request.UpdateSchedulerDataRequest;
 import com.arvatosystems.t9t.ssm.services.ISchedulerService;
-
-import de.jpaw.dp.Jdp;
 
 public class UpdateSchedulerDataRequestHandler extends AbstractRequestHandler<UpdateSchedulerDataRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(UpdateSchedulerDataRequestHandler.class);

@@ -16,8 +16,8 @@
 package com.arvatosystems.t9t.zkui.components;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
 /** Data sent for onDataSelect event. */
 public class EventDataSelect28 {

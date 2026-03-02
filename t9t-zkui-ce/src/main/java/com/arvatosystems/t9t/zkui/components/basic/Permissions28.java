@@ -35,10 +35,10 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 public class Permissions28 extends Groupbox {
     private static final long serialVersionUID = 5242996162336572551L;

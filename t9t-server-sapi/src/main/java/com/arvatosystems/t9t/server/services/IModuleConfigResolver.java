@@ -15,9 +15,9 @@
  */
 package com.arvatosystems.t9t.server.services;
 
-import com.arvatosystems.t9t.base.moduleCfg.ModuleConfigDTO;
-
 import jakarta.annotation.Nonnull;
+
+import com.arvatosystems.t9t.base.moduleCfg.ModuleConfigDTO;
 
 /**
  * Implementations of this interface should be singletons to ensure one separate instance per module.

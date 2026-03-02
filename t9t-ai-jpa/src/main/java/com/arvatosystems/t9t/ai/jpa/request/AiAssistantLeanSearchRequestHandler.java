@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.ai.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.ai.jpa.entities.AiAssistantEntity;
 import com.arvatosystems.t9t.ai.jpa.persistence.IAiAssistantEntityResolver;
 import com.arvatosystems.t9t.ai.request.AiAssistantLeanSearchRequest;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractLeanSearchRequestHandler;
 import com.arvatosystems.t9t.base.search.Description;
-
-import de.jpaw.dp.Jdp;
 
 public class AiAssistantLeanSearchRequestHandler extends AbstractLeanSearchRequestHandler<AiAssistantLeanSearchRequest, AiAssistantEntity> {
     public AiAssistantLeanSearchRequestHandler() {

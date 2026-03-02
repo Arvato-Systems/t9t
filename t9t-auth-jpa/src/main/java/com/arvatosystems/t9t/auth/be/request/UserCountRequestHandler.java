@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.auth.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.jpa.persistence.IUserEntityResolver;
 import com.arvatosystems.t9t.auth.request.UserCountRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
 
 public class UserCountRequestHandler extends AbstractReadOnlyRequestHandler<UserCountRequest> {
 

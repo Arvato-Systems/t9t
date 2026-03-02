@@ -21,6 +21,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import jakarta.annotation.Nullable;
+
+import com.google.common.base.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -52,6 +55,19 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.event.PagingEvent;
 import org.zkoss.zul.event.ZulEvents;
 
+import de.jpaw.bonaparte.api.SearchFilters;
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.DataWithTracking;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.api.SortColumn;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+import de.jpaw.bonaparte.pojos.api.media.MediaXType;
+import de.jpaw.bonaparte.pojos.meta.DataCategory;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.all.request.ExportAndEmailResultRequest;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.T9tConstants;
@@ -82,21 +98,6 @@ import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.GridConfigUtil;
 import com.arvatosystems.t9t.zkui.util.T9tConfigConstants;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
-import com.google.common.base.Strings;
-
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.SortColumn;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-import de.jpaw.bonaparte.pojos.api.media.MediaXType;
-import de.jpaw.bonaparte.pojos.meta.DataCategory;
-import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.dp.Jdp;
-import jakarta.annotation.Nullable;
 
 /** Class which creates a listbox with a configuration grid and a paging bar and export button.
  * The widget emits the select events of the listbox.

@@ -15,8 +15,9 @@
  */
 package com.arvatosystems.t9t.auth.jpa.impl;
 
-import com.arvatosystems.t9t.base.T9tConstants;
 import java.util.Objects;
+
+import com.arvatosystems.t9t.base.T9tConstants;
 
 public class TwoTenantIds {
 
