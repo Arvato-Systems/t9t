@@ -75,25 +75,28 @@
                                             <textbox maxlength="80" hflex="1" value="@load(each.comment) @save(each.comment, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})" />
                                         </listcell>
                                         <listcell>
-                                            <hbox>
-                                                <viewModel28 viewModelId="workflowStepConfig">
-                                                    <field28 id="workflowStepType[${forEachStatus.index}]" value="@bind(each.workflowStepType)" hflex="1" />
-                                                </viewModel28></hbox>
+                                            <grid>
+                                                <rows>
+                                                    <row><field28 id="workflowStepType[${forEachStatus.index}]" value="@bind(each.workflowStepType)" hflex="1" /></row>
+                                                </rows>
+                                            </grid>
                                         </listcell>
-                                        <listcell sclass="max-width-cell">
-                                            <hbox  hflex="3">
-                                              <viewModel28 viewModelId="workflowStepConfig">
-                                                <field28  id="stepName[${forEachStatus.index}]"     value="@load(each.stepName) @save(each.stepName, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})"       visible="@bind(each.workflowStepType eq 'JAVA_TASK')" />
-                                                <field28  id="parameters[${forEachStatus.index}]"   value="@load(each.parameters) @save(each.parameters, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})"   visible="@bind(each.workflowStepType eq 'ADD_PARAMETER')" />
-                                                <field28  id="toLabel[${forEachStatus.index}]"      value="@load(each.toLabel) @save(each.toLabel, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})"         visible="@bind(each.workflowStepType eq 'STEP_GOTO')" />
-                                                <field28  id="waitSeconds[${forEachStatus.index}]"  value="@load(each.waitSeconds) @save(each.waitSeconds, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})" visible="@bind(each.workflowStepType eq 'YIELD')" />
-                                                <cell>
-                                                <button28 id="Condition[${forEachStatus.index}]"   onClick="@command('editCondition', lb=processListBox)"                    visible="@bind(each.workflowStepType eq 'CONDITION')"/>
-                                                <button28 id="ThenDo[${forEachStatus.index}]"   onClick="@command('editThenDo', lb=processListBox)"                        visible="@bind(each.workflowStepType eq 'CONDITION')"/>
-                                                <button28 id="ElseDo[${forEachStatus.index}]"   onClick="@command('editElseDo', lb=processListBox)"                        visible="@bind(each.workflowStepType eq 'CONDITION')"/>
-                                                </cell>
-                                               </viewModel28>
-                                            </hbox>
+                                        <listcell>
+                                            <grid>
+                                                <rows>
+                                                    <row>
+                                                        <field28 sclass="max-width-cell" id="stepName[${forEachStatus.index}]"     value="@load(each.stepName) @save(each.stepName, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})"       visible="@bind(each.workflowStepType eq 'JAVA_TASK')" />
+                                                        <field28 sclass="max-width-cell" id="parameters[${forEachStatus.index}]"   value="@load(each.parameters) @save(each.parameters, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})"   visible="@bind(each.workflowStepType eq 'ADD_PARAMETER')" />
+                                                        <field28 sclass="max-width-cell" id="toLabel[${forEachStatus.index}]"      value="@load(each.toLabel) @save(each.toLabel, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})"         visible="@bind(each.workflowStepType eq 'STEP_GOTO')" />
+                                                        <field28 sclass="max-width-cell" id="waitSeconds[${forEachStatus.index}]"  value="@load(each.waitSeconds) @save(each.waitSeconds, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})" visible="@bind(each.workflowStepType eq 'YIELD')" />
+                                                        <div>
+                                                        <button28 id="Condition[${forEachStatus.index}]"   onClick="@command('editCondition', lb=processListBox)"                    visible="@bind(each.workflowStepType eq 'CONDITION')"/>
+                                                        <button28 id="ThenDo[${forEachStatus.index}]"   onClick="@command('editThenDo', lb=processListBox)"                        visible="@bind(each.workflowStepType eq 'CONDITION')"/>
+                                                        <button28 id="ElseDo[${forEachStatus.index}]"   onClick="@command('editElseDo', lb=processListBox)"                        visible="@bind(each.workflowStepType eq 'CONDITION')"/>
+                                                        </div>
+                                                    </row>
+                                                </rows>
+                                            </grid>
                                         </listcell>
                                     </listitem>
                                 </template>

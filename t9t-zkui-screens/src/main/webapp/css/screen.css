@@ -947,7 +947,7 @@ body {
     color: #368AC0;
 }
 
-.filterCell *{
+.filterCell :not(.z-label, .z-label *) {
     background: #ffffff;
 }
 
@@ -1402,7 +1402,7 @@ body {
 }
 
 /** hack to make the component inside a table enlarge to 100% **/
-.max-width-cell table, .max-width-cell table td > *:not(button) {
+.max-width-cell {
     width: 90% !important;
 }
 /** make the text in the disabled component look more obvious **/

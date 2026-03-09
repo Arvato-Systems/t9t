@@ -57,7 +57,7 @@
         <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
         <t9t.version>9.0-SNAPSHOT</t9t.version>
         <xtext.version>2.40.0</xtext.version>
-        <jetty.version>12.1.5</jetty.version>
+        <jetty.version>12.1.7</jetty.version>
 
         <!-- Build specific properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

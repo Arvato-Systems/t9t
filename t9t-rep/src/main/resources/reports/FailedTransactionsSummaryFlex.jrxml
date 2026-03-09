@@ -1,0 +1,213 @@
+<jasperReport name="Failed Transactions Summary" language="java" pageWidth="2600" pageHeight="1200" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="2600" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Empty" ignorePagination="true">
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<import>de.jpaw.util.ApplicationException</import>
+	<import>java.time.*</import>
+
+	<parameter name="translator" class="com.arvatosystems.t9t.translation.be.TranslationProvider"/>
+	<parameter name="currencyFormatter" class="com.arvatosystems.t9t.rep.be.util.NumberFormatterCurrency"/>
+	<parameter name="timeFormatter" class="com.arvatosystems.t9t.rep.be.util.TimeFormatter"/>
+	<parameter name="timeZone" class="java.lang.String"/>
+	<parameter name="tenantId" class="java.lang.String"/>
+
+	<parameter name="clientNow" forPrompting="false" class="java.time.LocalDateTime">
+		<defaultValueExpression><![CDATA[LocalDateTime.now()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dateFrom" forPrompting="false" class="java.time.LocalDateTime">
+		<defaultValueExpression><![CDATA[LocalDateTime.of(2018,1,1,0,0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dateTo" forPrompting="false" class="java.time.LocalDateTime">
+		<defaultValueExpression><![CDATA[LocalDateTime.now()]]></defaultValueExpression>
+	</parameter>
+
+	<parameter name="includeRcList" class="java.lang.String"/>
+	<parameter name="excludeRcList" class="java.lang.String"/>
+	<parameter name="includeCatList" class="java.lang.String"/>
+	<parameter name="excludeCatList" class="java.lang.String"/>
+	<parameter name="includePqonList" class="java.lang.String"/>
+	<parameter name="excludePqonList" class="java.lang.String"/>
+	<parameter name="includeOriginList" class="java.lang.String"/>
+	<parameter name="excludeOriginList" class="java.lang.String"/>
+	<parameter name="includeKnown" class="java.lang.Boolean"/>
+	<parameter name="excludeKnown" class="java.lang.Boolean"/>
+
+	<parameter name="includeRcClause" forPrompting="false" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{includeRcList} == null ? "0 = 0" : "ms.return_code in ($P!{includeRcList})"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="excludeRcClause" forPrompting="false" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{excludeRcList} == null ? "0 = 0" : "ms.return_code not in ($P!{excludeRcList})"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="includeCatClause" forPrompting="false" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{includeCatList} == null ? "0 = 0" : "div(ms.return_code, 100000000) in ($P!{includeCatList})"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="excludeCatClause" forPrompting="false" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{excludeCatList} == null ? "0 = 0" : "div(ms.return_code, 100000000) not in ($P!{excludeCatList})"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="includePqonClause" forPrompting="false" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{includePqonList} == null ? "0 = 0" : "ms.request_parameter_pqon in ($P!{includePqonList})"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="excludePqonClause" forPrompting="false" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{excludePqonList} == null ? "0 = 0" : "ms.request_parameter_pqon not in ($P!{excludePqonList})"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="includeOriginClause" forPrompting="false" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{includeOriginList} == null ? "0 = 0" : "COALESCE(ms.transaction_origin_type,'-') in ($P!{includeOriginList})"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="excludeOriginClause" forPrompting="false" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{excludeOriginList} == null ? "0 = 0" : "COALESCE(ms.transaction_origin_type,'-') not in ($P!{excludeOriginList})"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="includeKnownClause" forPrompting="false" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{includeKnown} != null && $P{includeKnown} ? "ignore_transaction_error(ms.request_parameter_pqon, ms.return_code)" : "0 = 0"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="excludeKnownClause" forPrompting="false" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{excludeKnown} != null && $P{excludeKnown} ? "not ignore_transaction_error(ms.request_parameter_pqon, ms.return_code)" : "0 = 0"]]></defaultValueExpression>
+	</parameter>
+
+	<query language="sql"><![CDATA[(
+     select   x.request_parameter_pqon,
+              x.return_code,  
+              x.transaction_origin_type,
+              x.user_id,
+              x.ref_list,
+              case
+                when x.diff_in_seconds = 0 and x.count = 1 then 0
+                when x.diff_in_seconds = 0 and x.count > 1 then x.count
+                else round(60.0 * x.count / x.diff_in_seconds, 2)
+              end as errors_per_minute,
+              x.count,
+              x.min_date,
+              x.max_date,
+              x.diff_in_minutes
+     from     (
+                select    ms.request_parameter_pqon,
+                          transactionorigintype2s(COALESCE(ms.transaction_origin_type,'O')) as transaction_origin_type,
+                          ms.user_id,
+                          ms.return_code,
+                          count(1) as count,
+                          min(ms.execution_started_at) as min_date,
+                          max(ms.execution_started_at) as max_date,
+                          round(extract(epoch from (max(ms.execution_started_at)-min(ms.execution_started_at))),0) as diff_in_seconds,
+                          round(extract(epoch from (max(ms.execution_started_at)-min(ms.execution_started_at)))/60.0,0) as diff_in_minutes,
+                          array_to_string((array_agg(ms.object_ref::text))[1:6], ', ') as ref_list
+                from      p28_int_message ms
+                where     ms.return_code != 0
+                and       $P!{includeRcClause}
+                and       $P!{excludeRcClause}
+                and       $P!{includeCatClause}
+                and       $P!{excludeCatClause}
+                and       $P!{includePqonClause}
+                and       $P!{excludePqonClause}
+                and       $P!{includeOriginClause}
+                and       $P!{excludeOriginClause}
+                and       $P!{includeKnownClause}
+                and       $P!{excludeKnownClause}
+                and       ms.execution_started_at >= $P{dateFrom}
+                and       ms.execution_started_at <  $P{dateTo}
+                group by  ms.request_parameter_pqon,
+                          ms.transaction_origin_type,
+                          ms.user_id,
+                          ms.return_code
+              ) x
+    )
+    order by  request_parameter_pqon,
+              return_code,
+              errors_per_minute desc,
+              count desc,
+              transaction_origin_type,
+              user_id]]>
+  </query>
+
+	<field name="request_parameter_pqon" class="java.lang.String"/>
+	<field name="return_code" class="java.lang.Integer"/>
+	<field name="transaction_origin_type" class="java.lang.String"/>
+	<field name="user_id" class="java.lang.String"/>
+	<field name="ref_list" class="java.lang.String"/>
+  <field name="errors_per_minute" class="java.lang.Double"/>
+	<field name="count" class="java.lang.Integer"/>
+	<field name="min_date" class="java.time.LocalDateTime"/>
+	<field name="max_date" class="java.time.LocalDateTime"/>
+	<field name="diff_in_minutes" class="java.lang.Integer"/>
+
+	<background splitType="Stretch"/>
+
+	<title height="20" splitType="Stretch">
+		<element kind="textField" x="0" y="0" width="2600" height="20" fontSize="12.0" blankWhenNull="true" bold="true" hTextAlign="Center">
+			<expression><![CDATA["Date From: "
+                      + $P{timeFormatter}.formatDateTime($P{dateFrom}, $P{timeZone}, $P{REPORT_LOCALE}) + " - "
+                      + "Date To: "
+                      + $P{timeFormatter}.formatDateTime($P{dateTo}, $P{timeZone}, $P{REPORT_LOCALE})]]></expression>
+		</element>
+	</title>
+
+	<columnHeader height="20" splitType="Stretch">
+		<element kind="textField" stretchType="ContainerHeight" x="0" y="0" width="400" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Request"]]></expression>
+		</element>
+		<element kind="textField" stretchType="ContainerHeight" x="400" y="0" width="100" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Error Code"]]></expression>
+		</element>
+		<element kind="textField" stretchType="ContainerHeight" x="500" y="0" width="600" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Error Meaning"]]></expression>
+		</element>
+		<element kind="textField" stretchType="ContainerHeight" x="1100" y="0" width="200" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Initiator"]]></expression>
+		</element>
+		<element kind="textField" stretchType="ContainerHeight" x="1300" y="0" width="100" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["User Id"]]></expression>
+		</element>
+		<element kind="textField" stretchType="ContainerHeight" x="1400" y="0" width="600" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Example Transactions"]]></expression>
+		</element>
+		<element kind="textField" stretchType="ContainerHeight" x="2000" y="0" width="100" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true" hTextAlign="Right">
+			<expression><![CDATA["Errors per Minute"]]></expression>
+		</element>
+		<element kind="textField" stretchType="ContainerHeight" x="2100" y="0" width="100" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true" hTextAlign="Right">
+			<expression><![CDATA["Count"]]></expression>
+		</element>
+		<element kind="textField" stretchType="ContainerHeight" x="2200" y="0" width="150" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true" hTextAlign="Right">
+			<expression><![CDATA["Min. Date"]]></expression>
+		</element>
+		<element kind="textField" stretchType="ContainerHeight" x="2350" y="0" width="150" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true" hTextAlign="Right">
+			<expression><![CDATA["Max. Date"]]></expression>
+		</element>
+		<element kind="textField" stretchType="ContainerHeight" x="2500" y="0" width="100" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true" hTextAlign="Right">
+			<expression><![CDATA["Time Diff. [min]"]]></expression>
+		</element>
+	</columnHeader>
+
+	<detail>
+		<band height="12" splitType="Prevent">
+			<element kind="textField" stretchType="ContainerHeight" x="0" y="0" width="400" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{request_parameter_pqon}]]></expression>
+			</element>
+			<element kind="textField" stretchType="ContainerHeight" x="400" y="0" width="100" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{return_code}]]></expression>
+			</element>
+			<element kind="textField" stretchType="ContainerHeight" x="500" y="0" width="600" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[ApplicationException.codeToString($F{return_code})]]></expression>
+			</element>
+			<element kind="textField" stretchType="ContainerHeight" x="1100" y="0" width="200" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{transaction_origin_type}]]></expression>
+			</element>
+			<element kind="textField" stretchType="ContainerHeight" x="1300" y="0" width="100" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{user_id}]]></expression>
+			</element>
+			<element kind="textField" stretchType="ContainerHeight" x="1400" y="0" width="600" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{ref_list}]]></expression>
+			</element>
+			<element kind="textField" stretchType="ContainerHeight" x="2000" y="0" width="100" height="12" textAdjust="StretchHeight" blankWhenNull="true" hTextAlign="Right" pattern="###,##0.00">
+				<expression><![CDATA[$F{errors_per_minute}]]></expression>
+			</element>
+			<element kind="textField" stretchType="ContainerHeight" x="2100" y="0" width="100" height="12" textAdjust="StretchHeight" blankWhenNull="true" hTextAlign="Right">
+				<expression><![CDATA[$F{count}]]></expression>
+			</element>
+			<element kind="textField" stretchType="ContainerHeight" x="2200" y="0" width="150" height="12" textAdjust="StretchHeight" blankWhenNull="true" hTextAlign="Right">
+				<expression><![CDATA[$P{timeFormatter}.formatDateTime($F{min_date}, $P{timeZone}, $P{REPORT_LOCALE})]]></expression>
+			</element>
+			<element kind="textField" stretchType="ContainerHeight" x="2350" y="0" width="150" height="12" textAdjust="StretchHeight" blankWhenNull="true" hTextAlign="Right">
+				<expression><![CDATA[$P{timeFormatter}.formatDateTime($F{max_date}, $P{timeZone}, $P{REPORT_LOCALE})]]></expression>
+			</element>
+			<element kind="textField" stretchType="ContainerHeight" x="2500" y="0" width="100" height="12" textAdjust="StretchHeight" blankWhenNull="true" hTextAlign="Right">
+				<expression><![CDATA[$F{diff_in_minutes}]]></expression>
+			</element>
+		</band>
+	</detail>
+</jasperReport>
