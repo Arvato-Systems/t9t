@@ -77,7 +77,7 @@ import com.arvatosystems.t9t.zkui.viewmodel.beans.ComboBoxItem;
 @ToServerCommand("realTimezone")
 @ToClientCommand("realTimezone")
 public class LoginViewModel {
-    private static final String LANGUAGE_COOKIE                     = "LANGUAGE_COOKIE";
+    public static final String LANGUAGE_COOKIE                     = "LANGUAGE_COOKIE";
     private static final String USERNAME_COOKIE                     = "USERNAME_COOKIE";
     private static final Logger LOGGER                     = LoggerFactory.getLogger(LoginViewModel.class);
     protected final IUserDAO userDAO = Jdp.getRequired(IUserDAO.class);

@@ -57,7 +57,7 @@
         <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
         <t9t.version>9.1-SNAPSHOT</t9t.version>
         <xtext.version>2.42.0</xtext.version>
-        <jetty.version>12.1.6</jetty.version>
+        <jetty.version>12.1.7</jetty.version>
 
         <!-- Build specific properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -70,7 +70,7 @@
         <build.revision>${build.unknown}</build.revision>
 
         <!-- Plugin versions -->
-        <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
         <maven-install-plugin.version>3.0.1</maven-install-plugin.version>
         <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
         <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
@@ -91,7 +91,7 @@
         <maven-versions-plugin.version>2.21.0</maven-versions-plugin.version>
         <maven-exec-plugin.version>3.6.3</maven-exec-plugin.version>
         <owasp-maven-plugin.version>12.2.0</owasp-maven-plugin.version>
-        <spring-boot-maven-plugin.version>4.0.1</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>4.0.3</spring-boot-maven-plugin.version>
         <git-commit-id-plugin.version>9.0.2</git-commit-id-plugin.version>
         <jaxws-maven-plugin.version>4.0.3</jaxws-maven-plugin.version>
         <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>

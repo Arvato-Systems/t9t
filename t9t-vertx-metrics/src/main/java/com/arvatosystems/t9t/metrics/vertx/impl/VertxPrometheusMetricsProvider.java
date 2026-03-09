@@ -37,6 +37,7 @@ import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+import io.vertx.core.internal.VertxInternal;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.micrometer.MicrometerMetricsOptions;
 import io.vertx.micrometer.PrometheusScrapingHandler;
@@ -106,6 +107,25 @@ public class VertxPrometheusMetricsProvider implements IVertxMetricsProvider {
         });
         new T9tVersionMetrics().bindTo(registry);
         LOGGER.info("Added t9t and custom meters.");
+
+        LOGGER.info("Adding blocked thread metrics...");
+        try {
+            final BlockedThreadMetrics blockedThreadMetrics = new BlockedThreadMetrics();
+            blockedThreadMetrics.bindTo(registry);
+
+            // Set up the custom handler for blocked thread events
+            if (vertx instanceof VertxInternal vertxInternal && vertxInternal.blockedThreadChecker() != null) {
+                vertxInternal.blockedThreadChecker().setThreadBlockedHandler(
+                    blockedThreadMetrics.getBlockedThreadHandler()
+                );
+                LOGGER.info("Blocked thread handler installed successfully");
+            } else {
+                LOGGER.warn("BlockedThreadChecker not available on Vert.x instance");
+            }
+            LOGGER.info("Blocked thread metrics added.");
+        } catch (final Exception e) {
+            LOGGER.error("Failed to install blocked thread metrics handler", e);
+        }
 
         LOGGER.info("Adding autonoumous pool meters...");
         final ExecutorService autonomousPool = Jdp.getRequired(IAutonomousExecutor.class).getExecutorServiceForMetering();

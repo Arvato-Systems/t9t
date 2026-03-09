@@ -30,38 +30,6 @@
     });
         <!--Temporary solution to the default screen not properly rendered. TODO: fixme -->
     zk.afterMount(function() { setTimeout(function () {$(window).resize();}, 500) });
-    
-    // ZK 10 compatibility: Implement keyboard shortcuts without ctrlKeys attribute
-    // This replaces the deprecated ctrlKeys functionality
-    document.addEventListener('keydown', function(event) {
-        // Only handle if not in an input/textarea to avoid interfering with normal typing
-        if (event.target.tagName !== 'INPUT' &amp;&amp; event.target.tagName !== 'TEXTAREA') {
-            var keyCode = '';
-            if (event.ctrlKey) keyCode = 'C+';
-            else if (event.altKey) keyCode = 'A+';
-            
-            if (keyCode) {
-                // Convert key to uppercase for letter keys or use the key directly for numbers
-                var key = event.key.toUpperCase();
-                if (key.length === 1) {
-                    keyCode += key;
-                    // Send event to ZK server-side
-                    var win = zk.Widget.$('$mainHome');
-                    if (win) {
-                        zAu.send(new zk.Event(win, 'onCtrlKey', {
-                            keyCode: event.keyCode,
-                            which: event.which,
-                            altKey: event.altKey,
-                            ctrlKey: event.ctrlKey,
-                            shiftKey: event.shiftKey,
-                            metaKey: event.metaKey
-                        }));
-                        event.preventDefault();
-                    }
-                }
-            }
-        }
-    });
     </script>
     <window id="mainHome" height="100%" apply="org.zkoss.bind.BindComposer" onCtrlKey="@command('ctrlKeyClick',item=event)"
         viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.support.ApplicationViewModel')" contentSclass="no-padding"  onSessionExpirationAlert="@command('showSessionExpirationWarning')" onLogout="@command('logout')">
@@ -143,6 +111,7 @@
                                                   prefer_locale = new Locale(localeValue);
                                               }
                                               session.setAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE, prefer_locale);
+                                              com.arvatosystems.t9t.zkui.util.ApplicationUtil.setCookie(com.arvatosystems.t9t.zkui.viewmodel.support.LoginViewModel.LANGUAGE_COOKIE, localeValue);
                                               Binder binder = org.zkoss.bind.impl.BinderUtil.getBinder(languageSelectionCombo);
                                               binder.sendCommand("switchLanguage", null);
                                               execution.sendRedirect("");

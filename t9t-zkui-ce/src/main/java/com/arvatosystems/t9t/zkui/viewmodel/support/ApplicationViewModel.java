@@ -242,7 +242,6 @@ public class ApplicationViewModel {
             win.setClosable(true);
             win.setMode(Window.MODAL);
             win.doModal();
-            win.setSclass("embeddedTenantSelection");
         }
     }
 

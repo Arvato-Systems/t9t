@@ -28,7 +28,7 @@ import jakarta.servlet.ServletContextListener;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.modelcontextprotocol.json.McpJsonMapper;
-import io.modelcontextprotocol.json.jackson.JacksonMcpJsonMapper;
+import io.modelcontextprotocol.json.jackson2.JacksonMcpJsonMapper;
 import io.modelcontextprotocol.server.McpServer;
 import io.modelcontextprotocol.server.McpServerFeatures;
 import io.modelcontextprotocol.server.McpSyncServer;
@@ -119,7 +119,7 @@ public class T9tMcpGatewayInitializer implements ServletContextListener {
                     .outputSchema(MCP_MAPPER, MAPPER.writeValueAsString(tool.getOutputSchema()))
                     .build();
 
-                McpServerFeatures.SyncToolSpecification toolSpec = new McpServerFeatures.SyncToolSpecification(mcpTool, null,
+                McpServerFeatures.SyncToolSpecification toolSpec = new McpServerFeatures.SyncToolSpecification(mcpTool,
                         (mcpAsyncServerExchange, callToolRequest) -> {
 
                             final String toolName = callToolRequest.name();
@@ -128,7 +128,7 @@ public class T9tMcpGatewayInitializer implements ServletContextListener {
 
                             if (T9tUtil.isBlank(toolName)) {
                                 LOGGER.error("Tool name is missing in the request body");
-                                return new CallToolResult("Tool executed failed, missing name", true);
+                                return CallToolResult.builder().addTextContent("Tool execution failed: missing name").isError(Boolean.TRUE).build();
                             }
 
                             removeEmptyEntries(params);

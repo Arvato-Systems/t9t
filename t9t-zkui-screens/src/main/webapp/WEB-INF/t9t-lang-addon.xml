@@ -19,6 +19,8 @@
     <addon-name>t9t</addon-name>
     <language-name>xul/html</language-name>
 
+    <stylesheet href="/css/head.css" type="text/css"/>
+
     <component>
         <component-name>permissions28</component-name>
         <component-class>com.arvatosystems.t9t.zkui.components.basic.Permissions28</component-class>

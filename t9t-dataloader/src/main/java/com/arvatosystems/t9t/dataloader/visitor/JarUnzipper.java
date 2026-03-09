@@ -128,6 +128,14 @@ public class JarUnzipper extends SimpleFileVisitor<Path> {
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
                 File entryDestination = new File(outputDir, entry.getName());
+                Path normalizedEntryPath = entryDestination.toPath().normalize();
+                Path normalizedOutputDirPath = Paths.get(outputDir).toAbsolutePath().normalize();
+
+                if (!normalizedEntryPath.startsWith(normalizedOutputDirPath)) {
+                    logger.error("Skipping invalid entry {} outside of target directory", entry.getName());
+                    continue;
+                }
+
                 entryDestination.getParentFile().mkdirs();
                 if (entry.isDirectory())
                     entryDestination.mkdirs();

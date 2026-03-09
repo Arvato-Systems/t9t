@@ -420,6 +420,9 @@ td.z-listcell .z-listcell-content {
 /*  Change the combo box button image for dynamic combo boxes to have differences between the two types */
 .dropdown .z-icon-caret-down::before {
     content: "*";
+    font-size: 7px;
+    position: absolute;
+    transform: translateY(-150%);
 }
 
 .z-notification-pointer ~ .z-notification-content {
@@ -947,7 +950,7 @@ body {
     color: #368AC0;
 }
 
-.filterCell *{
+.filterCell :not(.z-label, .z-label *) {
     background: #ffffff;
 }
 
@@ -1321,11 +1324,6 @@ body {
     width: 100%;
 }
 
-.embeddedTenantSelection > .z-window-content {
-    width: 246px;
-    margin: auto;
-}
-
 .button28 {
     height: 22px;
     min-width: 110px;
@@ -1402,7 +1400,7 @@ body {
 }
 
 /** hack to make the component inside a table enlarge to 100% **/
-.max-width-cell table, .max-width-cell table td > *:not(button) {
+.max-width-cell {
     width: 90% !important;
 }
 /** make the text in the disabled component look more obvious **/
@@ -1439,4 +1437,22 @@ body {
 /** Groupbox content padding for modal dialogs **/
 .groupbox-content-padded {
     padding: 15px;
+}
+
+.z-icon-caret-down::before, .z-icon-calendar::before, .z-paging-icon::before,
+.z-icon-angle-double-up::before, .z-icon-angle-double-down::before {
+    font-family: FontAwesome, sans-serif !important;
+}
+
+.z-icon-calendar::before {
+    font-weight: 400;
+}
+
+.z-paging-icon::before {
+    font-size: 11px;
+    display: flex;
+}
+
+.z-icon-angle-double-up::before, .z-icon-angle-double-down::before {
+    font-size: 10px;
 }
