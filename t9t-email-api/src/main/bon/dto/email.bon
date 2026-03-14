@@ -50,6 +50,9 @@ package (com.arvatosystems) t9t.email {
         optional Unicode(64)                        smtpServerPassword;
         optional Boolean                            smtpServerTls;
         optional emailAddress                       defaultReturnPath;
+        optional Integer                            smtpConnectionTimeoutMs;    // mail.smtp.connectiontimeout; defaults to 5000 if not set
+        optional Integer                            smtpReadTimeoutMs;          // mail.smtp.timeout; defaults to 10000 if not set
+        optional Integer                            smtpWriteTimeoutMs;         // mail.smtp.writetimeout; defaults to 10000 if not set
     }
 
 

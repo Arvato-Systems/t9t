@@ -60,6 +60,13 @@ public class SmtpEmailService implements IEmailSender {
 
     protected static final String STANDARD_ENCODING     = "UTF-8";
     protected static final String DEFAULT_SMTP_SERVER   = "cmail.servicemail24.de";  // "smtp.gmail.com")
+    protected static final int    DEFAULT_CONNECTION_TIMEOUT_MS = 5000;
+    protected static final int    DEFAULT_READ_TIMEOUT_MS       = 10000;
+    protected static final int    DEFAULT_WRITE_TIMEOUT_MS      = 10000;
+
+    private static String timeoutValue(final Integer configured, final int defaultValue) {
+        return Integer.toString(configured != null ? configured : defaultValue);
+    }
 
     @Override
     public ServiceResponse sendEmail(final Long messageRef, final UUID messageId, final EmailMessage msg, final EmailModuleCfgDTO configuration) {
@@ -105,6 +112,9 @@ public class SmtpEmailService implements IEmailSender {
         props.put("mail.smtp.host", configuration.getSmtpServerAddress() == null ? DEFAULT_SMTP_SERVER : configuration.getSmtpServerAddress());
         props.put("mail.smtp.port", port.toString());
         props.put("mail.mime.charset", STANDARD_ENCODING);
+        props.put("mail.smtp.connectiontimeout", timeoutValue(configuration.getSmtpConnectionTimeoutMs(), DEFAULT_CONNECTION_TIMEOUT_MS));
+        props.put("mail.smtp.timeout",           timeoutValue(configuration.getSmtpReadTimeoutMs(),        DEFAULT_READ_TIMEOUT_MS));
+        props.put("mail.smtp.writetimeout",      timeoutValue(configuration.getSmtpWriteTimeoutMs(),       DEFAULT_WRITE_TIMEOUT_MS));
         final String smtpFrom = returnPath != null ? returnPath : configuration.getDefaultReturnPath();
         if (smtpFrom != null) {
             props.put("mail.smtp.from", smtpFrom);
