@@ -1,0 +1,101 @@
+<jasperReport name="User Summary" language="java" pageWidth="800" pageHeight="1200" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="800" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Empty" ignorePagination="true">
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<import>de.jpaw.util.ApplicationException</import>
+	<import>java.time.*</import>
+
+	<parameter name="translator" class="com.arvatosystems.t9t.translation.be.TranslationProvider"/>
+	<parameter name="currencyFormatter" class="com.arvatosystems.t9t.rep.be.util.NumberFormatterCurrency"/>
+	<parameter name="timeFormatter" class="com.arvatosystems.t9t.rep.be.util.TimeFormatter"/>
+
+	<parameter name="timeZone" class="java.lang.String"/>
+	<parameter name="tenantId" class="java.lang.String"/>
+	<parameter name="clientNow" forPrompting="false" class="java.time.LocalDateTime">
+		<defaultValueExpression><![CDATA[LocalDateTime.now()]]></defaultValueExpression>
+	</parameter>
+
+	<parameter name="excludeDomainList" class="java.lang.String"/>
+
+	<parameter name="excludeDomainClause" forPrompting="false" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{excludeDomainList} == null ? "0 = 0" : "split_part(lower(email_address), '@', 2) not in ($P!{excludeDomainList})"]]></defaultValueExpression>
+	</parameter>
+
+	<query language="sql"><![CDATA[
+    select    split_part(lower(email_address), '@', 2) as email_domain,
+              sum(case is_active when true then 1 else 0 end) as count_active,
+              sum(case is_active when true then 0 else 1 end) as count_inactive
+    from      p42_cfg_users
+    where     tenant_id = $P{tenantId}
+    and       coalesce(is_technical, false) = false
+    and       email_address like '%@%'
+    and       split_part(lower(email_address), '@', 2) <> ''
+    and       $P!{excludeDomainClause}
+    group by  split_part(lower(email_address), '@', 2)
+    order by  split_part(lower(email_address), '@', 2)]]>
+  </query>
+
+	<field name="email_domain" class="java.lang.String"/>
+	<field name="count_active" class="java.lang.Long"/>
+	<field name="count_inactive" class="java.lang.Long"/>
+
+	<variable name="sum_active" calculation="Sum" class="java.lang.Long">
+		<expression><![CDATA[$F{count_active}]]></expression>
+	</variable>
+	<variable name="sum_inactive" calculation="Sum" class="java.lang.Long">
+		<expression><![CDATA[$F{count_inactive}]]></expression>
+	</variable>
+
+	<background splitType="Stretch"/>
+
+	<title height="60" splitType="Stretch">
+		<element kind="textField" x="0" y="0" width="800" height="30" fontSize="12.0" blankWhenNull="true" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<expression><![CDATA["User Summary by Email Domain"]]></expression>
+		</element>
+		<element kind="textField" x="0" y="30" width="800" height="30" fontSize="10.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
+      <expression><![CDATA["As Of: " + $P{timeFormatter}.formatDateTime($P{clientNow}, $P{timeZone}, $P{REPORT_LOCALE})]]></expression>
+		</element>
+	</title>
+
+	<columnHeader height="20" splitType="Stretch">
+		<element kind="textField" stretchType="ContainerHeight" x="0" y="0" width="400" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["E-Mail Domain"]]></expression>
+		</element>
+		<element kind="textField" stretchType="ContainerHeight" x="400" y="0" width="200" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true" hTextAlign="Right">
+      <paragraph rightIndent="5"/>
+			<expression><![CDATA["Count of Active Users"]]></expression>
+		</element>
+		<element kind="textField" stretchType="ContainerHeight" x="600" y="0" width="200" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true" hTextAlign="Right">
+      <paragraph rightIndent="5"/>
+			<expression><![CDATA["Count of Inactive Users"]]></expression>
+		</element>
+	</columnHeader>
+
+	<detail>
+		<band height="12" splitType="Prevent">
+			<element kind="textField" stretchType="ContainerHeight" x="0" y="0" width="400" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{email_domain}]]></expression>
+			</element>
+			<element kind="textField" stretchType="ContainerHeight" x="400" y="0" width="200" height="12" textAdjust="StretchHeight" blankWhenNull="true" hTextAlign="Right">
+        <paragraph rightIndent="5"/>
+				<expression><![CDATA[$F{count_active}]]></expression>
+			</element>
+			<element kind="textField" stretchType="ContainerHeight" x="600" y="0" width="200" height="12" textAdjust="StretchHeight" blankWhenNull="true" hTextAlign="Right">
+        <paragraph rightIndent="5"/>
+				<expression><![CDATA[$F{count_inactive}]]></expression>
+			</element>
+		</band>
+	</detail>
+
+	<summary height="12" splitType="Prevent">
+		<element kind="textField" uuid="ab1d07fa-8c0c-40d4-a91c-ef3b1c5daadb" stretchType="ContainerHeight" x="0" y="0" width="400" height="12" textAdjust="StretchHeight" blankWhenNull="true" bold="true" italic="true">
+			<expression><![CDATA["TOTAL"]]></expression>
+		</element>
+		<element kind="textField" uuid="69b3e751-769d-413c-9c07-30085a6525aa" stretchType="ContainerHeight" x="400" y="0" width="200" height="12" textAdjust="StretchHeight" blankWhenNull="true" bold="true" italic="true" hTextAlign="Right">
+			<paragraph rightIndent="5"/>
+			<expression><![CDATA[$V{sum_active}]]></expression>
+		</element>
+		<element kind="textField" uuid="2cd5354d-05d1-4350-900e-d9632197d96f" stretchType="ContainerHeight" x="600" y="0" width="200" height="12" textAdjust="StretchHeight" blankWhenNull="true" bold="true" italic="true" hTextAlign="Right">
+			<paragraph rightIndent="5"/>
+			<expression><![CDATA[$V{sum_inactive}]]></expression>
+		</element>
+	</summary>
+</jasperReport>

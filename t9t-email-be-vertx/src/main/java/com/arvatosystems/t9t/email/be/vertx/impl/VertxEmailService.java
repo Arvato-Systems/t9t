@@ -140,6 +140,11 @@ public class VertxEmailService implements IEmailSender {
             config.setPassword(configuration.getSmtpServerPassword());
         }
         config.setMaxPoolSize(4); // default is 10 which may be a bit too much
+        if (configuration.getSmtpConnectionTimeoutMs() != null) {
+            config.setConnectTimeout(configuration.getSmtpConnectionTimeoutMs());
+        }
+        // Note: Vert.x MailClient is already non-blocking; read/write timeouts are managed
+        // internally by the Vert.x event loop. Only connection timeout is configurable here.
         final Vertx vertx = Jdp.getRequired(Vertx.class);
         return MailClient.createShared(vertx, config, clientPoolId);
     }

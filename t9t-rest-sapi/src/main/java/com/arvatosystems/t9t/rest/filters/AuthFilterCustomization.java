@@ -47,6 +47,7 @@ import com.arvatosystems.t9t.base.types.AuthenticationParameters;
 import com.arvatosystems.t9t.ipblocker.services.IIPAddressBlocker;
 import com.arvatosystems.t9t.rest.services.IAuthFilterCustomization;
 import com.arvatosystems.t9t.rest.services.IGatewayAuthChecker;
+import com.arvatosystems.t9t.rest.utils.AuthFilterRegistry;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
 
 @Singleton
@@ -119,6 +120,14 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
         final String path = requestContext.getUriInfo().getPath();
         final String httpMethod = requestContext.getMethod();
         LOGGER.debug("filterUnauthenticated for method {}, type {}, path {}", httpMethod, requestContext.getMediaType(), path);
+        final Boolean customFilterResult = AuthFilterRegistry.extraAuthFilter(path, httpMethod, requestContext);
+        if (customFilterResult != null) {
+            if (customFilterResult) {
+                throwUnauthorized(requestContext);
+                return true;  // filtered
+            }
+            return false; // OK
+        }
         switch (httpMethod) {
         case HttpMethod.POST:
             // allow login, but only if JWT is enabled
