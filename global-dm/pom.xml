@@ -629,15 +629,6 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- Camunda BPMN: still linked to pre-jakarta spring version, removing
-            <dependency>
-                <groupId>org.camunda.bpm</groupId>
-                <artifactId>camunda-bom</artifactId>
-                <version>${camunda-bom.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency> -->
-
             <!-- Xtext/Xtend for Eclipse -->
             <dependency>
                 <groupId>org.eclipse.xtext</groupId>

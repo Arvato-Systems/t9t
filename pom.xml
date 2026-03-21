@@ -1078,7 +1078,6 @@
                 <!-- BPMN2 integration projects -->
                 <module>t9t-bpmn2-api</module>
                 <module>t9t-bpmn2-sapi</module>
-                <!-- <module>t9t-bpmn2-camunda-be</module>  is still pre-jakarta -->
                 <module>t9t-bpmn2-jpa</module>
                 <module>t9t-bpmn2-mock</module>
 
@@ -1368,7 +1367,6 @@
 
                 <module>t9t-bpmn2-api</module>
                 <module>t9t-bpmn2-sapi</module>
-                <!-- module>t9t-bpmn2-camunda-be</module> need to fix style issues, and is also excluded from build -->
                 <module>t9t-bpmn2-jpa</module>
                 <module>t9t-bpmn2-mock</module>
 

@@ -76,7 +76,7 @@ public class SmtpEmailService implements IEmailSender {
         );
         try {
             final Session session = createSession(configuration, msg.getReturnPath());
-            final MimeMessage message = composeMessage(session, msg);
+            final MimeMessage message = composeMessage(session, msg, messageRef);
             final Transport transport = session.getTransport(configuration.getSmtpServerTransport());
             try {
                 if (configuration.getSmtpServerPassword() == null)
@@ -84,11 +84,11 @@ public class SmtpEmailService implements IEmailSender {
                 else
                     transport.connect(configuration.getSmtpServerUserId(), configuration.getSmtpServerPassword()); // isn't this double? has been specified
                                                                                                                    // above
-                LOGGER.debug("Connected to SMTP server");
+                LOGGER.debug("Connected to SMTP server for email ref {}", messageRef);
                 transport.sendMessage(message, message.getAllRecipients());
-                LOGGER.debug("Email message sent");
+                LOGGER.debug("Email message with ref {} sent", messageRef);
             } catch (Exception e) {
-                LOGGER.error("Connection or message sending error: {}: {}", e.getClass().getSimpleName(), e.getMessage());
+                LOGGER.error("Connection or message sending error for email ref {}: {}: {}", messageRef, e.getClass().getSimpleName(), e.getMessage(), e);
                 if (transport != null)
                     transport.close();
 
@@ -96,10 +96,9 @@ public class SmtpEmailService implements IEmailSender {
             }
             transport.close();
         } catch (Exception e1) {
-            e1.printStackTrace();
-            LOGGER.error("Error while sending email: {}", e1.getMessage());
+            LOGGER.error("Error while sending email with ref {}: {}: {}", messageRef, e1.getClass().getSimpleName(), e1.getMessage(), e1);
         }
-        LOGGER.debug("Disconnected from SMTP server");
+        LOGGER.debug("Disconnected from SMTP server for email ref {}", messageRef);
         return null;
     }
 
@@ -133,7 +132,7 @@ public class SmtpEmailService implements IEmailSender {
         }
     }
 
-    private MimeMessage composeMessage(Session session, EmailMessage msg) throws Exception {
+    private MimeMessage composeMessage(Session session, EmailMessage msg, Long messageRef) throws Exception {
         try {
             final RecipientEmail recipient = msg.getRecipient();
             final MimeMessage emailMessage = new MimeMessage(session);
@@ -175,7 +174,7 @@ public class SmtpEmailService implements IEmailSender {
             }
             return emailMessage;
         } catch (MessagingException e) {
-            LOGGER.error("SMTP message composition problem: {}: {}", e.getClass().getSimpleName(), e.getMessage());
+            LOGGER.error("SMTP message composition problem for email ref {}: {}: {}", messageRef, e.getClass().getSimpleName(), e.getMessage(), e);
             throw new T9tException(T9tEmailException.MIME_MESSAGE_COMPOSITION_PROBLEM, e.getClass().getSimpleName() + ": " + e.getMessage());
         }
     }
