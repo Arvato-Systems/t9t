@@ -25,7 +25,6 @@ import de.jpaw.bonaparte.core.BonaPortableClass;
 
 import com.arvatosystems.t9t.ai.tools.AbstractAiTool;
 import com.arvatosystems.t9t.ai.tools.AbstractAiToolResult;
-import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 public final class AiToolRegistry {
@@ -36,10 +35,9 @@ public final class AiToolRegistry {
     }
 
     /** Registers a tool, currently needs to be fed with the request class. */
-    public static <R extends AbstractAiTool, U extends AbstractAiToolResult> void register(final IAiTool<R, U> tool, BonaPortableClass<R> requestClass) {
-        // final String modifiedName = requestClass.getPqon().replace(".", "-");  // path names are garbled by some LLMs
-        final String modifiedName = T9tUtil.getSimpleName(requestClass.getPqon());
-        TOOLS.put(modifiedName, new AiToolDescriptor(modifiedName, tool, requestClass, requestClass.getReturns()));
+    public static <R extends AbstractAiTool, U extends AbstractAiToolResult> void register(@Nonnull final String toolIdentifier,
+        @Nonnull final IAiTool<R, U> tool, @Nonnull final BonaPortableClass<R> requestClass) {
+        TOOLS.put(toolIdentifier, new AiToolDescriptor(toolIdentifier, tool, requestClass, requestClass.getReturns()));
     }
 
     public static AiToolDescriptor<?, ?> get(final String name) {

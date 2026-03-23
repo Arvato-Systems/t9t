@@ -110,6 +110,7 @@ import com.arvatosystems.t9t.ai.service.AiToolDescriptor;
 import com.arvatosystems.t9t.ai.service.AiToolRegistry;
 import com.arvatosystems.t9t.ai.service.IAiChatLogService;
 import com.arvatosystems.t9t.ai.service.IAiTool;
+import com.arvatosystems.t9t.ai.service.IAiToolService;
 import com.arvatosystems.t9t.ai.tools.AbstractAiTool;
 import com.arvatosystems.t9t.ai.tools.AbstractAiToolResult;
 import com.arvatosystems.t9t.ai.tools.AiToolStringResult;
@@ -136,6 +137,7 @@ public class OpenAIClient implements IOpenAIClient {
     private static final String FILES_PATH = "/v1/files";
 
     private final IAiChatLogService aiChatLogService = Jdp.getRequired(IAiChatLogService.class);
+    protected final IAiToolService toolService = Jdp.getRequired(IAiToolService.class);
 
     private final boolean configured;
     private final ObjectMapper objectMapper;
@@ -402,7 +404,8 @@ public class OpenAIClient implements IOpenAIClient {
         toolResultMessage.setRole(OpenAIRoleType.TOOL);
         toolResultMessage.setToolCallId(toolCall.getId());
 
-        final AiToolDescriptor<?, ?> tool = AiToolRegistry.get(functionCall.getName());
+        final String toolIdentifier = toolService.getToolIdentifier(functionCall.getName(), functionCall.getArguments());
+        final AiToolDescriptor<?, ?> tool = AiToolRegistry.get(toolIdentifier);
         if (tool == null) {
             LOGGER.error("Tool {} not found in registry - LLM fantasizing?", functionCall.getName());
             toolResultMessage.setContent("ERROR! Tool not found in registry");

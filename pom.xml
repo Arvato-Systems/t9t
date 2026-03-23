@@ -91,7 +91,7 @@
         <maven-versions-plugin.version>2.21.0</maven-versions-plugin.version>
         <maven-exec-plugin.version>3.6.3</maven-exec-plugin.version>
         <owasp-maven-plugin.version>12.2.0</owasp-maven-plugin.version>
-        <spring-boot-maven-plugin.version>4.0.3</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>4.0.4</spring-boot-maven-plugin.version>
         <git-commit-id-plugin.version>9.0.2</git-commit-id-plugin.version>
         <jaxws-maven-plugin.version>4.0.3</jaxws-maven-plugin.version>
         <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>
@@ -100,7 +100,7 @@
         <cxf-codegen-plugin.version>4.2.0</cxf-codegen-plugin.version>
         <cxf-wadl2java-plugin.version>4.2.0</cxf-wadl2java-plugin.version>
         <cxf-java2ws-plugin.version>4.2.0</cxf-java2ws-plugin.version>
-        <cxf-xjc-plugin.version>4.2.0</cxf-xjc-plugin.version>
+        <cxf-xjc-plugin.version>4.1.2</cxf-xjc-plugin.version>
         <echo-maven-plugin.version>1.0.0</echo-maven-plugin.version>
         <jaxb2-maven-plugin.version>3.3.0</jaxb2-maven-plugin.version>
 
@@ -113,7 +113,7 @@
         <!-- Versions of Xtext & Xtend plugins -->
         <xtend-maven-plugin.version>${xtext.version}</xtend-maven-plugin.version>
         <xtext-maven-plugin.version>${xtext.version}</xtext-maven-plugin.version>
-        <jdt.version>3.44.0</jdt.version>
+        <jdt.version>3.45.0</jdt.version>
 
         <bonaparte-plugin.version>6.4.0</bonaparte-plugin.version>
         <license-plugin.version>5.0.0</license-plugin.version>
@@ -1071,7 +1071,6 @@
                 <!-- BPMN2 integration projects -->
                 <module>t9t-bpmn2-api</module>
                 <module>t9t-bpmn2-sapi</module>
-                <!-- <module>t9t-bpmn2-camunda-be</module>  is still pre-jakarta -->
                 <module>t9t-bpmn2-jpa</module>
                 <module>t9t-bpmn2-mock</module>
 
@@ -1364,7 +1363,6 @@
 
                 <module>t9t-bpmn2-api</module>
                 <module>t9t-bpmn2-sapi</module>
-                <!-- module>t9t-bpmn2-camunda-be</module> need to fix style issues, and is also excluded from build -->
                 <module>t9t-bpmn2-jpa</module>
                 <module>t9t-bpmn2-mock</module>
 

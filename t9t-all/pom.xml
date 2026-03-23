@@ -253,21 +253,5 @@
             <artifactId>t9t-sql-migration-executor</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-hibernate-search-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-hibernate-search-be</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-hibernate-search-be-lucene</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-hibernate-search-be-elasticsearch</artifactId>
-        </dependency>
     </dependencies>
 </project>

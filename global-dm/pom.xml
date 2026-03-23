@@ -51,7 +51,7 @@
         <driver.oracle.version>23.26.1.0.0</driver.oracle.version>
         <driver.postgresql.version>42.7.10</driver.postgresql.version>     <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
         <driver.sqlserver.version>13.4.0.jre11</driver.sqlserver.version> <!-- not all releases are available on maven central as jre17 builds -->
-        <driver.hana.version>2.27.7</driver.hana.version>
+        <driver.hana.version>2.28.4</driver.hana.version>
         <h2.version>2.3.232</h2.version>
 
         <!-- OR mappers -->
@@ -70,7 +70,7 @@
 
         <!-- new Jakarta stuff (versions in comment denote jakarta namespace)-->
         <jakarta.xml-bind-api.version>4.0.5</jakarta.xml-bind-api.version>              <!-- 3.0.1 for jakarta namespace -->
-        <jakarta.xml-bind.version>4.0.6</jakarta.xml-bind.version>                      <!-- 3.0.1 for jakarta namespace -->
+        <jakarta.xml-bind.version>4.0.7</jakarta.xml-bind.version>                      <!-- 3.0.1 for jakarta namespace -->
         <jakarta.xml-jaxb-core.version>4.0.7</jakarta.xml-jaxb-core.version>            <!-- 3.0.1 for jakarta namespace (skip for javax!) -->
         <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>          <!-- 3.0.0 for EE 11 core -->
 
@@ -80,7 +80,7 @@
         <jakarta.mail.version>2.0.5</jakarta.mail.version>                              <!-- this is now angus-mail -->
         <jakarta.el-api.version>5.0.1</jakarta.el-api.version>                          <!-- 6.0.1 for EE 11 core (TODO) -->
         <jakarta.el.version>4.0.2</jakarta.el.version>                                  <!-- (org.glassfish:jakarta.el) -->
-        <jakarta.xml.ws-api.version>4.0.2</jakarta.xml.ws-api.version>
+        <jakarta.xml.ws-api.version>4.0.3</jakarta.xml.ws-api.version>
         <jakarta.xml.soap-api.version>3.0.2</jakarta.xml.soap-api.version>
         <jakarta.xml.soap.version>3.0.4</jakarta.xml.soap.version>                      <!-- (com.sun.xml.messaging.saaj:saaj-impl) -->
         <jakarta.jws-api.version>3.0.0</jakarta.jws-api.version>                        <!-- 3.0.0 for jakarta namespace -->
@@ -108,7 +108,7 @@
         <commons-csv.version>1.14.1</commons-csv.version>                 <!-- not used in t9t, but DM made for downstream projects -->
 
         <!-- AWS SDK v2 -->
-        <aws2-bom.version>2.42.13</aws2-bom.version>
+        <aws2-bom.version>2.42.18</aws2-bom.version>
 
         <!-- AWS JDBC wrapper for Aurora -->
         <aws-jdbc-wrapper.version>2.6.8</aws-jdbc-wrapper.version>
@@ -146,7 +146,7 @@
         <bouncycastle-tsp.version>1.46-donotuse</bouncycastle-tsp.version>     <!--  is older than the others! Is it still required? -->
         <woodstox.version>7.1.1</woodstox.version>
         <stax2-api.version>4.2.2</stax2-api.version>
-        <icu4j.version>78.2</icu4j.version>
+        <icu4j.version>78.3</icu4j.version>
         <zxing.version>3.5.4</zxing.version>
         <quartz.version>2.5.0</quartz.version>
         <jsap.version>2.1</jsap.version>
@@ -156,7 +156,7 @@
         <httpcore5.version>5.3.6</httpcore5.version>
         <httpclient5.version>5.5.1</httpclient5.version>
         <httpmime.version>4.5.14</httpmime.version>
-        <pdfbox.version>3.0.6</pdfbox.version>
+        <pdfbox.version>3.0.7</pdfbox.version>
         <freemarker.version>2.3.34</freemarker.version>
         <jasperreports.version>7.0.6</jasperreports.version>
         <openpdf.version>1.3.43</openpdf.version>
@@ -178,11 +178,11 @@
         <reload4j.version>1.2.26</reload4j.version>
 
         <!-- Spring core -->
-        <spring-bom.version>7.0.5</spring-bom.version>
+        <spring-bom.version>7.0.6</spring-bom.version>
         <!-- Spring data -->
-        <spring-data-jpa.version>4.0.3</spring-data-jpa.version>
+        <spring-data-jpa.version>4.0.4</spring-data-jpa.version>
         <!-- Spring boot -->
-        <spring-boot.version>4.0.3</spring-boot.version>
+        <spring-boot.version>4.0.4</spring-boot.version>
 
         <netty.version>4.2.10.Final</netty.version>
         <vertx4.version>5.0.8</vertx4.version>
@@ -196,7 +196,7 @@
         <flyway.version>11.19.0</flyway.version>
         <reflections.version>0.9.10</reflections.version>
         <maven-plugin-api.version>3.9.14</maven-plugin-api.version>
-        <jackson.version>2.21.1</jackson.version>
+        <jackson.version>2.21.2</jackson.version>
         <solr.version>8.11.1</solr.version>
         <camel.version>4.18.0</camel.version>
         <jsch.version>2.27.9</jsch.version>
@@ -218,7 +218,7 @@
 
         <msal4j.version>1.23.1</msal4j.version>
         <nimbus.version>10.5</nimbus.version>
-        <jboss-logging.version>3.6.2.Final</jboss-logging.version>
+        <jboss-logging.version>3.6.3.Final</jboss-logging.version>
         <cxf.version>4.2.0</cxf.version>
 
         <!-- Scripting engines -->
@@ -585,15 +585,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
-            <!-- Camunda BPMN: still linked to pre-jakarta spring version, removing
-            <dependency>
-                <groupId>org.camunda.bpm</groupId>
-                <artifactId>camunda-bom</artifactId>
-                <version>${camunda-bom.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency> -->
 
             <!-- Xtext/Xtend for Eclipse -->
             <dependency>

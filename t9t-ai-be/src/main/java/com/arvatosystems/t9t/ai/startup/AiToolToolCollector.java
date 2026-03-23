@@ -28,10 +28,13 @@ import de.jpaw.dp.StartupOnly;
 
 import com.arvatosystems.t9t.ai.service.AiToolRegistry;
 import com.arvatosystems.t9t.ai.service.IAiTool;
+import com.arvatosystems.t9t.ai.service.IAiToolService;
 
 @Startup(1234567)
 public class AiToolToolCollector implements StartupOnly {
     private static final Logger LOGGER = LoggerFactory.getLogger(AiToolToolCollector.class);
+
+    protected final IAiToolService toolService = Jdp.getRequired(IAiToolService.class);
 
     @Override
     public void onStartup() {
@@ -43,7 +46,8 @@ public class AiToolToolCollector implements StartupOnly {
             try {
                 // determine BonPortableClass for this qualifier
                 final BonaPortableClass bclass = BonaPortableFactory.getBClassForPqon(pqon);
-                AiToolRegistry.register(tool.getValue(), bclass);
+                final String toolIdentifier = toolService.getToolIdentifier(tool.getValue(), bclass);
+                AiToolRegistry.register(toolIdentifier, tool.getValue(), bclass);
             } catch (final Exception e) {
                 LOGGER.error("Cannot register tool {}: no BonaPortableClass: {}", pqon, e.getMessage());
             }

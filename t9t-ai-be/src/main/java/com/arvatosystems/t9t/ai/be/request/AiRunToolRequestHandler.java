@@ -43,6 +43,7 @@ import com.arvatosystems.t9t.ai.service.AiToolDescriptor;
 import com.arvatosystems.t9t.ai.service.AiToolRegistry;
 import com.arvatosystems.t9t.ai.service.IAiChatLogService;
 import com.arvatosystems.t9t.ai.service.IAiTool;
+import com.arvatosystems.t9t.ai.service.IAiToolService;
 import com.arvatosystems.t9t.ai.tools.AbstractAiTool;
 import com.arvatosystems.t9t.ai.tools.AbstractAiToolResult;
 import com.arvatosystems.t9t.ai.tools.AiToolMediaDataResult;
@@ -63,12 +64,13 @@ public class AiRunToolRequestHandler extends AbstractRequestHandler<AiRunToolReq
 
     private final IAuthorize authorizer = Jdp.getRequired(IAuthorize.class);
     private final IAiChatLogService aiChatLogService = Jdp.getRequired(IAiChatLogService.class);
-
+    protected final IAiToolService toolService = Jdp.getRequired(IAiToolService.class);
 
     @Override
     public AiRunToolResponse execute(final RequestContext ctx, final AiRunToolRequest request) {
         final AiRunToolResponse toolResponse = new AiRunToolResponse();
-        final AiToolDescriptor<?, ?> tool = AiToolRegistry.get(request.getName());
+        final String toolIdentifier = toolService.getToolIdentifier(request.getName(), request.getArguments());
+        final AiToolDescriptor<?, ?> tool = AiToolRegistry.get(toolIdentifier);
 
         if (tool == null) {
             LOGGER.error("Tool {} not found in registry - LLM fantasizing?", request.getName());
