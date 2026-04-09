@@ -131,6 +131,7 @@
 
         <!-- OpenApi -->
         <openapi-generator.version>7.20.0</openapi-generator.version>
+        <jsonschema2pojo.version>1.3.3</jsonschema2pojo.version>
 
         <!-- Angular related versions -->
         <typescript.version>~5.8.2</typescript.version>
@@ -686,6 +687,11 @@
                     <groupId>org.openapitools</groupId>
                     <artifactId>openapi-generator-maven-plugin</artifactId>
                     <version>${openapi-generator.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jsonschema2pojo</groupId>
+                    <artifactId>jsonschema2pojo-maven-plugin</artifactId>
+                    <version>${jsonschema2pojo.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

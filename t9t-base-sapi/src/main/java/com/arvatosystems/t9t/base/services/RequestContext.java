@@ -387,12 +387,12 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
             } else {
                 final int len = languageCode.length();
                 if (len == 2) {
-                    currentLocale = new Locale(languageCode);
+                    currentLocale = Locale.of(languageCode);
                 } else if (len >= 5 && (languageCode.charAt(2) == '-' || languageCode.charAt(2) == '_')) {
                     if (len == 5) {
-                        currentLocale = new Locale(languageCode.substring(0, 2), languageCode.substring(3));
+                        currentLocale = Locale.of(languageCode.substring(0, 2), languageCode.substring(3));
                     } else if (len > 7) {
-                        currentLocale = new Locale(languageCode.substring(0, 2), languageCode.substring(3, 5), languageCode.substring(6));
+                        currentLocale = Locale.of(languageCode.substring(0, 2), languageCode.substring(3, 5), languageCode.substring(6));
                     } else {
                         LOGGER.warn("Invalid language code {} in internal header parameters", languageCode);
                         currentLocale = Locale.getDefault();

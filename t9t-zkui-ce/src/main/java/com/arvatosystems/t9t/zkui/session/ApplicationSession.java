@@ -584,7 +584,7 @@ public final class ApplicationSession {
 
         userLanguage = rawLanguage == null ? "en" : rawLanguage;
         userLanguages = translationProvider.resolveLanguagesToCheck(userLanguage, true);
-        userLocale = userLanguage.length() == 2 ? new Locale(userLanguage) : new Locale(userLanguage.substring(0, 2), userLanguage.substring(3, 5));
+        userLocale = userLanguage.length() == 2 ? Locale.of(userLanguage) : Locale.of(userLanguage.substring(0, 2), userLanguage.substring(3, 5));
         LOGGER.debug("default language set to {}, language list with fallsbacks has {} entries", userLanguage, userLanguages.length);
 
         dayFormat = doDateTimeFormatter("day", "M-");

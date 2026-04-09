@@ -53,9 +53,9 @@ public class RedirectViewModel {
             if (lang != null) {
                 Locale preferLocale = null;
                 if (lang != null && lang.length() == 5) {
-                    preferLocale = new Locale(lang.substring(0, 2), lang.substring(3, 5));
+                    preferLocale = Locale.of(lang.substring(0, 2), lang.substring(3, 5));
                 } else {
-                    preferLocale = new Locale(lang);
+                    preferLocale = Locale.of(lang);
                 }
                 userDAO.switchLanguage(lang);
                 Sessions.getCurrent().setAttribute(Attributes.PREFERRED_LOCALE, preferLocale);

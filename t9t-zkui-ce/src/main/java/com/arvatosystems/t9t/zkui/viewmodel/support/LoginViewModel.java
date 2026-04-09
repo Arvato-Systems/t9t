@@ -229,9 +229,9 @@ public class LoginViewModel {
     public void onLanguageChanged(@BindingParam("localeValue") String localeValue) {
         Locale preferLocale = null;
         if (localeValue != null && localeValue.length() == 5) {
-            preferLocale = new Locale(localeValue.substring(0, 2), localeValue.substring(3, 5));
+            preferLocale = Locale.of(localeValue.substring(0, 2), localeValue.substring(3, 5));
         } else {
-            preferLocale = new Locale(localeValue);
+            preferLocale = Locale.of(localeValue);
         }
         Sessions.getCurrent().setAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE, preferLocale);
         this.switchLanguage();
@@ -262,9 +262,9 @@ public class LoginViewModel {
         String localeValue = selected.getValue();
         Locale preferLocale = null;
         if (localeValue != null && localeValue.length() == 5) {
-            preferLocale = new Locale(localeValue.substring(0, 2), localeValue.substring(3, 5));
+            preferLocale = Locale.of(localeValue.substring(0, 2), localeValue.substring(3, 5));
         } else {
-            preferLocale = new Locale(localeValue);
+            preferLocale = Locale.of(localeValue);
         }
         Sessions.getCurrent().setAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE, preferLocale);
     }
@@ -325,8 +325,8 @@ public class LoginViewModel {
         if (null == isInitialLogin || isInitialLogin) {
             String cookieLanguage  =       ApplicationUtil.getCookie(LANGUAGE_COOKIE);
             if (null != cookieLanguage) {
-                Locale userLocale = cookieLanguage.length() == 2 ? new Locale(cookieLanguage)
-                        : new Locale(cookieLanguage.substring(0, 2), cookieLanguage.substring(3, 5));
+                Locale userLocale = cookieLanguage.length() == 2 ? Locale.of(cookieLanguage)
+                        : Locale.of(cookieLanguage.substring(0, 2), cookieLanguage.substring(3, 5));
                 Sessions.getCurrent().setAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE, userLocale);
             }
         }
