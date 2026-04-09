@@ -49,7 +49,7 @@ public class AuthCreateStartupContext implements StartupOnly {
 
         final JwtInfo jwt = T9tDefaultContext.STARTUP_JWT;
         final String encoded = authenticator.doSign(jwt, 10L * 60); // create a JWT for 10 minutes - should be long enough to start
-        final InternalHeaderParameters ihdr = new InternalHeaderParameters(encoded, jwt, 1L, "en", jwt.getIssuedAt(), null, "t9t.StartupRequest");
+        final InternalHeaderParameters ihdr = new InternalHeaderParameters(encoded, jwt, 1L, "en", jwt.getIssuedAt(), "t9t.StartupRequest");
         final RequestContext ctx = new RequestContext(ihdr, customizationProvider); // create a context
         ctxScope.set(ctx);
     }

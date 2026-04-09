@@ -17,4 +17,5 @@ SearchConfiguration
 AsyncTransmitterConfiguration
 LdapConfiguration
 OidConfiguration
+OidcConfiguration
 EncryptionConfiguration

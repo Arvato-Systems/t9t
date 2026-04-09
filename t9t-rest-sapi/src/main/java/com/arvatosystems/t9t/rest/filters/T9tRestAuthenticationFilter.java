@@ -21,6 +21,7 @@ import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.container.PreMatching;
 import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.Provider;
 
 import org.slf4j.Logger;
@@ -70,7 +71,23 @@ public class T9tRestAuthenticationFilter implements ContainerRequestFilter {
             }
         } else {
             LOGGER.trace("Starting filter - authed");
-            if (authFilterCustomization.filterAuthenticated(requestContext, authHeader)) {
+            // swap headers if required, in case session token and API key have been provided
+            final MultivaluedMap<String, String> headers = requestContext.getHeaders();
+            final String xApiKeyHeader = headers.getFirst(T9tConstants.HTTP_HEADER_X_API_KEY);
+            String authHeaderNew = authHeader;
+            if (xApiKeyHeader != null) {
+                if (authHeader.startsWith(T9tConstants.HTTP_AUTH_PREFIX_JWT) && !headers.containsKey(T9tConstants.HTTP_HEADER_X_SESSION_TOKEN)) {
+                    // can be swapped
+                    LOGGER.debug("Swapping API key and session token headers");
+                    authHeaderNew = T9tConstants.HTTP_AUTH_PREFIX_API_KEY + xApiKeyHeader;
+                    headers.putSingle(HttpHeaders.AUTHORIZATION, authHeaderNew);
+                    headers.putSingle(T9tConstants.HTTP_HEADER_X_SESSION_TOKEN, authHeader.substring(T9tConstants.HTTP_AUTH_PREFIX_JWT.length()));
+                    headers.remove(T9tConstants.HTTP_HEADER_X_API_KEY);
+                } else {
+                    LOGGER.warn("Received both API key and session token, but session token is not a JWT or x-session-token header is already present - cannot swap headers");
+                }
+            }
+            if (authFilterCustomization.filterAuthenticated(requestContext, authHeaderNew)) {
                 // any bad auth should record the IP address as "bad"
                 ipBlockerService.registerBadAuthFromIp(remoteIpHeader);
                 LOGGER.debug("aborting due failed authentication from {}", remoteIpHeader);

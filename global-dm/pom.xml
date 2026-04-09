@@ -41,7 +41,7 @@
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
         <jpaw-bom.version>3.8.0</jpaw-bom.version>
-        <bonaparte-bom.version>6.4.0</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
+        <bonaparte-bom.version>6.4.1</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
 
         <!-- Versions of Xtext & Xtend -->
         <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings", where the variable xtext.version is defined -->
@@ -51,11 +51,11 @@
         <driver.oracle.version>23.26.1.0.0</driver.oracle.version>
         <driver.postgresql.version>42.7.10</driver.postgresql.version>     <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
         <driver.sqlserver.version>13.4.0.jre11</driver.sqlserver.version> <!-- not all releases are available on maven central as jre17 builds -->
-        <driver.hana.version>2.28.4</driver.hana.version>
+        <driver.hana.version>2.28.6</driver.hana.version>
         <h2.version>2.3.232</h2.version>
 
         <!-- OR mappers -->
-        <eclipselink.version>4.0.9</eclipselink.version>
+        <eclipselink.version>5.0.0</eclipselink.version>
         <hibernate.version>7.2.6.Final</hibernate.version>
         <hibernate-validator.version>9.0.1.Final</hibernate-validator.version>
         <hibernate-search.version>8.2.2.Final</hibernate-search.version>
@@ -65,8 +65,9 @@
         <jandex.version>3.5.3</jandex.version>
 
         <!-- Javax ws / rs implementation versions -->
-        <jaxb-xjc.version>4.0.6</jaxb-xjc.version>
-        <jaxws-rt.version>4.0.3</jaxws-rt.version>
+        <jaxb-xjc.version>4.0.7</jaxb-xjc.version>
+        <jaxws-rt.version>4.0.4-use-rt-instead</jaxws-rt.version>  <!-- despite this should be the more modern version, it causes duplicate jaxb-core dependencies! -->
+        <rt.version>4.0.4</rt.version>
 
         <!-- new Jakarta stuff (versions in comment denote jakarta namespace)-->
         <jakarta.xml-bind-api.version>4.0.5</jakarta.xml-bind-api.version>              <!-- 3.0.1 for jakarta namespace -->
@@ -108,17 +109,17 @@
         <commons-csv.version>1.14.1</commons-csv.version>                 <!-- not used in t9t, but DM made for downstream projects -->
 
         <!-- AWS SDK v2 -->
-        <aws2-bom.version>2.42.18</aws2-bom.version>
+        <aws2-bom.version>2.42.28</aws2-bom.version>
 
         <!-- AWS JDBC wrapper for Aurora -->
         <aws-jdbc-wrapper.version>2.6.8</aws-jdbc-wrapper.version>
 
         <!-- Azure -->
         <azure-cosmosdb.version>2.6.16</azure-cosmosdb.version>
-        <azure-cosmos-sdk.version>4.78.0</azure-cosmos-sdk.version>
+        <azure-cosmos-sdk.version>4.79.0</azure-cosmos-sdk.version>
 
         <!-- Vector databases -->
-        <pinecone.version>6.1.0</pinecone.version>
+        <pinecone.version>6.2.0</pinecone.version>
         <qdrant-client.version>1.17.0</qdrant-client.version>
 
         <!-- More AI stuff & DM for its dependencies -->
@@ -132,11 +133,11 @@
         <!-- needed for MCP -->
         <reactor-core.version>3.8.4</reactor-core.version>
         <reactor-netty.version>1.3.4</reactor-netty.version>
-        <mcp-sdk.version>1.0.0</mcp-sdk.version>
+        <mcp-sdk.version>1.1.1</mcp-sdk.version>
 
         <!-- Test support -->
         <hamcrest.version>3.0</hamcrest.version>   <!-- avoid unless required -->
-        <byte-buddy.version>1.18.7</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
+        <byte-buddy.version>1.18.8</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
         <org.mockito.version>5.23.0</org.mockito.version>
         <archunit.version>1.4.1</archunit.version>
         <hdrhistogram.version>2.2.2</hdrhistogram.version>
@@ -153,7 +154,7 @@
         <picocli.version>4.7.7</picocli.version>
         <httpcore.version>4.4.16</httpcore.version>
         <httpclient.version>4.5.14</httpclient.version>
-        <httpcore5.version>5.3.6</httpcore5.version>
+        <httpcore5.version>5.4.2</httpcore5.version>
         <httpclient5.version>5.5.1</httpclient5.version>
         <httpmime.version>4.5.14</httpmime.version>
         <pdfbox.version>3.0.7</pdfbox.version>
@@ -175,7 +176,7 @@
         <apache-poi.version>5.5.1</apache-poi.version>
         <xmlbeans.version>5.3.0</xmlbeans.version>
         <gson.version>2.13.2</gson.version>
-        <log4j2.version>2.25.3</log4j2.version>     <!-- see comment below -->
+        <log4j2.version>2.25.4</log4j2.version>     <!-- see comment below -->
         <reload4j.version>1.2.26</reload4j.version>
 
         <!-- Spring core -->
@@ -183,23 +184,23 @@
         <!-- Spring data -->
         <spring-data-jpa.version>4.0.4</spring-data-jpa.version>
         <!-- Spring boot -->
-        <spring-boot.version>4.0.4</spring-boot.version>
+        <spring-boot.version>4.0.5</spring-boot.version>
 
-        <netty.version>4.2.11.Final</netty.version>
-        <vertx.version>5.0.8</vertx.version>
+        <netty.version>4.2.12.Final</netty.version>
+        <vertx.version>5.0.10</vertx.version>
         <hazelcast-kubernetes.version>2.2.3</hazelcast-kubernetes.version>
 
         <snakeyaml.version>2.5</snakeyaml.version>
         <classgraph.version>4.8.184</classgraph.version>
 
         <c3p0.version>0.12.0</c3p0.version>
-        <hikaricp.version>5.0.1</hikaricp.version>
+        <hikaricp.version>7.0.2</hikaricp.version>
         <flyway.version>11.19.0</flyway.version>
         <reflections.version>0.9.10</reflections.version>
         <maven-plugin-api.version>3.9.14</maven-plugin-api.version>
         <jackson.version>2.21.2</jackson.version>
         <solr.version>8.11.1</solr.version>
-        <camel.version>4.18.0</camel.version>
+        <camel.version>4.18.1</camel.version>
         <jsch.version>2.27.9</jsch.version>
         <kafka.version>3.9.1</kafka.version>
         <error-prone.version>2.48.0</error-prone.version>
@@ -209,7 +210,7 @@
         <prometheus.version>0.16.0</prometheus.version>
 
         <!-- Swagger -->
-        <swagger.version>2.2.45</swagger.version>
+        <swagger.version>2.2.46</swagger.version>
         <swagger-ui.version>${swagger-ui-webjars.version}</swagger-ui.version>
 
         <!-- Google Services -->
@@ -218,7 +219,7 @@
         <firebase-admin.version>9.5.0</firebase-admin.version>
 
         <msal4j.version>1.23.1</msal4j.version>
-        <nimbus.version>10.5</nimbus.version>
+        <nimbus.version>10.9</nimbus.version>
         <jboss-logging.version>3.6.3.Final</jboss-logging.version>
         <cxf.version>4.2.0</cxf.version>
 
@@ -226,7 +227,7 @@
         <!-- Jython (outdated) -->
         <jython.version>2.7.4</jython.version>
         <!-- Groovy -->
-        <groovy.version>5.0.4</groovy.version>            <!-- Current release (org.apache.grooy) -->
+        <groovy.version>5.0.5</groovy.version>            <!-- Current release (org.apache.grooy) -->
         <groovy-old.version>3.0.25</groovy-old.version>   <!-- Old release (org.codehaus.groovy) -->
         <!-- Apache JEXL -->
         <jexl.version>3.6.2</jexl.version>
@@ -246,6 +247,11 @@
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
+                <version>${asm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm-util</artifactId>
                 <version>${asm.version}</version>
             </dependency>
 
@@ -351,6 +357,16 @@
                 <groupId>jakarta.ws.rs</groupId>
                 <artifactId>jakarta.ws.rs-api</artifactId>
                 <version>${jakarta.ws.rs-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.ws</groupId>
+                <artifactId>rt</artifactId>
+                <version>${rt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.ws</groupId>
+                <artifactId>jaxws-rt</artifactId>
+                <version>${jaxws-rt.version}</version>
             </dependency>
 
             <dependency>
@@ -1089,75 +1105,10 @@
             <!-- netty -->
             <dependency>
                 <groupId>io.netty</groupId>
-                <artifactId>netty-common</artifactId>
+                <artifactId>netty-bom</artifactId>
                 <version>${netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-buffer</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-transport</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-handler</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-codec</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-codec-http</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-codec-http2</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-handler-proxy</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-resolver</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-resolver-dns</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-transport-native-unix-common</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-transport-native-epoll</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-resolver-dns-native-macos</artifactId>
-                <classifier>osx-x86_64</classifier>
-                <version>${netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-resolver-dns-native-macos</artifactId>
-                <classifier>osx-aarch_64</classifier>
-                <version>${netty.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
             </dependency>
 
             <!-- Hazelcast -->

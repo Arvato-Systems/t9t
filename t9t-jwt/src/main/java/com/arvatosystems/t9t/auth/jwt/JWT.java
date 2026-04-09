@@ -205,8 +205,8 @@ public final class JWT implements IJWT {
             throw new T9tJwtException(T9tJwtException.MISSING_SIGNATURE);
 
         // base64 decode and parse JSON
-        JwtAlg header;
-        JwtInfo payload;
+        final JwtAlg header;
+        final JwtInfo payload;
         try {
             header = JwtConverter.parseAlg(new String(base64urlDecode(headerSeg), UTF8));
             payload = JwtConverter.parseJwtInfo(new String(base64urlDecode(payloadSeg), UTF8));

@@ -86,7 +86,7 @@ public class StatefulServiceSession implements IStatefulServiceSession {
             throw new T9tException(T9tException.NOT_AUTHENTICATED);
         }
         // OK, authenticated!
-        final ServiceResponse resp = processor.execute(null, request, info.getJwtInfo(), info.getEncodedJwt(), false, null);
+        final ServiceResponse resp = processor.execute(null, request, info.getJwtInfo(), info.getEncodedJwt(), null, null, false, null);
         if (resp.getReturnCode() == 0) {
             if (resp instanceof AuthenticationResponse authResp) {
                 // update JWT
@@ -108,7 +108,7 @@ public class StatefulServiceSession implements IStatefulServiceSession {
                     throw new T9tException(T9tException.NOT_AUTHENTICATED);
                 }
                 authInfo.set(newInfo);
-                return processor.execute(null, request, newInfo.getJwtInfo(), newInfo.getEncodedJwt(), false, null);
+                return processor.execute(null, request, newInfo.getJwtInfo(), newInfo.getEncodedJwt(), null, null, false, null);
             }
         }
         return resp;

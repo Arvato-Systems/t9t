@@ -21,26 +21,35 @@ import t9t.base.api.*
 package (com.arvatosystems) t9t.server {
     default private unsigned trim noControlChars;
 
-    type encodedJwt                     is Ascii(255);
+    type encodedJwt                     is Ascii(65535);    // encoded internal JWT (large, because it could contain also additional claims)
 
-    /** Describes the immutable data which is constant for the lifecycle of a single request execution,
-     * including any synchronous cross-module calls.
+    /**
+     * Describes the immutable data which is constant for the lifecycle of a single request execution, including any synchronous cross-module calls.
      * It is later combined with the mutable EntityManager into the request context, for injection into classes.
+     *
+     * encodedJwt / jwtInfo contains the technical session (internal users / API-key access).
+     * encodedUserJwt / userJwtInfo contains optional information about end users, primarily used for agentic processes.
+     *
+     * If both JWTs are present they are externally sent as either:
+     * Authorization: Bearer (OIDC session token) + X-API-Key: (UUID of technical user)
+     * or
+     * Authorization: API-Key (UUID of technical user) + X-Session-Token (OIDC session token)
      */
-
     class InternalHeaderParameters {
-        required encodedJwt                         encodedJwt;
-        required (JwtInfo...)                       jwtInfo;                    // session info
+        required encodedJwt                         encodedJwt;                 // Jwt for internal users, API-keys etc (very short)
+        required (JwtInfo...)                       jwtInfo;                    // technical session info decoded
         required t9tRef                             processRef;                 // the unique ID of this request
         required languageCode                       languageCode;               // effective from JWT and request header
         required Instant                            executionStartedAt;         //
-        required Instant                            plannedRunDate;             // either set by requests initiated by the scheduler or the actual executionStartedAt date
+        optional Instant                            plannedRunDate;             // set from the request header (usually by requests initiated by the scheduler)
         required pqon                               requestParameterPqon;       // partially qualified name of the request
         optional (ServiceRequestHeader...)          requestHeader;
         optional Boolean                            priorityRequest;            // use the sync thread pools for sub requests
         optional messageId                          messageId;                  // a unique ID assigned to the request, in case idempotency is desired
         optional Enum RetryAdviceType               idempotencyBehaviour;       // defaults to RETRY_ON_ERROR
         optional defaultExternalId                  essentialKey;               // a request specific key field
+        optional encodedJwt                         encodedUserJwt;             // JWT for external entities (users)
+        optional (JwtInfo...)                       userJwtInfo;                // decoded user session info
     }
 
     /** Holds a summary of the service execution. */

@@ -24,8 +24,8 @@ import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 public abstract class AbstractSyncRemoteConnection implements IRemoteConnection {
 
     @Override
-    public CompletableFuture<ServiceResponse> executeAsync(final String authenticationHeader, final RequestParameters rp) {
-        return CompletableFuture.completedFuture(execute(authenticationHeader, rp));
+    public CompletableFuture<ServiceResponse> executeAsync(final String authenticationHeader, final String sessionToken, final RequestParameters rp) {
+        return CompletableFuture.completedFuture(execute(authenticationHeader, sessionToken, rp));
     }
 
     @Override

@@ -62,8 +62,8 @@ public class T9tJasperParameterEnricher implements IJasperParameterEnricher {
 
         if (selectedLanguageCode != null) {
             locale = selectedLanguageCode.length() == 5
-                    ? new Locale(selectedLanguageCode.substring(0, 2), selectedLanguageCode.substring(3))
-                    : new Locale(selectedLanguageCode.substring(0, 2));
+                    ? Locale.of(selectedLanguageCode.substring(0, 2), selectedLanguageCode.substring(3))
+                    : Locale.of(selectedLanguageCode.substring(0, 2));
         } else {
             locale = Locale.US;
         }

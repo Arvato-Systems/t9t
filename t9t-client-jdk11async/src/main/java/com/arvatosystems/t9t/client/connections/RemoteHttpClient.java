@@ -41,6 +41,7 @@ import de.jpaw.bonaparte.core.MimeTypes;
 import de.jpaw.util.ApplicationException;
 
 import com.arvatosystems.t9t.base.MessagingUtil;
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
@@ -101,7 +102,7 @@ class RemoteHttpClient {
         return initialChoice;
     }
 
-    public HttpRequest buildRequest(final URI uri, final String authentication, final BonaPortable request) throws Exception {
+    public HttpRequest buildRequest(final URI uri, final String authentication, final String sessionToken, final BonaPortable request) throws Exception {
         final CompactByteArrayComposer bac = new CompactByteArrayComposer(false);
         bac.writeRecord(request);
         bac.close();
@@ -111,8 +112,12 @@ class RemoteHttpClient {
                 .POST(BodyPublishers.ofByteArray(bac.getBuffer(), 0, bac.getLength()))
                 .timeout(Duration.ofSeconds(55));
 
-        if (authentication != null)
+        if (authentication != null) {
             httpRequestBuilder.header("Authorization", authentication);
+        }
+        if (sessionToken != null) {
+            httpRequestBuilder.header(T9tConstants.HTTP_HEADER_X_SESSION_TOKEN, sessionToken);
+        }
 
         httpRequestBuilder.header("Content-Type",   MimeTypes.MIME_TYPE_COMPACT_BONAPARTE);
         httpRequestBuilder.header("Accept",         MimeTypes.MIME_TYPE_COMPACT_BONAPARTE);
@@ -133,8 +138,8 @@ class RemoteHttpClient {
         return new HttpPostResponseObject(returnCode, String.valueOf(returnCode), obj);
     }
 
-    public CompletableFuture<ServiceResponse> doIO(final URI uri, final String authentication, final BonaPortable request) throws Exception {
-        final HttpRequest httpRq = buildRequest(uri, authentication, request);
+    public CompletableFuture<ServiceResponse> doIO(final URI uri, final String authentication, final String sessionToken, final BonaPortable request) throws Exception {
+        final HttpRequest httpRq = buildRequest(uri, authentication, sessionToken, request);
         final BodyHandler<byte[]> serializedRequest = HttpResponse.BodyHandlers.ofByteArray();
         final SingleConnection myConnection = pickConnectionToUse();
         final int newHigh = myConnection.currentPending.incrementAndGet();

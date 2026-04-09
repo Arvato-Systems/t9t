@@ -146,7 +146,7 @@ public final class MessagingUtil {
     /** Replaces a Bearer prefix with API-Key, if the remainder looks like a UUID. Used for MCP messages, where Bearer is often hardcoded (MCP inspector). */
     public static String massageAuthHeader(@Nullable final String authHeader) {
         // LOGGER.debug("Authorization header: <{}>", authHeader);
-        if (authHeader != null && authHeader.startsWith("Bearer ") && authHeader.length() == 7 + 36) {
+        if (authHeader != null && authHeader.length() == 7 + 36 && authHeader.startsWith("Bearer ")) {
             // all simple checks passed, for safety do a full regexp check
             final String potentialUuid = authHeader.substring(7);
             if (UUID_REGEX.matcher(potentialUuid).matches()) {

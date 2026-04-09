@@ -200,7 +200,7 @@ public class McpEndpointHandler {
 
     protected <T extends ServiceResponse> T processRequest(final RequestParameters rq, final AuthenticationInfo authInfo, final Class<T> responseClass) {
         MDC.put(T9tInternalConstants.MDC_REQUEST_PQON, rq.ret$PQON());
-        final ServiceResponse resp = requestProcessor.execute(null, rq, authInfo.getJwtInfo(), authInfo.getEncodedJwt(), false, null);
+        final ServiceResponse resp = requestProcessor.execute(null, rq, authInfo.getJwtInfo(), authInfo.getEncodedJwt(), null, null, false, null);
         if (responseClass.isInstance(resp)) {
             // return the response as the expected type
             return responseClass.cast(resp);

@@ -228,7 +228,7 @@ public class T9tAuthVertx implements IServiceModule {
 
                         // Authentication is valid. Now populate the MDC and start processing the request.
                         final JwtInfo jwtInfo = authInfo.getJwtInfo();
-                        return this.requestProcessor.execute(null, new GetTenantLogoRequest(), jwtInfo, authInfo.getEncodedJwt(), false, null);
+                        return this.requestProcessor.execute(null, new GetTenantLogoRequest(), jwtInfo, authInfo.getEncodedJwt(), null, null, false, null);
 
                     } catch (final Exception e) {
                         LOGGER.info("{} in request: {}", e.getClass().getSimpleName(), e.getMessage());
@@ -304,7 +304,7 @@ public class T9tAuthVertx implements IServiceModule {
                         MDC.clear();
                         T9tInternalConstants.initMDC(jwtInfo);
                         final LogoutRequest logoutRequest = new LogoutRequest();
-                        final ServiceResponse serviceResponse = requestProcessor.execute(null, logoutRequest, jwtInfo, jwtToken, false, null);
+                        final ServiceResponse serviceResponse = requestProcessor.execute(null, logoutRequest, jwtInfo, jwtToken, null, null, false, null);
                         if (serviceResponse.getReturnCode() != 0) {
                             IServiceModule.error(rc, 500, serviceResponse.getErrorMessage());
                             return null;

@@ -173,6 +173,7 @@ class ConfigProvider {
             asyncMsgConfiguration   = a.asyncMsgConfiguration   ?: b.asyncMsgConfiguration
             ldapConfiguration       = a.ldapConfiguration       ?: b.ldapConfiguration
             oidConfiguration        = a.oidConfiguration        ?: b.oidConfiguration
+            oidcConfiguration       = a.oidcConfiguration       ?: b.oidcConfiguration
             encryptionConfiguration = a.encryptionConfiguration ?: b.encryptionConfiguration
             passwordResetApiKey     = a.passwordResetApiKey     ?: b.passwordResetApiKey
             noDbBackendApiKey       = a.noDbBackendApiKey       ?: b.noDbBackendApiKey

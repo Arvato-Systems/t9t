@@ -35,8 +35,8 @@ public final class DecimalFormatTest {
 
     public static void formatDecimalsWithScale() {
         String pattern;
-        Locale locale = new Locale("en", "US");
-        //        Locale locale = new Locale("de", "DE");
+        Locale locale = Locale.of("en", "US");
+        //        Locale locale = Locale.of("de", "DE");
         DecimalFormat df = (DecimalFormat) NumberFormat.getInstance(locale);
 
         System.out.println("*************************************************");
@@ -54,8 +54,8 @@ public final class DecimalFormatTest {
 
     public static DecimalFormat formatDecimals() {
         String pattern = "";
-        Locale locale = new Locale("en", "US");
-        //        Locale locale = new Locale("de", "DE");
+        Locale locale = Locale.of("en", "US");
+        //        Locale locale = Locale.of("de", "DE");
         DecimalFormat df = (DecimalFormat) NumberFormat.getInstance(locale);
 
         System.out.println("Using locale: " + locale);

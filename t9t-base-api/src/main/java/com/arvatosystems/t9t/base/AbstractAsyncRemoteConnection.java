@@ -30,9 +30,9 @@ public abstract class AbstractAsyncRemoteConnection implements IRemoteConnection
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAsyncRemoteConnection.class);
 
     @Override
-    public ServiceResponse execute(final String authenticationHeader, final RequestParameters rp) {
+    public ServiceResponse execute(final String authenticationHeader, final String sessionToken, final RequestParameters rp) {
         try {
-            return executeAsync(authenticationHeader, rp).get();
+            return executeAsync(authenticationHeader, sessionToken, rp).get();
         } catch (InterruptedException | ExecutionException e) {
             LOGGER.error("Remote invocation exception: {}", ExceptionUtil.causeChain(e));
             throw new T9tException(T9tException.BAD_REMOTE_RESPONSE, e.getClass().getSimpleName());

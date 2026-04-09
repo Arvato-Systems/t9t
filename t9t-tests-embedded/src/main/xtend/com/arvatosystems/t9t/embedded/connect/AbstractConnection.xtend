@@ -96,7 +96,7 @@ abstract class AbstractConnection implements ITestConnection {
     def final ServiceResponse doIO(RequestParameters rpIn) {
         val rp = rpIn.ret$MutableClone(true, true)
         if (userAuthenticatedCredentials) {
-            return requestProcessor.execute(null, rp, jwtInfo, encodedJwt, skipAuthorization, null)
+            return requestProcessor.execute(null, rp, jwtInfo, encodedJwt, null, null, skipAuthorization, null)
         } else {
             val ServiceRequest srq = new ServiceRequest();
             srq.requestParameters = rp;

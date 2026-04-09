@@ -106,7 +106,7 @@ public class IdentityContextData implements Serializable {
         if (this.idToken == null) {
             populateIdTokenAndClaims(authResult.idToken());
         }
-        this.username = fethUsername(accessTokenClaims);
+        this.username = fetchUsername(accessTokenClaims);
         this.authenticated = true;
     }
 
@@ -114,7 +114,7 @@ public class IdentityContextData implements Serializable {
         return SignedJWT.parse(rawToken).getJWTClaimsSet().getClaims();
     }
 
-    private String fethUsername(final Map<String, Object> tokenClaims) {
+    private String fetchUsername(final Map<String, Object> tokenClaims) {
         String value = null;
         value = (String) tokenClaims.get("unique_name");
         if (value != null) {

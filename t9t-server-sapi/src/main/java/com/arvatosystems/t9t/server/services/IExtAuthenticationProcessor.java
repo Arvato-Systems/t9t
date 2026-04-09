@@ -15,18 +15,21 @@
  */
 package com.arvatosystems.t9t.server.services;
 
+import jakarta.annotation.Nonnull;
+
 import com.arvatosystems.t9t.base.auth.AuthenticationInfo;
 
 /**
  * This interface provides implementations which transform Http request headers into prepared authentication information.
- * It is mainly targeted for internal JWTs.
+ * Implementations will use the configured issuers, and validate using nimbus-jose-jwt.
  */
-public interface ICachingAuthenticationProcessor {
+public interface IExtAuthenticationProcessor {
     /**
-     * Return encoded JWT as well as JwtInfo, ideally cached, otherwise by performing some login request.
-     * Returns null if authentication has been denied.
+     * Return encoded JWT as well as JwtInfo.
+     * Throws an exception if authentication has been denied.
      *
-     * @param authorizationHeader the content of the "Authorization" header, including type prefix.
+     * @param encodedJwt the content of the encoded JWT, expected to be a Bearer token, without the "Bearer " prefix.
      **/
-    AuthenticationInfo getCachedJwt(String authorizationHeader);
+    @Nonnull
+    AuthenticationInfo validateAndParseJwt(@Nonnull String encodedJwt);
 }

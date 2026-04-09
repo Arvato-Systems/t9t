@@ -60,11 +60,7 @@ public class JettyServer {
     static final String DEFAULT_APPLICATION_PATH = "";
 
     public static void main(final String[] args) throws Exception {
-        // do not access the "internal" ContextFactory (essential for Jakarta 8, fatal for Jakarta 9.1ff)
-        // System.setProperty("jakarta.xml.bind.JAXBContextFactory", "com.sun.xml.bind.v2.ContextFactory");
-
-        // Diagnose JAXB runtime visibility early (prints clean error if classloader can't see ContextFactory)
-        // JaxbRuntimeSelfTest.run();
+        // do not set "jakarta.xml.bind.JAXBContextFactory" to "com.sun.xml.bind.v2.ContextFactory": essential for Jakarta 8, fatal for Jakarta 9.1+
 
         try {
             new JettyServer().run();

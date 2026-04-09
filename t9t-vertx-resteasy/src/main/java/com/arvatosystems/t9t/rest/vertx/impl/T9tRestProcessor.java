@@ -83,7 +83,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         T9tInternalConstants.initMDC(jwtInfo);
 
         LOGGER.trace("{}: processing start", infoMsg);
-        final ServiceResponse response = requestProcessor.execute(null, requestParameters, jwtInfo, authInfo.getEncodedJwt(), false, null);
+        final ServiceResponse response = requestProcessor.execute(null, requestParameters, jwtInfo, authInfo.getEncodedJwt(), null, null, false, null);
         LOGGER.trace("{}: processing end", infoMsg);
         return response;
     }

@@ -114,9 +114,9 @@ public class RemoteConnection extends AbstractAsyncRemoteConnection implements I
     }
 
     @Override
-    public CompletableFuture<ServiceResponse> executeAsync(final String authentication, final RequestParameters rp) {
+    public CompletableFuture<ServiceResponse> executeAsync(final String authentication, final String sessionToken, final RequestParameters rp) {
         try {
-            final CompletableFuture<HttpPostResponseObject> respF = client.doIO(rpcUri, authentication, rp);
+            final CompletableFuture<HttpPostResponseObject> respF = client.doIO(rpcUri, authentication, sessionToken, rp);
             return respF.thenApply(resp -> {
                 return convertResponse(resp, rp instanceof AuthenticationRequest);
             });
@@ -130,7 +130,7 @@ public class RemoteConnection extends AbstractAsyncRemoteConnection implements I
     @Override
     public CompletableFuture<ServiceResponse> executeAuthenticationAsync(final AuthenticationRequest rp) {
         try {
-            final CompletableFuture<HttpPostResponseObject> respF = client.doIO(rpcUri, null, rp);
+            final CompletableFuture<HttpPostResponseObject> respF = client.doIO(rpcUri, null, null, rp);
             return respF.thenApply(resp -> {
                 return convertResponse(resp, rp instanceof AuthenticationRequest);
             });

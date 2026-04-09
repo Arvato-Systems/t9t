@@ -174,6 +174,8 @@ public final class T9tConstants {
     public static final String HTTP_HEADER_ACCEPT_CHARSET   = "Accept-Charset";     // Just for code which does not have a jakarta-rs API dependency
     public static final String HTTP_HEADER_CONTENT_ENCODING = "Content-Encoding";   // Header needed to specify compressed data
     public static final String HTTP_HEADER_AUTH             = "Authorization";      // Authentication header
+    public static final String HTTP_HEADER_X_API_KEY        = "X-Api-Key";          // extra Authentication header for API keys (if Authorization is used for the Bearer access token)
+    public static final String HTTP_HEADER_X_SESSION_TOKEN  = "X-Session-Token";    // extra Authentication header for session token (if Authorization is used for the API key)
     public static final String HTTP_ENCODING_GZIPPED        = "gzip";               // The encoding used for compression
     public static final String HTTP_CHARSET_UTF8            = "utf-8";              // The default charset we prefer
     public static final String HTTP_MULTIPART_FD_PREFIX     = "multipart/form-data; boundary=";        // prefix for content type in case of multipart form-data

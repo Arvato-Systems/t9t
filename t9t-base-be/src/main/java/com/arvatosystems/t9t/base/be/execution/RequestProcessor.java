@@ -91,7 +91,9 @@ public class RequestProcessor implements IRequestProcessor {
 
     /** Common entry point for all executions - web service calls as well as scheduled tasks (via IUnauthenticatedServiceRequestExecutor). */
     @Override
-    public ServiceResponse execute(final ServiceRequestHeader optHdr, final RequestParameters rp, final JwtInfo jwtInfo, final String encodedJwt,
+    public ServiceResponse execute(final ServiceRequestHeader optHdr, final RequestParameters rp,
+            final JwtInfo jwtInfo, final String encodedJwt,
+            final JwtInfo userJwtInfo, final String encodedUserJwt,
             final boolean skipAuthorization, final Integer partition) {
         // check permissions - first step
         final String pqon = rp.ret$PQON();
@@ -153,7 +155,22 @@ public class RequestProcessor implements IRequestProcessor {
                     resp.setTenantId(jwtInfo.getTenantId());
                     resp.setReturnCode(T9tException.JWT_EXPIRED);
                     resp.setErrorMessage(T9tException.MSG_JWT_EXPIRED);
-                    resp.setErrorDetails(Long.toString(expiredBy));
+                    resp.setErrorDetails("JWT expired by " + Long.toString(expiredBy) + " ms");
+                    return resp;
+                }
+            }
+            // check if user JWT is still valid
+            if (userJwtInfo != null && userJwtInfo.getExpiresAt() != null) {
+                final long expiredBy = millis - userJwtInfo.getExpiresAt().toEpochMilli();
+                if (expiredBy > 30_000L) {  // allow some seconds to avoid race conditions
+                    LOGGER.info("Denying processing of {}@{}:{} (ID {} / {}({})), user JWT has expired {} ms ago",
+                      jwtInfo.getUserId(), jwtInfo.getTenantId(), pqon, messageId, rp.ret$PQON(), rp.getEssentialKey(), expiredBy);
+                    final ServiceResponse resp = new ServiceResponse();
+                    resp.setMessageId(messageId);
+                    resp.setTenantId(jwtInfo.getTenantId());
+                    resp.setReturnCode(T9tException.JWT_EXPIRED);
+                    resp.setErrorMessage(T9tException.MSG_JWT_EXPIRED);
+                    resp.setErrorDetails("User JWT expired by " + Long.toString(expiredBy) + " ms");
                     return resp;
                 }
             }
@@ -186,13 +203,16 @@ public class RequestProcessor implements IRequestProcessor {
             ihdr.setExecutionStartedAt(now);
             ihdr.setEncodedJwt(encodedJwt);
             ihdr.setJwtInfo(jwtInfo);
+            ihdr.setEncodedUserJwt(encodedUserJwt);
+            ihdr.setUserJwtInfo(userJwtInfo);
             ihdr.setProcessRef(refGenerator.generateRef(T9tInternalConstants.TABLENAME_MESSAGE_LOG, T9tInternalConstants.RTTI_MESSAGE_LOG));
             ihdr.setLanguageCode(jwtInfo.getLocale());
             ihdr.setRequestParameterPqon(pqon);
-            ihdr.setRequestHeader(optHdr);
-            ihdr.setPriorityRequest(optHdr == null ? null : optHdr.getPriorityRequest());
-            if (optHdr != null && optHdr.getLanguageCode() != null) {
+            if (optHdr != null) {
+                ihdr.setRequestHeader(optHdr);
+                ihdr.setPriorityRequest(optHdr.getPriorityRequest());
                 ihdr.setLanguageCode(optHdr.getLanguageCode());
+                ihdr.setPlannedRunDate(optHdr.getPlannedRunDate());
             }
             ihdr.setMessageId(effectiveMessageId);
             ihdr.setIdempotencyBehaviour(idempotencyBehaviour);

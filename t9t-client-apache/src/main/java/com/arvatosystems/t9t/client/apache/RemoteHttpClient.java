@@ -40,6 +40,8 @@ import de.jpaw.bonaparte.core.MimeTypes;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
 
+import com.arvatosystems.t9t.base.T9tConstants;
+
 class RemoteHttpClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(RemoteHttpClient.class);
 
@@ -66,7 +68,7 @@ class RemoteHttpClient {
 //        }
     }
 
-    public SimpleHttpRequest buildRequest(final URI uri, final String authentication, final BonaPortable request) throws Exception {
+    public SimpleHttpRequest buildRequest(final URI uri, final String authentication, final String sessionToken, final BonaPortable request) throws Exception {
         final CompactByteArrayComposer bac = new CompactByteArrayComposer(false);
         bac.writeRecord(request);
         bac.close();
@@ -79,6 +81,9 @@ class RemoteHttpClient {
 
         if (authentication != null) {
             rq.addHeader(new BasicHeader(HttpHeaders.AUTHORIZATION, authentication));
+        }
+        if (sessionToken != null) {
+            rq.addHeader(new BasicHeader(T9tConstants.HTTP_HEADER_X_SESSION_TOKEN, sessionToken));
         }
 //        rq.addHeader(new BasicHeader(HttpHeaders.CONTENT_TYPE, MimeTypes.MIME_TYPE_COMPACT_BONAPARTE));
         rq.addHeader(new BasicHeader(HttpHeaders.ACCEPT, MimeTypes.MIME_TYPE_COMPACT_BONAPARTE));
@@ -100,11 +105,11 @@ class RemoteHttpClient {
         return new HttpPostResponseObject(returnCode, String.valueOf(returnCode), obj);
     }
 
-    public CompletableFuture<HttpPostResponseObject> doIO(final URI uri, final String authentication, final BonaPortable request) throws Exception {
-        final SimpleHttpRequest httpRq = buildRequest(uri, authentication, request);
+    public CompletableFuture<HttpPostResponseObject> doIO(final URI uri, final String authentication, final String sessionToken, final BonaPortable request) throws Exception {
+        final SimpleHttpRequest httpRq = buildRequest(uri, authentication, sessionToken, request);
         final CompletableFuture<HttpPostResponseObject> respF = new CompletableFuture<>();
 
-        // boilerplate code to satify the fossil...   Java 1.7 is really outdated! Apache httpclient 5.2 will support Java 8 finally!
+        // boilerplate code to satisfy the fossil...   Java 1.7 is really outdated! Apache httpclient 5.2 will support Java 8 finally!
         httpClient.execute(httpRq, new FutureCallback<SimpleHttpResponse>() {
 
             @Override

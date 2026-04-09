@@ -198,6 +198,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         }
         final int invocationNo = COUNTER.incrementAndGet();
         final String authorizationHeader = MessagingUtil.massageAuthHeader(httpHeaders.getHeaderString(HttpHeaders.AUTHORIZATION));
+        final String sessionToken = httpHeaders.getHeaderString(T9tConstants.HTTP_HEADER_X_SESSION_TOKEN);
         // assign a message ID unless there is one already provided
         if (requestParameters.getMessageId() == null) {
             requestParameters.setMessageId(RandomNumberGenerators.randomFastUUID());
@@ -214,7 +215,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         requestParameters.setWhenSent(System.currentTimeMillis());  // assumes all server clocks are sufficiently synchronized
         requestParameters.setTransactionOriginType(TransactionOriginType.GATEWAY_EXTERNAL);
 
-        final CompletableFuture<ServiceResponse> readResponse = connection.executeAsync(authorizationHeader, requestParameters);
+        final CompletableFuture<ServiceResponse> readResponse = connection.executeAsync(authorizationHeader, sessionToken, requestParameters);
         readResponse.thenAccept(withBootTccl(sr -> {
             LOGGER.debug("Response obtained {}: {}", invocationNo, infoMsg);
             if (ApplicationException.isOk(sr.getReturnCode())) {

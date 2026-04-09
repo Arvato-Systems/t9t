@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
@@ -36,26 +37,26 @@ import com.arvatosystems.t9t.xml.GenericResult;
 
 public interface IT9tRestProcessor {
     /** Performs the request synchronously (just for authentication checks). */
-    ServiceResponse performSyncBackendRequest(@Nonnull RequestParameters requestParameters, String authHeader, String infoMsg);
+    ServiceResponse performSyncBackendRequest(@Nonnull RequestParameters requestParameters, @Nonnull String authHeader, @Nonnull String infoMsg);
 
     /** Performs the request asynchronously, using a generic response mapper. */
-    void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, RequestParameters requestParameters, String infoMsg);
+    void performAsyncBackendRequest(@Nonnull HttpHeaders httpHeaders, @Nonnull AsyncResponse resp, @Nonnull RequestParameters requestParameters, @Nonnull String infoMsg);
 
     /** Performs the request asynchronously, using a specific response mapper. */
-    <T extends ServiceResponse> void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, RequestParameters requestParameters,
-            String infoMsg, Class<T> backendResponseClass, Function<T, BonaPortable> responseMapper);
+    <T extends ServiceResponse> void performAsyncBackendRequest(@Nonnull HttpHeaders httpHeaders, @Nonnull AsyncResponse resp, @Nonnull RequestParameters requestParameters, @Nonnull String infoMsg,
+            @Nonnull Class<T> backendResponseClass, @Nonnull Function<T, BonaPortable> responseMapper);
 
-    <T extends ServiceResponse> void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, RequestParameters requestParameters,
-            String infoMsg, Class<T> backendResponseClass, Function<T, BonaPortable> responseMapper,
-            Function<ServiceResponse, BonaPortable> errorResponseMapper);
+    <T extends ServiceResponse> void performAsyncBackendRequest(@Nonnull HttpHeaders httpHeaders, @Nonnull AsyncResponse resp, @Nonnull RequestParameters requestParameters, @Nonnull String infoMsg,
+            @Nonnull Class<T> backendResponseClass, @Nonnull Function<T, BonaPortable> responseMapper,
+            @Nonnull Function<ServiceResponse, BonaPortable> errorResponseMapper);
     /**
      * Performs the request asynchronously, with a specific request mapper.
      * If the provided list has a single element, the first converter is applied,
      * otherwise the second (which may be null, in which case a BAD_REQUEST will be returned).
      * Both request converters are executed in the I/O thread.
      **/
-    <T, R extends RequestParameters> void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, String infoMsg,
-        List<T> inputData, Function<T, R> requestConverterSingle, Function<List<T>, R> requestConverterBatch);
+    <T, R extends RequestParameters> void performAsyncBackendRequest(@Nonnull HttpHeaders httpHeaders, @Nonnull AsyncResponse resp, @Nonnull String infoMsg,
+            @Nonnull List<T> inputData, @Nonnull Function<T, R> requestConverterSingle, @Nullable Function<List<T>, R> requestConverterBatch);
 
     /**
      * Performs the request via kafka, if available.
@@ -70,8 +71,8 @@ public interface IT9tRestProcessor {
      * @param partitionKeyExtractor a function to extract the partition key (the hashcode of the result string will be used as partition)
      */
     default <T, R extends RequestParameters> void performAsyncBackendRequestViaKafka(@Nonnull final HttpHeaders httpHeaders,
-        @Nonnull final AsyncResponse resp, @Nonnull final String infoMsg, final List<T> inputData, final Function<T, R> requestConverterSingle,
-        final Function<R, String> partitionKeyExtractor) {
+        @Nonnull final AsyncResponse resp, @Nonnull final String infoMsg, @Nonnull final List<T> inputData, @Nonnull final Function<T, R> requestConverterSingle,
+        @Nonnull final Function<R, String> partitionKeyExtractor) {
         performAsyncBackendRequest(httpHeaders, resp, infoMsg, inputData, requestConverterSingle, (Function<List<T>, R>)null);
     }
 

@@ -106,7 +106,7 @@ public class ServiceRequestExecutor implements IUnauthenticatedServiceRequestExe
 
             return sr;
         }
-        return requestProcessor.execute(srq.getRequestHeader(), srq.getRequestParameters(), adata.jwtInfo(), adata.jwtToken(),
+        return requestProcessor.execute(srq.getRequestHeader(), srq.getRequestParameters(), adata.jwtInfo(), adata.jwtToken(), null, null,
             isTrusted, srq.getPartitionUsed());
     }
 }

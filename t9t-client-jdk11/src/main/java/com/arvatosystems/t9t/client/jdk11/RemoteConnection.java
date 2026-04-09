@@ -27,6 +27,9 @@ import java.net.http.HttpResponse.BodyHandler;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +45,7 @@ import de.jpaw.util.ExceptionUtil;
 import com.arvatosystems.t9t.base.IRemoteConnection;
 import com.arvatosystems.t9t.base.IRemoteDefaultUrlRetriever;
 import com.arvatosystems.t9t.base.MessagingUtil;
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -90,8 +94,8 @@ public class RemoteConnection implements IRemoteConnection {
     }
 
     @Override
-    public ServiceResponse execute(final String authenticationHeader, final RequestParameters rp) {
-        return execSub(rpcUri, authenticationHeader, rp);
+    public ServiceResponse execute(final String authenticationHeader, final String sessionToken, final RequestParameters rp) {
+        return execSub(rpcUri, authenticationHeader, sessionToken, rp);
     }
 
     private ServiceResponse convertResponse(final HttpResponse<byte[]> response, final boolean isAuthentication) {
@@ -134,11 +138,11 @@ public class RemoteConnection implements IRemoteConnection {
                 response.getClass().getCanonicalName());
     }
 
-    protected ServiceResponse execSub(final URI uri, final String authentication, final RequestParameters rp) {
+    protected ServiceResponse execSub(final URI uri, final String authentication, final String sessionToken, final RequestParameters rp) {
         try {
             LOGGER.debug("Sending request of type {}", rp.ret$PQON());
 
-            final HttpRequest httpRq = buildRequest(uri, authentication, rp);
+            final HttpRequest httpRq = buildRequest(uri, authentication, sessionToken, rp);
             final HttpResponse<byte[]> response = httpClient.send(httpRq, HttpResponse.BodyHandlers.ofByteArray());
 
             return convertResponse(response, rp instanceof AuthenticationRequest);
@@ -151,13 +155,13 @@ public class RemoteConnection implements IRemoteConnection {
 
     @Override
     public ServiceResponse executeAuthenticationRequest(final AuthenticationRequest rp) {
-        return execSub(authUri, null, rp);
+        return execSub(authUri, null, null, rp);
     }
 
     @Override
-    public CompletableFuture<ServiceResponse> executeAsync(final String authentication, final RequestParameters rp) {
+    public CompletableFuture<ServiceResponse> executeAsync(final String authentication, final String sessionToken, final RequestParameters rp) {
         try {
-            return doIO(rpcUri, authentication, rp);
+            return doIO(rpcUri, authentication, sessionToken, rp);
         } catch (final Exception e) {
             final String causeChain = ExceptionUtil.causeChain(e);
             LOGGER.error("I/O error for PQON {}: {}", rp.ret$PQON(), causeChain);
@@ -168,14 +172,14 @@ public class RemoteConnection implements IRemoteConnection {
     @Override
     public CompletableFuture<ServiceResponse> executeAuthenticationAsync(final AuthenticationRequest rp) {
         try {
-            return doIO(authUri, null, rp);
+            return doIO(authUri, null, null, rp);
         } catch (final Exception e) {
             final String causeChain = ExceptionUtil.causeChain(e);
             LOGGER.error("I/O error for PQON {}: {}", rp.ret$PQON(), causeChain);
             return CompletableFuture.supplyAsync(() -> MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain));
         }
     }
-    private HttpRequest buildRequest(final URI uri, final String authentication, final BonaPortable request) throws Exception {
+    private HttpRequest buildRequest(@Nonnull final URI uri, @Nullable final String authentication, @Nullable final String sessionToken, @Nonnull final BonaPortable request) throws Exception {
         final CompactByteArrayComposer bac = new CompactByteArrayComposer(false);
         bac.writeRecord(request);
         bac.close();
@@ -185,8 +189,12 @@ public class RemoteConnection implements IRemoteConnection {
                 .POST(BodyPublishers.ofByteArray(bac.getBuffer(), 0, bac.getLength()))
                 .timeout(Duration.ofSeconds(55));
 
-        if (authentication != null)
+        if (authentication != null) {
             httpRequestBuilder.header("Authorization", authentication);
+        }
+        if (sessionToken != null) {
+            httpRequestBuilder.header(T9tConstants.HTTP_HEADER_X_SESSION_TOKEN, sessionToken);
+        }
 
         httpRequestBuilder.header("Content-Type",   MimeTypes.MIME_TYPE_COMPACT_BONAPARTE);
         httpRequestBuilder.header("Accept",         MimeTypes.MIME_TYPE_COMPACT_BONAPARTE);
@@ -195,8 +203,8 @@ public class RemoteConnection implements IRemoteConnection {
         return httpRequestBuilder.build();
     }
 
-    private CompletableFuture<ServiceResponse> doIO(final URI uri, final String authentication, final BonaPortable request) throws Exception {
-        final HttpRequest httpRq = buildRequest(uri, authentication, request);
+    private CompletableFuture<ServiceResponse> doIO(final URI uri, final String authentication, final String sessionToken, final BonaPortable request) throws Exception {
+        final HttpRequest httpRq = buildRequest(uri, authentication, sessionToken, request);
         final BodyHandler<byte[]> serializedRequest = HttpResponse.BodyHandlers.ofByteArray();
         final CompletableFuture<HttpResponse<byte[]>> responseF = httpClient.sendAsync(httpRq, serializedRequest);
         return responseF.thenApply(response -> {

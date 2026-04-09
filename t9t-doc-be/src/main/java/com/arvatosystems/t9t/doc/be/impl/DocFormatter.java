@@ -618,9 +618,9 @@ public class DocFormatter implements IDocFormatter {
                     final String effectiveLanguage = languageCode == null ? "en" : languageCode.substring(0, 2);
                     // keep ENGLISH for undefined language, as a fallback
                     if (!DocConstants.DEFAULT_COUNTRY_CODE.equals(countryCode)) {
-                        myLocale = new Locale(effectiveLanguage, countryCode);
+                        myLocale = Locale.of(effectiveLanguage, countryCode);
                     } else {
-                        myLocale = new Locale(effectiveLanguage);
+                        myLocale = Locale.of(effectiveLanguage);
                     }
                 }
             } catch (final Exception e) {

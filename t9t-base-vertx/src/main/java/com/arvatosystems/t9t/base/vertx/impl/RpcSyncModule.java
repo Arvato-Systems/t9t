@@ -36,15 +36,18 @@ import de.jpaw.dp.Named;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ByteUtil;
 
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
+import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationInfo;
 import com.arvatosystems.t9t.base.request.PingRequest;
 import com.arvatosystems.t9t.base.services.T9tInternalConstants;
 import com.arvatosystems.t9t.base.vertx.IServiceModule;
 import com.arvatosystems.t9t.server.services.ICachingAuthenticationProcessor;
+import com.arvatosystems.t9t.server.services.IExtAuthenticationProcessor;
 import com.arvatosystems.t9t.server.services.IRequestProcessor;
 
 /**
@@ -65,6 +68,7 @@ public class RpcSyncModule implements IServiceModule {
     }
 
     private final ICachingAuthenticationProcessor authenticationProcessor = Jdp.getRequired(ICachingAuthenticationProcessor.class);
+    private final IExtAuthenticationProcessor extAuthenticationProcessor = Jdp.getRequired(IExtAuthenticationProcessor.class);
     private final IRequestProcessor requestProcessor = Jdp.getRequired(IRequestProcessor.class);
 
     @Override
@@ -125,6 +129,15 @@ public class RpcSyncModule implements IServiceModule {
                   authInfo.getMessage() + " " + ApplicationException.codeToString(T9tException.HTTP_ERROR + authInfo.getHttpStatusCode()));
                 return;
             }
+            final JwtInfo userJwtInfo;
+            final String encodedUserJwt = headers.get(T9tConstants.HTTP_HEADER_X_SESSION_TOKEN);
+            if (encodedUserJwt != null) {
+                // if session token is provided, check if it is valid for the given JWT
+                final AuthenticationInfo extInfo = extAuthenticationProcessor.validateAndParseJwt(encodedUserJwt);
+                userJwtInfo = extInfo.getJwtInfo();
+            } else {
+                userJwtInfo = null;
+            }
             // Authentication is valid. Now populate the MDC and start processing the request.
             final JwtInfo jwtInfo = authInfo.getJwtInfo();
             // Clear all old MDC data, since a completely new request is now processed
@@ -142,19 +155,17 @@ public class RpcSyncModule implements IServiceModule {
                 if (LOGGER.isTraceEnabled()) {
                     LOGGER.trace("Request is:\n" + ByteUtil.dump(body, 1024)); // dump up to 1 KB of data
                 }
+                final ServiceRequestHeader hdr;
                 if (withServiceRequest()) {
-                    final ServiceRequest rq = (ServiceRequest) decoder.decode(body, ServiceRequest.meta$$this);
-                    LOGGER.debug("Received request {}, request length is {}", rq.ret$PQON(), body.length);
-                    MDC.put(T9tInternalConstants.MDC_REQUEST_PQON, rq.ret$PQON());
-                    response = requestProcessor.execute(rq.getRequestHeader(), rq.getRequestParameters(), jwtInfo, authInfo.getEncodedJwt(),
-                            skipAuthorization(), null);
-                    request = rq.getRequestParameters();
+                    final ServiceRequest srq = (ServiceRequest) decoder.decode(body, ServiceRequest.meta$$this);
+                    hdr = srq.getRequestHeader();
+                    request = srq.getRequestParameters();
                 } else {
-                    final RequestParameters rq = (RequestParameters) decoder.decode(body, ServiceRequest.meta$$requestParameters);
-                    MDC.put(T9tInternalConstants.MDC_REQUEST_PQON, rq.ret$PQON());
-                    response = requestProcessor.execute(null, rq, jwtInfo, authInfo.getEncodedJwt(), skipAuthorization(), null);
-                    request = rq;
+                    hdr = null;
+                    request = (RequestParameters) decoder.decode(body, ServiceRequest.meta$$requestParameters);
                 }
+                MDC.put(T9tInternalConstants.MDC_REQUEST_PQON, request.ret$PQON());
+                response = requestProcessor.execute(hdr, request, jwtInfo, authInfo.getEncodedJwt(), userJwtInfo, encodedUserJwt, skipAuthorization(), null);
             }
             final byte[] respMsg = encoder.encode(response, ServiceResponse.meta$$this);
             if (LOGGER.isTraceEnabled()) {

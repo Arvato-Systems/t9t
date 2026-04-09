@@ -17,13 +17,16 @@ package com.arvatosystems.t9t.base;
 
 import java.util.concurrent.CompletableFuture;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 
 /**
  * Defines an interface to a remote t9t based service.
- * Instances operate with a fixed endpoint, which is either passed by the constructor,
+ * Instances operate with a fixed end point, which is either passed by the constructor,
  * or, if instantiated as a @Singleton, read from environment variables or system properties.
  * t9t.port, t9t.host, t9t.rpcpath, t9t.authpath
  *
@@ -33,14 +36,24 @@ import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
  */
 public interface IRemoteConnection {
     /** execute a single (regular) request for an authenticated context. */
-    ServiceResponse execute(String authenticationHeader, RequestParameters rp);
+    default ServiceResponse execute(@Nullable String authenticationHeader, @Nonnull RequestParameters rp) {
+        return execute(authenticationHeader, null, rp);
+    }
+
+    /** execute a single (regular) request for an authenticated context. */
+    ServiceResponse execute(@Nullable String authenticationHeader, @Nullable String sessionToken, @Nonnull RequestParameters rp);
 
     /** authenticate. */
-    ServiceResponse executeAuthenticationRequest(AuthenticationRequest rp);
+    ServiceResponse executeAuthenticationRequest(@Nonnull AuthenticationRequest rp);
 
     /** execute a single (regular) request for an authenticated context, asynchronously. */
-    CompletableFuture<ServiceResponse> executeAsync(String authenticationHeader, RequestParameters rp);
+    default CompletableFuture<ServiceResponse> executeAsync(@Nullable String authenticationHeader, @Nonnull RequestParameters rp) {
+        return executeAsync(authenticationHeader, null, rp);
+    }
+
+    /** execute a single (regular) request for an authenticated context, asynchronously, with 2 authentication headers. */
+    CompletableFuture<ServiceResponse> executeAsync(@Nullable String authenticationHeader, @Nullable String sessionToken, @Nonnull RequestParameters rp);
 
     /** authenticate. */
-    CompletableFuture<ServiceResponse> executeAuthenticationAsync(AuthenticationRequest rp);
+    CompletableFuture<ServiceResponse> executeAuthenticationAsync(@Nonnull AuthenticationRequest rp);
 }

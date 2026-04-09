@@ -67,9 +67,9 @@ public class RemoteConnection extends AbstractAsyncRemoteConnection implements I
 
 
     @Override
-    public CompletableFuture<ServiceResponse> executeAsync(final String authentication, final RequestParameters rp) {
+    public CompletableFuture<ServiceResponse> executeAsync(final String authentication, final String sessionToken, final RequestParameters rp) {
         try {
-            return client.doIO(rpcUri, authentication, rp);
+            return client.doIO(rpcUri, authentication, sessionToken, rp);
         } catch (final Exception e) {
             final String causeChain = ExceptionUtil.causeChain(e);
             LOGGER.error("I/O error for PQON {}: {}", rp.ret$PQON(), causeChain);
@@ -80,7 +80,7 @@ public class RemoteConnection extends AbstractAsyncRemoteConnection implements I
     @Override
     public CompletableFuture<ServiceResponse> executeAuthenticationAsync(final AuthenticationRequest rp) {
         try {
-            return client.doIO(authUri, null, rp);
+            return client.doIO(authUri, null, null, rp);
         } catch (final Exception e) {
             final String causeChain = ExceptionUtil.causeChain(e);
             LOGGER.error("I/O error for PQON {}: {}", rp.ret$PQON(), causeChain);

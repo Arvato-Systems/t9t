@@ -57,6 +57,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional (AsyncTransmitterConfiguration...) asyncMsgConfiguration;
         optional (LdapConfiguration...)             ldapConfiguration;              // optional external authentication provider (LDAP)
         optional (OidConfiguration...)              oidConfiguration;               // optional external authentication provider (OpenID Connect, currently only MS-AAD supported)
+        required (OidcConfiguration...) List<>      oidcConfiguration;              // optional external authentication providers (OpenID Connect, any provider, used for secondary JWT validation)
         required (EncryptionConfiguration...) List<> encryptionConfiguration;       // a list of encryption parameters and their IDs to access them
         optional Uuid                               passwordResetApiKey;            // API key for the mobile UI "password reset" functionality
         optional Uuid                               noDbBackendApiKey;              // API key for servers running without DB access
@@ -293,6 +294,11 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         required boolean                            updateIdp;          // if a user authenticates via upn, and idp/iss is made available in JWT, update UserDTO with it
         optional Boolean                            updateName;         // if a user authenticates, update the name field from JWT into UserDTO
         optional Boolean                            updateEmail;        // if a user authenticates, update the email field from JWT into UserDTO
+    }
+
+    /** Configuration for OpenID Connect / OAuth2 (via generic providers / for secondary JWT). */
+    class OidcConfiguration {
+        required Unicode(255)                       issuer;             // full string for issuer
     }
 
     /** Configuration of parameters to construct a Cipher. */
