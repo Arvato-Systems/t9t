@@ -202,7 +202,7 @@
         <solr.version>8.11.1</solr.version>
         <camel.version>4.18.1</camel.version>
         <jsch.version>2.27.9</jsch.version>
-        <kafka.version>3.9.1</kafka.version>
+        <kafka.version>3.9.2</kafka.version>
         <error-prone.version>2.48.0</error-prone.version>
 
         <!-- Monitoring -->
