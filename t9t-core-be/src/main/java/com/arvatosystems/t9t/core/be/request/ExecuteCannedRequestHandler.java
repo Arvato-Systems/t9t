@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.core.be.request;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,10 +26,12 @@ import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.be.impl.SimpleCallOutExecutor;
+import com.arvatosystems.t9t.base.request.ExecuteOnAllNodesRequest;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.IForeignRequest;
@@ -49,21 +54,22 @@ public class ExecuteCannedRequestHandler extends AbstractRequestHandler<ExecuteC
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ExecuteCannedRequest rq) throws Exception {
         final CannedRequestRef ref = rq.getRequestRef();
+        final boolean runOnAllNodes = T9tUtil.isTrue(rq.getRunOnAllNodes());
         if (ref instanceof CannedRequestDTO dto) {
             // no read required, maybe a composition of the parameters from JSON
             evaluator.processDTO(dto);
             LOGGER.info("Executing provided canned request of ID {} for request {}", dto.getRequestId(), dto.getRequest().ret$PQON());
-            return checkAuthorizationAndExecuteStrict(ctx, dto.getRequest(), rq.getUplinkKey(), true);
+            return checkAuthorizationAndExecuteStrict(ctx, dto.getRequest(), rq.getUplinkKey(), true, runOnAllNodes);
         } else {
             // resolve the DTO from DB
             final CannedRequestDTO dto = resolver.getDTO(ref);
             LOGGER.info("Executing resolved canned request of ID {} for request {}", dto.getRequestId(), dto.getRequest().ret$PQON());
-            return executeRequest(ctx, dto.getRequest(), rq.getUplinkKey());
+            return executeRequest(ctx, dto.getRequest(), rq.getUplinkKey(), runOnAllNodes);
         }
     }
 
-    public ServiceResponse checkAuthorizationAndExecuteStrict(final RequestContext ctx, final RequestParameters rq, final String serviceKey,
-      final boolean providedOwnRequest) {
+    public ServiceResponse checkAuthorizationAndExecuteStrict(@Nonnull final RequestContext ctx, @Nonnull final RequestParameters rq, @Nullable final String serviceKey,
+                                                              final boolean providedOwnRequest, final boolean runOnAllNodes) {
         final Permissionset permissions = authorizator.getPermissions(ctx.internalHeaderParameters.getJwtInfo(), PermissionType.BACKEND, rq.ret$PQON());
         LOGGER.debug("Backend execution permissions checked for request {}, got {}", rq.ret$PQON(), permissions);
         boolean forbidden = !permissions.contains(OperationType.EXECUTE);
@@ -77,16 +83,18 @@ public class ExecuteCannedRequestHandler extends AbstractRequestHandler<ExecuteC
             response.setErrorDetails(OperationType.EXECUTE.name());
             return response;
         }
-        return executeRequest(ctx, rq, serviceKey);
+        return executeRequest(ctx, rq, serviceKey, runOnAllNodes);
     }
 
-    public ServiceResponse executeRequest(final RequestContext ctx, final RequestParameters rq, final String serviceKey) {
+    public ServiceResponse executeRequest(@Nonnull final RequestContext ctx, @Nonnull final RequestParameters rq, @Nullable final String serviceKey,
+                                          final boolean runOnAllNodes) {
+        final RequestParameters requestToExecute = runOnAllNodes ? new ExecuteOnAllNodesRequest(rq) : rq;
         if (serviceKey != null) {
             final UplinkConfiguration remoteServerConfig = ConfigProvider.getUplinkOrThrow(serviceKey);
             final IForeignRequest remoteCaller = SimpleCallOutExecutor.createCachedExecutor(serviceKey, remoteServerConfig .getUrl());
-            return remoteCaller.execute(ctx, rq);
+            return remoteCaller.execute(ctx, requestToExecute);
         } else {
-            return executor.executeSynchronous(ctx, rq);
+            return executor.executeSynchronous(ctx, requestToExecute);
         }
     }
 }

@@ -25,6 +25,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.media.AMedia;
@@ -269,13 +272,15 @@ public class T9tMessagingDAO implements IT9tMessagingDAO {
     }
 
     @Override
-    public ServiceResponse executeCannedRequest(final CannedRequestRef cannedRequestRef, final String uplinkKey) throws ReturnCodeException {
+    public ServiceResponse executeCannedRequest(@Nonnull final CannedRequestRef cannedRequestRef, @Nullable final String uplinkKey,
+                                                final boolean runOnAllNodes) throws ReturnCodeException {
         LOGGER.debug("executeCannedRequest with ref {}", cannedRequestRef);
 
         try {
             ExecuteCannedRequest executeCannedRequest = new ExecuteCannedRequest();
             executeCannedRequest.setRequestRef(cannedRequestRef);
             executeCannedRequest.setUplinkKey(uplinkKey);
+            executeCannedRequest.setRunOnAllNodes(runOnAllNodes);
             return t9tRemoteUtils.executeAndHandle(executeCannedRequest, ServiceResponse.class);
         } catch (Exception e) {
             t9tRemoteUtils.returnCodeExceptionHandler("executeCannedRequest", e);

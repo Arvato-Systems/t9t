@@ -249,11 +249,11 @@ public class T9tException extends ApplicationException {
     public static final int FILE_NOT_FOUND_FOR_DOWNLOAD = OFFSET + 300;
     public static final int BAD_REMOTE_RESPONSE         = OFFSET_TIMEOUT + 304;
 
-    public static final int UPSTREAM_NULL_RESPONSE      = OFFSET_TIMEOUT + 310;
-    public static final int UPSTREAM_BAD_RESPONSE       = OFFSET_TIMEOUT + 311;
-    public static final int UPSTREAM_BAD_MEDIA_TYPE     = OFFSET_TIMEOUT + 312;
-    public static final int INVALID_WRAPPED_JSON        = OFFSET_TIMEOUT + 313;
-    public static final int XML_EXCEPTION               = OFFSET_TIMEOUT + 314;
+    public static final int UPSTREAM_NULL_RESPONSE      = OFFSET + 310;
+    public static final int UPSTREAM_BAD_RESPONSE       = OFFSET + 311;
+    public static final int UPSTREAM_BAD_MEDIA_TYPE     = OFFSET + 312;
+    public static final int INVALID_WRAPPED_JSON        = OFFSET + 313;
+    public static final int XML_EXCEPTION               = OFFSET + 314;
 
     public static final int REQUEST_STILL_PROCESSING    = OFFSET_TIMEOUT + 333;
 

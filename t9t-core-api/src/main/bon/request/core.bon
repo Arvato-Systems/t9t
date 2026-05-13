@@ -36,6 +36,7 @@ package (com.arvatosystems) t9t.core.request {
     class ExecuteCannedRequest          extends RequestParameters {
         required (CannedRequestRef...)  requestRef;
         optional Unicode(36)            uplinkKey; // UplinkConfiguration key of internal services
+        optional Boolean                runOnAllNodes; // if true, the request will be executed on all nodes in the cluster, otherwise only on the current node
     }
     /** Similar to ExecuteCannedRequest, but uses a specific permission request. (Intended for external callers via JAX-RS) */
     class ExecutePreparedRequest        extends RequestParameters {

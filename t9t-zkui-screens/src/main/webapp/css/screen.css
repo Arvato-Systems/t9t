@@ -13,6 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+ body {
+     --color-grey-text: #383838;
+ }
+
  .z-comboitem-inner, .z-comboitem-content {
     font-size:12px;
     font-style:italic;
@@ -1260,7 +1265,7 @@ body {
 }
 
 .z-messagebox-window .z-button:hover, .modalButtons .z-button:hover {
-    color: #383838;
+    color: var(--color-grey-text);
 }
 
 .z-messagebox-window .submit:hover, .modalButtons .submit:hover {
@@ -1357,6 +1362,10 @@ body {
 .detailsSection .buttons {
     padding-left: 10px;
     padding-bottom: 10px;
+}
+
+.detailsSection .buttons .z-label {
+    color: var(--color-grey-text);
 }
 
 .nestedGrid .z-detail-outer {

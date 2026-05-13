@@ -33,6 +33,7 @@ import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
 
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
@@ -86,7 +87,7 @@ public class PerformScheduledJob implements Job {
             final int runOnNode = dataMap.getInt(QuartzSchedulerService.DM_RUN_ON_NODE);
             // runOnNode is -1 if the task can run on any node, 0...n for a specific node, and a big number (anything > 400) for all nodes
             if ((runOnNode != (QuartzSchedulerService.RUN_ON_ANY_NODE).intValue())) {
-                if (runOnNode >= 400) {
+                if (runOnNode >= T9tConstants.SCHEDULER_RUN_ON_ALL_NODES) {
                     wrapForAllNodes = true;
                 } else {
                     // check for specific node

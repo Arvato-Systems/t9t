@@ -943,6 +943,7 @@
                 <module>t9t-server-sapi</module>
                 <module>t9t-base-sapi</module>
                 <module>t9t-rest-sapi</module>
+                <module>t9t-resteasy-sapi</module>
                 <module>t9t-cfg-be</module>
 
                 <module>t9t-annotations-jpa</module>
@@ -1238,6 +1239,7 @@
                 <module>t9t-server-sapi</module>
                 <module>t9t-base-sapi</module>
                 <module>t9t-rest-sapi</module>
+                <module>t9t-resteasy-sapi</module>
                 <module>t9t-cfg-be</module>
 
                 <module>t9t-annotations-jpa</module>

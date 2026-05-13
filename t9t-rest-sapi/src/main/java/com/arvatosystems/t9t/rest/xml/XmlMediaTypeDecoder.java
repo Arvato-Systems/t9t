@@ -20,10 +20,15 @@ import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.MessageBodyReader;
 import jakarta.ws.rs.ext.Provider;
 import jakarta.xml.bind.JAXBException;
@@ -62,12 +67,19 @@ public class XmlMediaTypeDecoder implements MessageBodyReader<BonaPortable> {
       final MultivaluedMap<String, String> mm, final InputStream in) throws IOException, WebApplicationException {
         //LOGGER.info("Trying to parse type {} and class {}", mt.toString(), type.toGenericString());
         try {
-            final Unmarshaller unmarshaller = jaxbContextProvider.getStandardJAXBContext().createUnmarshaller();
-            final BonaPortable bonaportable = (BonaPortable) unmarshaller.unmarshal(in);
-            return bonaportable;
-        } catch (JAXBException | ClassCastException e) {
-            LOGGER.error("There has been an error while unmarshalling object in XmlMediaTypeDecoder {}", e);
-            return null;
+            final XMLInputFactory secureXmlInputFactory = XMLInputFactory.newInstance();
+            secureXmlInputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+            secureXmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+            final XMLStreamReader xsr = secureXmlInputFactory.createXMLStreamReader(in);
+            try {
+                final Unmarshaller unmarshaller = jaxbContextProvider.getStandardJAXBContext().createUnmarshaller();
+                return (BonaPortable) unmarshaller.unmarshal(xsr);
+            } finally {
+                xsr.close();
+            }
+        } catch (JAXBException | ClassCastException | XMLStreamException e) {
+            LOGGER.error("There has been an error while unmarshalling object in XmlMediaTypeDecoder", e);
+            throw new WebApplicationException("Invalid XML input", Response.Status.BAD_REQUEST);
         }
     }
 }

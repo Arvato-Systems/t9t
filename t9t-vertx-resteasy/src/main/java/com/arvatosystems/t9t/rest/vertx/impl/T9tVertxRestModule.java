@@ -35,6 +35,8 @@ import de.jpaw.dp.Singleton;
 
 import com.arvatosystems.t9t.base.vertx.IRestModule;
 import com.arvatosystems.t9t.rest.converters.JakartarsParamConverterProvider;
+import com.arvatosystems.t9t.rest.exception.mapper.GeneralExceptionMapper;
+import com.arvatosystems.t9t.rest.exception.mapper.ReaderExceptionMapper;
 import com.arvatosystems.t9t.rest.filters.CustomLoggingFilter;
 import com.arvatosystems.t9t.rest.filters.T9tRestAuthenticationFilter;
 import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
@@ -74,7 +76,8 @@ public class T9tVertxRestModule implements IRestModule {
         providers.add(new JacksonObjectMapperProvider());  // JSON
         providers.add(new XmlMediaTypeDecoder());  // XML decoder
         providers.add(new XmlMediaTypeEncoder());  // XML encoder
-        providers.add(new GeneralExceptionHandler());  // exception / error handler
+        providers.add(new ReaderExceptionMapper());  // exception mapper for request body
+        providers.add(new GeneralExceptionMapper());  // general exception mapper
         providers.add(new T9tRestAuthenticationFilter());  // authentication filter
         final boolean servletLogging = RestUtils.checkIfSet("t9t.restapi.servletLoggingFilter", Boolean.FALSE);
         if (servletLogging) {
