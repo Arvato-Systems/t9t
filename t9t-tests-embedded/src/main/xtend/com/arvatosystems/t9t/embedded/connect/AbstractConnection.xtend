@@ -49,7 +49,7 @@ abstract class AbstractConnection implements ITestConnection {
 
     static final SessionParameters SESSION_PARAMETERS = new SessionParameters => [
         dataUri                 = System.getProperty("user.name")   // optional identifier of the local host
-        locale                  = "en-US"                           // BCP 47 language tag (ISO630 language code)
+        locale                  = "en-US"                           // BCP 47 language tag (ISO-639 language code)
         userAgent               = "t9t-local-tests"                 // any string to identify the client
         zoneinfo                = "Europe/Berlin"                   // IANA tz identifier
         validate
@@ -67,8 +67,10 @@ abstract class AbstractConnection implements ITestConnection {
     @Inject IUnauthenticatedServiceRequestExecutor  serviceRequestExecutor  // processor for unauthenticated requests
 
     var AuthenticationParameters authentication = null      // credentials for unauthenticated requests
-    var String encodedJwt = null                            // credentials part 1 (authentication already validated)
+    var String  encodedJwt = null                           // credentials part 1 (authentication already validated)
     var JwtInfo jwtInfo = null                              // credentials part 2 (authentication already validated)
+    var String  encodedUserJwt = null                       // credentials part 1 for user session
+    var JwtInfo userJwtInfo = null                          // credentials part 2 for user session
     var boolean userAuthenticatedCredentials = true         // which one of the above to use - update as desired
     var boolean skipAuthorization = true;                   // flip to false if authorization should be tested
 
@@ -96,7 +98,7 @@ abstract class AbstractConnection implements ITestConnection {
     def final ServiceResponse doIO(RequestParameters rpIn) {
         val rp = rpIn.ret$MutableClone(true, true)
         if (userAuthenticatedCredentials) {
-            return requestProcessor.execute(null, rp, jwtInfo, encodedJwt, null, null, skipAuthorization, null)
+            return requestProcessor.execute(null, rp, jwtInfo, encodedJwt, userJwtInfo, encodedUserJwt, skipAuthorization, null)
         } else {
             val ServiceRequest srq = new ServiceRequest();
             srq.requestParameters = rp;
@@ -143,6 +145,26 @@ abstract class AbstractConnection implements ITestConnection {
         } else {
             LOGGER.info("Expected / wanted error {} and got it.", errorCode);
         }
+    }
+
+    /** Sets the user authentication parameters. */
+    def AuthenticationResponse userAuth(String myUserId, String myPassword, String myZoneInfo, String myLocale) {
+        encodedUserJwt      = null
+        userJwtInfo         = null
+        val authResult = authenticate.login(new AuthenticationRequest => [
+            authenticationParameters    = new PasswordAuthentication => [
+                userId                  = myUserId
+                password                = myPassword
+            ]
+            sessionParameters           = new SessionParameters => [
+                locale                  = myLocale ?: "en"                           // BCP 47 language tag (ISO-639 language code)
+                zoneinfo                = myZoneInfo ?: "Europe/Berlin"              // IANA tz identifier
+            ]
+            validate
+        ])
+        encodedUserJwt      = authResult.encodedJwt
+        userJwtInfo         = authResult.jwtInfo
+        return authResult
     }
 
     override final AuthenticationResponse auth(AuthenticationParameters params) {

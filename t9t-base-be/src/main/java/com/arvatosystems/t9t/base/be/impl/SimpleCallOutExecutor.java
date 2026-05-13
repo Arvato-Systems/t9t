@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +68,12 @@ public final class SimpleCallOutExecutor implements IForeignRequest {
         }
 
         @Override
+        @Nonnull
+        public ServiceResponse execute(@Nonnull String authHeader, @Nullable String sessionToken, @Nonnull RequestParameters rp) {
+            return executor.executeSynchronous(rp);
+        }
+
+        @Override
         public ServiceResponse execute(final RequestParameters rp, final String apiKey) {
             throw new T9tException(T9tException.NO_LONGER_SUPPORTED);
         }
@@ -102,7 +109,13 @@ public final class SimpleCallOutExecutor implements IForeignRequest {
     @Nonnull
     @Override
     public ServiceResponse execute(@Nonnull final String authHeader, @Nonnull final RequestParameters rp) {
-        final ServiceResponse response = remoteConnection.execute(authHeader, rp);
+        return execute(authHeader, null, rp);
+    }
+
+    @Nonnull
+    @Override
+    public ServiceResponse execute(@Nonnull final String authHeader, @Nullable final String sessionToken, @Nonnull final RequestParameters rp) {
+        final ServiceResponse response = remoteConnection.execute(authHeader, sessionToken, rp);
         if (response == null) {
             final ServiceResponse resp2 = new ServiceResponse();
             resp2.setReturnCode(T9tException.UPSTREAM_NULL_RESPONSE);
@@ -113,7 +126,7 @@ public final class SimpleCallOutExecutor implements IForeignRequest {
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final RequestParameters rp) {
-        return execute(T9tConstants.HTTP_AUTH_PREFIX_JWT + ctx.internalHeaderParameters.getEncodedJwt(), rp);
+        return execute(T9tConstants.HTTP_AUTH_PREFIX_JWT + ctx.internalHeaderParameters.getEncodedJwt(), ctx.internalHeaderParameters.getEncodedUserJwt(), rp);
     }
 
     @Override
@@ -121,9 +134,9 @@ public final class SimpleCallOutExecutor implements IForeignRequest {
         return execute(T9tConstants.HTTP_AUTH_PREFIX_API_KEY + apiKey, rp);
     }
 
-    protected <T extends ServiceResponse> T executeSynchronousAndCheckResult(final String authHeader,
-      final RequestParameters rp, final Class<T> requiredType) {
-        final ServiceResponse response = execute(authHeader, rp);
+    private <T extends ServiceResponse> T executeSynchronousAndCheckResult(final String authHeader, @Nullable String sessionToken,
+                                                                           final RequestParameters rp, final Class<T> requiredType) {
+        final ServiceResponse response = execute(authHeader, sessionToken, rp);
         if (!ApplicationException.isOk(response.getReturnCode())) {
             throw new T9tException(response.getReturnCode(), response.getErrorDetails());
         }
@@ -139,12 +152,13 @@ public final class SimpleCallOutExecutor implements IForeignRequest {
     @Override
     public <T extends ServiceResponse> T executeSynchronousAndCheckResult(final RequestContext ctx, final RequestParameters params,
             final Class<T> requiredType) {
-        return executeSynchronousAndCheckResult(T9tConstants.HTTP_AUTH_PREFIX_JWT + ctx.internalHeaderParameters.getEncodedJwt(), params, requiredType);
+        return executeSynchronousAndCheckResult(T9tConstants.HTTP_AUTH_PREFIX_JWT + ctx.internalHeaderParameters.getEncodedJwt(),
+                ctx.internalHeaderParameters.getEncodedUserJwt(), params, requiredType);
     }
 
     @Override
     public <T extends ServiceResponse> T executeSynchronousAndCheckResult(final RequestParameters params, final String apiKey,
             final Class<T> requiredType) {
-        return executeSynchronousAndCheckResult(T9tConstants.HTTP_AUTH_PREFIX_API_KEY + apiKey, params, requiredType);
+        return executeSynchronousAndCheckResult(T9tConstants.HTTP_AUTH_PREFIX_API_KEY + apiKey, null, params, requiredType);
     }
 }

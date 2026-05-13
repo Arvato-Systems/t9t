@@ -90,7 +90,7 @@ public class T9tRestAuthenticationFilter implements ContainerRequestFilter {
             if (authFilterCustomization.filterAuthenticated(requestContext, authHeaderNew)) {
                 // any bad auth should record the IP address as "bad"
                 ipBlockerService.registerBadAuthFromIp(remoteIpHeader);
-                LOGGER.debug("aborting due failed authentication from {}", remoteIpHeader);
+                LOGGER.debug("aborting due to failed authentication from {}", remoteIpHeader);
                 return;  // aborted
             }
             if (authFilterCustomization.filterSupportedMediaType(requestContext)) {

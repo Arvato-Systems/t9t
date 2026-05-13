@@ -15,34 +15,21 @@
  */
 package com.arvatosystems.t9t.auth.jwt;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 
-public class BaseJWTPool implements IJWT {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BaseJWTPool.class);
-    private final ThreadLocal<IJWT> pool = new ThreadLocal<>();
+public class BaseJWTPool extends AbstractJWTPool implements IJWT {
 
-    // for injections where you are sure you have per thread scope as well
-    private IJWT get() {
-        final IJWT jwt = pool.get();
-        if (jwt != null) {
-            return jwt;
-        }
-        LOGGER.info("Creating a new JWT for thread {}", Thread.currentThread().getName());
-        final IJWT newJwt = JWT.createDefaultJwt();
-        pool.set(newJwt);
-        return newJwt;
+    @Override
+    protected IJWT createJwt() {
+        return JWT.createDefaultJwt();
     }
 
     @Override
-    public JwtInfo decode(final String token) {
-        return get().decode(token);
-    }
-
-    @Override
-    public String sign(final JwtInfo info, final Long expiresInSeconds, final String algorithmOverride) {
+    @Nonnull
+    public String sign(@Nonnull final JwtInfo info, @Nullable final Long expiresInSeconds, @Nullable final String algorithmOverride) {
         return get().sign(info, expiresInSeconds, algorithmOverride);
     }
 }

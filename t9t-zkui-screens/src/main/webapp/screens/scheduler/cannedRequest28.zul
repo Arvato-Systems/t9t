@@ -21,6 +21,7 @@
                 <button28 id="executeCannedRequest" onClick="@command('executeCannedRequest')" disabled="@load(vm.data eq null || vm.data.objectRef eq null)"/>
                 <button28 forEach="${vm.internalServices}" id="${each}" label="${l:translate('uplink', each)}"
                     onClick="@command('executeCannedRequest', service=self.id)" disabled="@load(vm.data eq null || vm.data.objectRef eq null)" />
+                <checkbox checked="@bind(vm.runOnAllNodes)" disabled="@load(vm.data eq null || vm.data.objectRef eq null)"/><label value="${l:translate('cannedRequest','runOnAllNodes')}" />
             </hlayout>
         </crud28>
     </threesections28>

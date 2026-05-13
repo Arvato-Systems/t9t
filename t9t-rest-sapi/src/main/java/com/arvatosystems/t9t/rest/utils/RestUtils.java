@@ -215,7 +215,7 @@ public final class RestUtils {
             return error(Response.Status.BAD_REQUEST, MessageParserException.JSON_EXCEPTION, e.getMessage(), acceptHeader);
         }
         if (e instanceof JAXBException || e instanceof XMLStreamException) {
-            // a problem parsing the JSON should be communicated as such
+            // a problem parsing the XML should be communicated as such
             LOGGER.error("XML exception calling {} {}: {} {}",
                     method, uriInfo.getAbsolutePath(), e.getClass().getSimpleName(), e.getMessage());
             return error(Response.Status.BAD_REQUEST, T9tException.XML_EXCEPTION, e.getMessage(), acceptHeader);

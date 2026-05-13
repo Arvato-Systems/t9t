@@ -18,18 +18,18 @@ package com.arvatosystems.t9t.embedded.connect
 import com.arvatosystems.t9t.base.jpa.ormspecific.IEMFCustomizer
 import com.arvatosystems.t9t.cfg.be.ConfigProvider
 import com.arvatosystems.t9t.cfg.be.DatabaseBrandType
-import com.arvatosystems.t9t.cfg.be.KeyPrefetchConfiguration
-import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration
 import com.arvatosystems.t9t.cfg.be.HibernateSearchConfiguration
+import com.arvatosystems.t9t.cfg.be.KeyPrefetchConfiguration
 import com.arvatosystems.t9t.cfg.be.LuceneConfiguration
-import com.arvatosystems.t9t.cfg.be.ElasticSearchConfiguration
+import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration
+import com.arvatosystems.t9t.jdp.Init
 import com.arvatosystems.t9t.orm.jpa.hibernate.impl.EMFCustomizer
 import com.arvatosystems.t9t.ssm.be.impl.IQuartzPropertyProvider
-import java.util.Map
-import org.h2.tools.Server
-import java.util.Properties
 import de.jpaw.dp.Alternative
-import com.arvatosystems.t9t.jdp.Init
+import java.util.Map
+import java.util.Properties
+import org.h2.tools.Server
+
 import static extension de.jpaw.dp.JdpExtensions.*
 
 /**

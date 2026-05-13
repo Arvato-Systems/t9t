@@ -17,12 +17,27 @@ package com.arvatosystems.t9t.doc.services;
 
 import java.util.Map;
 
+import jakarta.annotation.Nullable;
+
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 
 import com.arvatosystems.t9t.doc.api.DocumentSelector;
 import com.arvatosystems.t9t.doc.api.TemplateType;
 
 public interface IDocFormatter {
+    MediaData formatDocument(
+        String tenantId,
+        String sharedTenantId,
+        TemplateType templateType,
+        String template,
+        DocumentSelector selector,
+        String overrideTimeZone,
+        Object data,
+        Map<String, MediaData> cidMap, // if null, the binary data will be inlined in HTML without conversion, otherwise stored here
+        @Nullable MediaXType defaultMediaType
+    );
+
     MediaData formatDocument(
         String tenantId,
         String sharedTenantId,

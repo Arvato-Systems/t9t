@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.base.services;
 
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -37,6 +38,17 @@ public interface IForeignRequest {
      */
     @Nonnull
     ServiceResponse execute(@Nonnull String authHeader, @Nonnull RequestParameters rp);
+
+    /**
+     * Executes a remote request, using the provided authorization header as credentials and the provided session token.
+     *
+     * @param authHeader The full authorization header
+     * @param sessionToken Secondary auth token
+     * @param rp The request parameters to send
+     * @return service response {@link ServiceResponse}
+     */
+    @Nonnull
+    ServiceResponse execute(@Nonnull String authHeader, @Nullable String sessionToken, @Nonnull RequestParameters rp);
 
     /**
      * Executes a remote request, using an API key as credentials.

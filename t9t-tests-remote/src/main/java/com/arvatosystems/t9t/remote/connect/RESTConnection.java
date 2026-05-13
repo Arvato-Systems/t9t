@@ -36,6 +36,12 @@ import de.jpaw.util.ByteBuilder;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 
+/**
+ * Utility method to build callouts to the REST gateways.
+ * This class supports the dual-authentication combinations used by the REST gateway:
+ * Authorization + X-Session-Token
+ * Authorization + X-Api-Key
+ */
 public class RESTConnection extends ConnectionDefaults {
     private static final Logger LOGGER = LoggerFactory.getLogger(RESTConnection.class);
 
@@ -43,6 +49,8 @@ public class RESTConnection extends ConnectionDefaults {
     protected final boolean marshallerFrozen;
     protected final String baseRestUrl;
     protected String authentication = null;
+    protected String xSessionToken = null;
+    protected String xApiKey = null;
     protected RequestMethod requestMethod = RequestMethod.POST;  // the default request method
 
     public RESTConnection() {
@@ -82,6 +90,14 @@ public class RESTConnection extends ConnectionDefaults {
         this.authentication = authentication;
     }
 
+    public void setXSessionToken(@Nullable final String xxSessionToken) {
+        this.xSessionToken = xxSessionToken;
+    }
+
+    public void setXApiKey(@Nullable final String xxApiKey) {
+        this.xApiKey = xxApiKey;
+    }
+
     public void setRequestMethod(@Nonnull final RequestMethod requestMethod) {
         this.requestMethod = requestMethod;
     }
@@ -101,9 +117,6 @@ public class RESTConnection extends ConnectionDefaults {
     public boolean isOK(final int httpCode) {
         return httpCode >= 200 && httpCode <= 299;
     }
-//    public boolean sendsPayload(final int httpCode) {
-//        return isOK(httpCode) || (httpCode >= 400 && httpCode <= 500);
-//    }
 
     /** Sends a request to the REST server for a given full URL and returns the response. */
     public RESTResult doIO(@Nonnull final URL url, @Nullable final ByteArray request, @Nonnull final RequestMethod rqMethod) {
@@ -114,6 +127,12 @@ public class RESTConnection extends ConnectionDefaults {
             setRequestProperties(connection);
             if (authentication != null) {
                 connection.setRequestProperty(T9tConstants.HTTP_HEADER_AUTH, authentication);
+            }
+            if (xSessionToken != null) {
+                connection.setRequestProperty(T9tConstants.HTTP_HEADER_X_SESSION_TOKEN, xSessionToken);
+            }
+            if (xApiKey != null) {
+                connection.setRequestProperty(T9tConstants.HTTP_HEADER_X_API_KEY, xApiKey);
             }
 
             OutputStream wr = null;

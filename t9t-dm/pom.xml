@@ -624,6 +624,11 @@
                 <artifactId>t9t-rest-sapi</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-resteasy-sapi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>

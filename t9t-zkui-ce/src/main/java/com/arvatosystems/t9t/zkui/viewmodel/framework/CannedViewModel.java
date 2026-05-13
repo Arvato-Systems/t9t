@@ -49,6 +49,7 @@ public class CannedViewModel extends CrudSurrogateKeyVM<CannedRequestRef, Canned
     protected final IT9tRemoteUtils t9tRemoteUtils = Jdp.getRequired(IT9tRemoteUtils.class);
 
     private final List<String> internalServices = new ArrayList<>();
+    private boolean runOnAllNodes = false;
 
     @Init(superclass = true)
     public void init() {
@@ -62,7 +63,7 @@ public class CannedViewModel extends CrudSurrogateKeyVM<CannedRequestRef, Canned
         if (data == null || data.getObjectRef() == null)
             return;
         LOGGER.debug("executeCannedRequest with objectRef {}", data.getObjectRef());
-        final ServiceResponse response = t9tRequestDAO.executeCannedRequest(new CannedRequestRef(data.getObjectRef()), service);
+        final ServiceResponse response = t9tRequestDAO.executeCannedRequest(new CannedRequestRef(data.getObjectRef()), service, runOnAllNodes);
         final Info info = new Info();
         if (response != null) {
             info.setText(JsonComposerPrettyPrint.toJsonString(response));
@@ -72,5 +73,13 @@ public class CannedViewModel extends CrudSurrogateKeyVM<CannedRequestRef, Canned
 
     public List<String> getInternalServices() {
         return internalServices;
+    }
+
+    public void setRunOnAllNodes(boolean runOnAllNodes) {
+        this.runOnAllNodes = runOnAllNodes;
+    }
+
+    public boolean getRunOnAllNodes() {
+        return runOnAllNodes;
     }
 }

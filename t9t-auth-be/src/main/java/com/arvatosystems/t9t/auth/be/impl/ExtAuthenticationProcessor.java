@@ -15,14 +15,11 @@
  */
 package com.arvatosystems.t9t.auth.be.impl;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+import jakarta.annotation.Nonnull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.api.auth.JwtConverter;
-import de.jpaw.bonaparte.pojos.api.auth.JwtAlg;
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.dp.Jdp;
@@ -30,6 +27,7 @@ import de.jpaw.dp.Singleton;
 
 import com.arvatosystems.t9t.auth.jwt.IJWT;
 import com.arvatosystems.t9t.auth.jwt.T9tJwtException;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.auth.AuthenticationInfo;
 import com.arvatosystems.t9t.server.services.IExtAuthenticationProcessor;
 
@@ -37,69 +35,29 @@ import com.arvatosystems.t9t.server.services.IExtAuthenticationProcessor;
 public class ExtAuthenticationProcessor implements IExtAuthenticationProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExtAuthenticationProcessor.class);
 
-    protected final IJWT jwtService = Jdp.getRequired(IJWT.class);
+    protected final IJWT jwtService = Jdp.getRequired(IJWT.class, "extJwt");
 
     @Override
-    public AuthenticationInfo validateAndParseJwt(final String encodedJwt) {
-        if (encodedJwt == null || encodedJwt.isBlank()) {
+    @Nonnull
+    public AuthenticationInfo validateAndParseJwt(@Nonnull final String encodedJwt) {
+        if (T9tUtil.isBlank(encodedJwt)) {
             LOGGER.warn("Received null or empty JWT token");   // should have been caught by the caller!
             throw new T9tJwtException(T9tJwtException.VERIFICATION_FAILED);
         }
-        LOGGER.debug("Attempting to decode JWT token: {}", encodedJwt);  // FIXME (TBE-658): remove this line before moving to production!
+        LOGGER.debug("Attempting to decode external JWT token");
 
-        try {
-            final JwtInfo jwtInfo = jwtService.decode(encodedJwt);
+        final JwtInfo jwtInfo = jwtService.decode(encodedJwt);
 
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Decoded JwtInfo: {}", ToStringHelper.toStringML(jwtInfo));
-            }
-
-            // Build and return AuthenticationInfo
-            final AuthenticationInfo authInfo = new AuthenticationInfo();
-            authInfo.setJwtInfo(jwtInfo);
-            authInfo.setEncodedJwt(encodedJwt);
-
-            LOGGER.debug("Successfully parsed JWT for subject: {}", jwtInfo.getUserId());  // subject
-            return authInfo;
-        } catch (final Exception e) {
-            LOGGER.error("Failed to decode JWT token: {}", e.getMessage(), e);
-
-            // temp: decode without validation. FIXME (TBE-658): remove this code before moving to production!
-            final String[] segments = encodedJwt.split("\\.");
-            if (segments.length != 3) {
-                throw new T9tJwtException(T9tJwtException.NUMBER_SEGMENTS, Integer.toString(segments.length));
-            }
-
-            // All segment should be base64
-            final String headerSeg = segments[0];
-            final String payloadSeg = segments[1];
-            final String signatureSeg = segments[2];
-
-            if (signatureSeg.length() == 0) {
-                throw new T9tJwtException(T9tJwtException.MISSING_SIGNATURE);
-            }
-
-            // base64 decode and parse JSON
-            final JwtAlg header;
-            final JwtInfo payload;
-            try {
-                header = JwtConverter.parseAlg(new String(base64urlDecode(headerSeg), StandardCharsets.UTF_8));
-                payload = JwtConverter.parseJwtInfo(new String(base64urlDecode(payloadSeg), StandardCharsets.UTF_8));
-            } catch (final IllegalArgumentException e1) { // Decoding illegal information will throw an IllegalArgumentException which should be caught!
-                LOGGER.error("Failed to decode JWT segments: malformed content: {}", e1.getMessage(), e1);
-                throw new T9tJwtException(T9tJwtException.VERIFICATION_FAILED);
-            }
-            // Build and return AuthenticationInfo
-            final AuthenticationInfo authInfo = new AuthenticationInfo();
-            authInfo.setJwtInfo(payload);
-            authInfo.setEncodedJwt(encodedJwt);
-
-            LOGGER.debug("Parsed JWT for subject (with ignored failed validation for header {}): {}", header, payload.getUserId());  // subject
-            return authInfo;
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Decoded JwtInfo: {}", ToStringHelper.toStringML(jwtInfo));
         }
-    }
 
-    private static byte[] base64urlDecode(final String str) {
-        return Base64.getUrlDecoder().decode(str.getBytes(StandardCharsets.UTF_8));
+        // Build and return AuthenticationInfo
+        final AuthenticationInfo authInfo = new AuthenticationInfo();
+        authInfo.setJwtInfo(jwtInfo);
+        authInfo.setEncodedJwt(encodedJwt);
+
+        LOGGER.debug("Successfully parsed external JWT for subject: {}", jwtInfo.getUserId());
+        return authInfo;
     }
 }

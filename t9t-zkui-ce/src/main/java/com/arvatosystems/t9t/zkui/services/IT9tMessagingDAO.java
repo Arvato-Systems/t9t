@@ -102,5 +102,5 @@ public interface IT9tMessagingDAO {
 
     MediaData getUploadedData(UploadEvent ev) throws IOException;
 
-    ServiceResponse executeCannedRequest(@Nonnull CannedRequestRef ref, @Nullable String uplinkKey) throws ReturnCodeException;
+    ServiceResponse executeCannedRequest(@Nonnull CannedRequestRef ref, @Nullable String uplinkKey, boolean runOnAllNodes) throws ReturnCodeException;
 }

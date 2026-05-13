@@ -41,6 +41,9 @@ import java.util.Arrays;
 
 import javax.crypto.Mac;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 /**
  * Internal common interface for all crypto algorithms. This is just an utility in order to simplify sign and verify operations.
  *
@@ -85,7 +88,7 @@ final class CryptoSignature implements Crypto {
     private final PrivateKey privateKey;
     private final X509Certificate certificate;
 
-    CryptoSignature(final X509Certificate certificate, final PrivateKey privateKey) throws NoSuchAlgorithmException {
+    CryptoSignature(@Nonnull final X509Certificate certificate, @Nullable final PrivateKey privateKey) throws NoSuchAlgorithmException {
         this.certificate = certificate;
         this.privateKey = privateKey;
         this.sig = Signature.getInstance(certificate.getSigAlgName());
@@ -93,6 +96,9 @@ final class CryptoSignature implements Crypto {
 
     @Override
     public byte[] sign(final byte[] payload) throws SignatureException, InvalidKeyException {
+        if (privateKey == null) {
+            throw new UnsupportedOperationException("No private key is configured. Sign is not allowed.");
+        }
         sig.initSign(privateKey);
         sig.update(payload);
         return sig.sign();

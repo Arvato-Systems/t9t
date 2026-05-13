@@ -90,7 +90,7 @@
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <maven-versions-plugin.version>2.21.0</maven-versions-plugin.version>
         <maven-exec-plugin.version>3.6.3</maven-exec-plugin.version>
-        <owasp-maven-plugin.version>12.2.0</owasp-maven-plugin.version>
+        <owasp-maven-plugin.version>12.2.1</owasp-maven-plugin.version>
         <spring-boot-maven-plugin.version>4.0.5</spring-boot-maven-plugin.version>
         <git-commit-id-plugin.version>9.0.2</git-commit-id-plugin.version>
         <jaxws-maven-plugin.version>4.0.3</jaxws-maven-plugin.version>
@@ -126,8 +126,8 @@
         <logstash-logback.version>8.1</logstash-logback.version>
         <junit.version>6.0.3</junit.version>
         <!-- Swagger -->
-        <swagger-maven-plugin.version>2.2.46</swagger-maven-plugin.version>
-        <swagger-ui-webjars.version>5.32.1</swagger-ui-webjars.version>
+        <swagger-maven-plugin.version>2.2.48</swagger-maven-plugin.version>
+        <swagger-ui-webjars.version>5.32.2</swagger-ui-webjars.version>
 
         <!-- OpenApi -->
         <openapi-generator.version>7.20.0</openapi-generator.version>
@@ -943,6 +943,7 @@
                 <module>t9t-server-sapi</module>
                 <module>t9t-base-sapi</module>
                 <module>t9t-rest-sapi</module>
+                <module>t9t-resteasy-sapi</module>
                 <module>t9t-cfg-be</module>
 
                 <module>t9t-annotations-jpa</module>
@@ -1238,6 +1239,7 @@
                 <module>t9t-server-sapi</module>
                 <module>t9t-base-sapi</module>
                 <module>t9t-rest-sapi</module>
+                <module>t9t-resteasy-sapi</module>
                 <module>t9t-cfg-be</module>
 
                 <module>t9t-annotations-jpa</module>

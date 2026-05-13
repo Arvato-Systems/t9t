@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2025 Arvato Systems GmbH
+ * Copyright (c) 2012 - 2026 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,14 @@
  */
 package com.arvatosystems.t9t.auth.be.jwt;
 
-import de.jpaw.dp.Default;
+import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
-import com.arvatosystems.t9t.auth.jwt.BaseJWTPool;
 import com.arvatosystems.t9t.auth.jwt.IJWT;
+import com.arvatosystems.t9t.auth.jwt.SecondaryJWTPool;
 
 @Singleton
-@Default
-public class JWTPool extends BaseJWTPool implements IJWT {
+@Named("extJwt")
+public class ExtJWTPool extends SecondaryJWTPool implements IJWT {
 }
+

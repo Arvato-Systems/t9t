@@ -363,7 +363,7 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
         final MediaType mediaType = requestContext.getMediaType();
         if (mediaType != null) {
             final String subType = mediaType.getSubtype();
-            if (!"application".equals(mediaType.getType()) || !("xml".equals(subType) || "json".equals(subType))) {
+            if (!"application".equals(mediaType.getType()) || !("xml".equals(subType) || "json".equals(subType) || "x-www-form-urlencoded".equals(subType))) {
                 LOGGER.debug("Rejecting request due to unsupported media type {}", mediaType);
                 abortFilter(requestContext, Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build());
                 return true;

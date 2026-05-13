@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2025 Arvato Systems GmbH
+ * Copyright (c) 2012 - 2026 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.jetty.exceptions;
+package com.arvatosystems.t9t.rest.exception.mapper;
 
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -28,8 +28,8 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
 
 @Provider
-public class GeneralExceptionHandler implements ExceptionMapper<Exception> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GeneralExceptionHandler.class);
+public class GeneralExceptionMapper implements ExceptionMapper<Exception> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GeneralExceptionMapper.class);
 
     @Context
     private HttpRequest authContext;
@@ -38,7 +38,7 @@ public class GeneralExceptionHandler implements ExceptionMapper<Exception> {
     private HttpHeaders httpHeaders;
 
     // constructor solely used for debugging / logging - temporarily
-    public  GeneralExceptionHandler() {
+    public GeneralExceptionMapper() {
         LOGGER.debug("Creating new instance");
     }
 

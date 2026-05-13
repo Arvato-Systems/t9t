@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2025 Arvato Systems GmbH
+ * Copyright (c) 2012 - 2026 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,20 @@ import jakarta.annotation.Nullable;
 
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 
-public interface IJWT {
+/**
+ * ThreadLocal pool for {@link SecondaryJWT} instances.
+ */
+public class SecondaryJWTPool extends AbstractJWTPool implements IJWT {
 
-    /** Creates a signed base64 encoded String for a given JwtInfo object.
-     * The method will add the iat field as well as (if an expiry time has been specified), the exp field. */
-    @Nonnull
-    String sign(@Nonnull JwtInfo info, @Nullable Long expiresInSeconds, @Nullable String algorithmOverride);
+    @Override
+    protected IJWT createJwt() {
+        return SecondaryJWT.createDefaultJwt();
+    }
 
-    /** Decodes a base64 encoded JWT. */
+    @Override
     @Nonnull
-    JwtInfo decode(@Nonnull String token);
+    public String sign(@Nonnull final JwtInfo info, @Nullable final Long expiresInSeconds, @Nullable final String algorithmOverride) {
+        throw new UnsupportedOperationException("SecondaryJWT does not support signing");
+    }
 }
+

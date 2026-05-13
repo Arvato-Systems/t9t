@@ -34,6 +34,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import jakarta.annotation.Nullable;
+
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.base.Charsets;
@@ -559,6 +561,12 @@ public class DocFormatter implements IDocFormatter {
     @Override
     public MediaData formatDocument(final String tenantId, final String sharedTenantId, final TemplateType templateType, final String template,
             final DocumentSelector selector, final String timeZone, final Object data, final Map<String, MediaData> attachments) {
+        return formatDocument(tenantId, sharedTenantId, templateType, template, selector, timeZone, data, attachments, null);
+    }
+
+    @Override
+    public MediaData formatDocument(final String tenantId, final String sharedTenantId, final TemplateType templateType, final String template,
+            final DocumentSelector selector, final String timeZone, final Object data, final Map<String, MediaData> attachments, @Nullable final MediaXType defaultMediaType) {
         try {
             LOGGER.debug("formatDocument for template {}, type {} with selector {}, time zone {}", template, templateType, selector, timeZone);
 
@@ -602,7 +610,7 @@ public class DocFormatter implements IDocFormatter {
                 return components.get(template);
             case INLINE:
                 templateText = template;
-                mediaType = MediaTypes.MEDIA_XTYPE_TEXT;
+                mediaType = defaultMediaType != null ? defaultMediaType : MediaTypes.MEDIA_XTYPE_TEXT;
                 escapeToRaw = false;
                 break;
             }

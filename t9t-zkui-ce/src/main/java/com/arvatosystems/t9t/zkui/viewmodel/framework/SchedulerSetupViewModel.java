@@ -24,6 +24,7 @@ import org.zkoss.bind.annotation.NotifyChange;
 import de.jpaw.bonaparte.core.JsonComposerPrettyPrint;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.misc.Info;
@@ -49,7 +50,8 @@ public class SchedulerSetupViewModel extends CrudSurrogateKeyVM<SchedulerSetupRe
         if (data == null || data.getRequest() == null)
             return;
         LOGGER.debug("executeCannedRequest with Ref {}", data.getRequest());
-        final ServiceResponse response = t9tRequestDAO.executeCannedRequest(data.getRequest(), data.getSchedulerEnvironment());
+        final boolean runOnAllNode = data.getRunOnNode() != null && data.getRunOnNode() >= T9tConstants.SCHEDULER_RUN_ON_ALL_NODES;
+        final ServiceResponse response = t9tRequestDAO.executeCannedRequest(data.getRequest(), data.getSchedulerEnvironment(), runOnAllNode);
         final Info info = new Info();
         if (response != null) {
             info.setText(JsonComposerPrettyPrint.toJsonString(response));

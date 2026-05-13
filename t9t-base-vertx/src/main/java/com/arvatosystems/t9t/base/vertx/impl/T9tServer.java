@@ -49,7 +49,6 @@ import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.util.DeprecationWarner;
 import de.jpaw.dp.Jdp;
 
-import com.arvatosystems.t9t.auth.jwt.JWT;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -60,7 +59,6 @@ import com.arvatosystems.t9t.base.vertx.IVertxMetricsProvider;
 import com.arvatosystems.t9t.base.vertx.MultiThreadMessageCoderFactory2;
 import com.arvatosystems.t9t.cfg.be.ApplicationConfiguration;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
-import com.arvatosystems.t9t.cfg.be.ServerConfiguration;
 import com.arvatosystems.t9t.cfg.be.StatusProvider;
 import com.arvatosystems.t9t.jdp.Init;
 
@@ -246,17 +244,10 @@ public class T9tServer extends AbstractVerticle {
         AsyncProcessor.register(vertx);
     }
 
-    /** Reads some external configuration file, updates the JWT with the keystore, if required. */
+    /** Reads the external configuration file to make it available for the rest of the startup process. */
     public void readConfig() {
         // require this in other modules
         ConfigProvider.readConfiguration(cfgFile);
-        final ServerConfiguration serverCfg = ConfigProvider.getConfiguration().getServerConfiguration();
-        if (serverCfg != null && (serverCfg.getKeyStorePassword() != null || serverCfg.getKeyStorePath() != null)) {
-            JWT.setKeyStore(serverCfg.getKeyStorePath(), serverCfg.getKeyStorePassword(), serverCfg.getKeyStorePath() == null);
-            LOGGER.info("Using environment specific keystore and/or password from local config file. Good.");
-        } else {
-            LOGGER.warn("No environment specific keystore parameters. Using defaults, do not use this in production!");
-        }
     }
 
     public void mergePoolSizes(final VertxOptions options) {
