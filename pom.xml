@@ -100,7 +100,7 @@
         <cxf-codegen-plugin.version>4.2.0</cxf-codegen-plugin.version>
         <cxf-wadl2java-plugin.version>4.2.0</cxf-wadl2java-plugin.version>
         <cxf-java2ws-plugin.version>4.2.0</cxf-java2ws-plugin.version>
-        <cxf-xjc-plugin.version>4.1.2</cxf-xjc-plugin.version>
+        <cxf-xjc-plugin.version>4.2.0</cxf-xjc-plugin.version>
         <echo-maven-plugin.version>1.0.0</echo-maven-plugin.version>
         <jaxb2-maven-plugin.version>3.3.0</jaxb2-maven-plugin.version>
 
