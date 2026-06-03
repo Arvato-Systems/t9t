@@ -65,7 +65,7 @@ public class JettyServer {
         try {
             new JettyServer().run();
         } catch (final Throwable t) {
-            t.printStackTrace();
+            LOGGER.error("Caught a Throwable.", t);
         }
     }
 

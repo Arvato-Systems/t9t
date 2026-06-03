@@ -91,8 +91,8 @@ public class SendTestEmailRequestHandler extends AbstractRequestHandler<SendTest
                 implementingInstance.sendEmail(messageRef, messageId, sendEmailRequest.getEmail(), moduleCfg);
                 return okResponse;
             } catch (Exception e) {
-                LOGGER.error("email sending exception {}: {}", e.getClass().getSimpleName(), e.getMessage());
-                e.printStackTrace();
+                LOGGER.error("Error while sending email: {}: {}", e.getClass().getSimpleName(), e.getMessage());
+                LOGGER.error("Caught an exception.", e);
                 throw e;
             }
         }

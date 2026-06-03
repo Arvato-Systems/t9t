@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.zkui.context.jobAndReport;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Jdp;
@@ -30,6 +33,8 @@ import com.arvatosystems.t9t.zkui.services.IT9tMessagingDAO;
 @Singleton
 @Named("sinkSearch.ctx.download")
 public class DownloadContextMenuHandler implements IGridContextMenu<SinkDTO> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DownloadContextMenuHandler.class);
+
     protected final IT9tMessagingDAO messagingDAO = Jdp.getRequired(IT9tMessagingDAO.class);
 
     @Override
@@ -38,8 +43,7 @@ public class DownloadContextMenuHandler implements IGridContextMenu<SinkDTO> {
         try {
             messagingDAO.downloadFileAndSave(dto.getObjectRef());
         } catch (ReturnCodeException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.error("Caught a ReturnCodeException.", e);
         }
     }
 }

@@ -70,8 +70,7 @@ public class AuthStartup implements StartupOnly {
         try {
             ppJPA.commit(); // commit the transaction
         } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.error("Error while commit the transaction: {}", e.getMessage());
+            LOGGER.error("Caught an exception while committing the transaction.", e);
         }
     }
 

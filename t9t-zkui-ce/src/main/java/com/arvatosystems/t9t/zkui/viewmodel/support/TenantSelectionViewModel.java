@@ -60,8 +60,8 @@ public class TenantSelectionViewModel {
         final Boolean arg = (Boolean) Executions.getCurrent().getArg().get("isCancelClose");
         try {
             isCancelClose = arg == null ? Boolean.FALSE : arg;
-        } catch (final Exception s) {
-            s.printStackTrace();
+        } catch (final Exception e) {
+            LOGGER.error("Caught an exception.", e);
         }
     }
     public TenantSelectionViewModel() {

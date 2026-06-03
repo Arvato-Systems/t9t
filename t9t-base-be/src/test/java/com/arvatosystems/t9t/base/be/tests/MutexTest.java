@@ -39,7 +39,7 @@ public class MutexTest {
             try {
                 Thread.sleep(1000L);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                LOGGER.error("Caught an InterruptedException.", e);
             }
             LOGGER.info("end task");
             return 42;

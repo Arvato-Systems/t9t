@@ -87,8 +87,8 @@ public class SendEmailRequestHandler extends AbstractRequestHandler<SendEmailReq
                     implementingInstance.sendEmail(messageRef, messageId, emailToSend, moduleCfg);
                     return okResponse;
                 } catch (Exception e) {
-                    LOGGER.error("email sending exception {}: {}", e.getClass().getSimpleName(), e.getMessage());
-                    e.printStackTrace();
+                    LOGGER.error("Error while sending email: {}: {}", e.getClass().getSimpleName(), e.getMessage());
+                    LOGGER.error("Caught an exception.", e);
                     throw e;
                 }
             }
@@ -133,8 +133,8 @@ public class SendEmailRequestHandler extends AbstractRequestHandler<SendEmailReq
                 e.setAttachments(newAttachments);
             }
         } catch (final Exception ex) {
-            LOGGER.error("Exception while resolving lazy attachments: {}: {}: {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
-            ex.printStackTrace();
+            LOGGER.error("Error while resolving lazy attachments: {}: {}", ex.getClass().getSimpleName(), ex.getMessage());
+            LOGGER.error("Caught an exception.", ex);
             throw ex;
         }
         return e;
