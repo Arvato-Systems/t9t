@@ -56,8 +56,8 @@
 
         <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
         <t9t.version>9.3-SNAPSHOT</t9t.version>
-        <xtext.version>2.42.0</xtext.version>
-        <jetty.version>12.1.8</jetty.version>
+        <xtext.version>2.43.0</xtext.version>
+        <jetty.version>12.1.10</jetty.version>
 
         <!-- Build specific properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -78,7 +78,7 @@
         <maven-plugin-annotations.version>3.15.2</maven-plugin-annotations.version>
         <maven-project.version>2.2.1</maven-project.version>
         <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
-        <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
         <maven-plugin-plugin.version>3.15.2</maven-plugin-plugin.version>
         <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
         <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
@@ -86,16 +86,16 @@
         <maven-war-plugin.version>3.5.1</maven-war-plugin.version>
         <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
         <maven-jarjar-plugin.version>1.9</maven-jarjar-plugin.version>
-        <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
+        <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <maven-versions-plugin.version>2.21.0</maven-versions-plugin.version>
         <maven-exec-plugin.version>3.6.3</maven-exec-plugin.version>
-        <owasp-maven-plugin.version>12.2.1</owasp-maven-plugin.version>
-        <spring-boot-maven-plugin.version>4.0.5</spring-boot-maven-plugin.version>
+        <owasp-maven-plugin.version>12.2.2</owasp-maven-plugin.version>
+        <spring-boot-maven-plugin.version>4.0.6</spring-boot-maven-plugin.version>
         <git-commit-id-plugin.version>9.0.2</git-commit-id-plugin.version>
         <jaxws-maven-plugin.version>4.0.3</jaxws-maven-plugin.version>
         <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>
-        <jetty-maven-plugin.version>12.1.8</jetty-maven-plugin.version>
+        <jetty-maven-plugin.version>12.1.10</jetty-maven-plugin.version>
         <maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
         <cxf-codegen-plugin.version>4.2.0</cxf-codegen-plugin.version>
         <cxf-wadl2java-plugin.version>4.2.0</cxf-wadl2java-plugin.version>
@@ -115,19 +115,19 @@
         <xtext-maven-plugin.version>${xtext.version}</xtext-maven-plugin.version>
         <jdt.version>3.45.0</jdt.version>
 
-        <bonaparte-plugin.version>6.4.0</bonaparte-plugin.version>
+        <bonaparte-plugin.version>6.5.0</bonaparte-plugin.version>
         <license-plugin.version>5.0.0</license-plugin.version>
 
         <checkstyle.version>12.2.0</checkstyle.version>
         <spotless.version>3.3.0</spotless.version>
         <spotbugs.version>4.9.8</spotbugs.version>
         <spotbugs-plugin.version>4.9.8.3</spotbugs-plugin.version>
-        <logback.version>1.5.32</logback.version>
+        <logback.version>1.5.34</logback.version>
         <logstash-logback.version>8.1</logstash-logback.version>
-        <junit.version>6.0.3</junit.version>
+        <junit.version>6.1.0</junit.version>
         <!-- Swagger -->
-        <swagger-maven-plugin.version>2.2.48</swagger-maven-plugin.version>
-        <swagger-ui-webjars.version>5.32.2</swagger-ui-webjars.version>
+        <swagger-maven-plugin.version>2.2.50</swagger-maven-plugin.version>
+        <swagger-ui-webjars.version>5.32.6</swagger-ui-webjars.version>
 
         <!-- OpenApi -->
         <openapi-generator.version>7.20.0</openapi-generator.version>

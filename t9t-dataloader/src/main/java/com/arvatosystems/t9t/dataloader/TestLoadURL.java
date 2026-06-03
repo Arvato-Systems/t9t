@@ -107,11 +107,11 @@ public class TestLoadURL {
     // System.out.println(sb.toString());
     //
     // } catch (MalformedURLException e) {
-    // e.printStackTrace();
+    // LOGGER.error("Caught a MalformedURLException.", e);
     // } catch (ProtocolException e) {
-    // e.printStackTrace();
+    // LOGGER.error("Caught a ProtocolException.", e);
     // } catch (IOException e) {
-    // e.printStackTrace();
+    // LOGGER.error("Caught a IOException.", e);
     // }
     // finally
     // {

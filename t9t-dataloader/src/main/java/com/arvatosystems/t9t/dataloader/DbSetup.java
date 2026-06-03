@@ -258,7 +258,7 @@ public class DbSetup {
             }
 
         } catch (ParseException e) {
-            logger.error(e.getMessage());
+            logger.error("Caught a ParseException.", e);
             logger.error("Command line parsing problem. Usage is as follows:");
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp(DbSetup.class.getName(), commandLineOptions);
@@ -450,8 +450,7 @@ public class DbSetup {
                     Files.walkFileTree(Paths.get(root), fileVisitor);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
-                logger.error("import of dump files for all repositories");
+                logger.error("Caught an IOException at import of dump files for all repositories.", e);
                 throw new RuntimeException(e);
             }
         }

@@ -259,7 +259,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         })).exceptionally(withBootTcclThrowable(e -> {
             final int errorCode = e instanceof ApplicationException ae ? ae.getErrorCode() : T9tException.GENERAL_EXCEPTION;
             resp.resume(RestUtils.error(Response.Status.INTERNAL_SERVER_ERROR, errorCode, e.getMessage(), acceptHeader));
-            e.printStackTrace();
+            LOGGER.error("Caught a Throwable.", e);
             return null;
         }));
     }
@@ -304,7 +304,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         })).exceptionally(withBootTcclThrowable(e -> {
             final int errorCode = e instanceof ApplicationException ae ? ae.getErrorCode() : T9tException.GENERAL_EXCEPTION;
             resp.resume(RestUtils.error(Response.Status.INTERNAL_SERVER_ERROR, errorCode, e.getMessage(), acceptHeader));
-            e.printStackTrace();
+            LOGGER.error("Caught a Throwable.", e);
             return null;
         }));
     }

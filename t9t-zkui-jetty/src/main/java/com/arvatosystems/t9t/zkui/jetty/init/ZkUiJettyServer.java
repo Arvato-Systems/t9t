@@ -82,7 +82,7 @@ public class ZkUiJettyServer {
             server.enableMetrics = enableMetrics;
             server.run();
         } catch (final Throwable t) {
-            t.printStackTrace();
+            LOGGER.error("Caught a Throwable.", t);
         }
     }
 

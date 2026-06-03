@@ -91,8 +91,7 @@ final class ProcessDumpFiles extends SimpleFileVisitor<Path> {
                         writer.append(aFile.getFileName().toString() + (export ? "(export)" : "(import)") + System.getProperty("line.separator"));
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    logger.error("DDL was not successful");
+                    logger.error("Caught an exception: DDL was not successful.", e);
                     throw new RuntimeException(e);
                 }
             }

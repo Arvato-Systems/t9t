@@ -34,29 +34,29 @@
          mvn versions:display-dependency-updates -Dmaven.version.ignore=".*-(alpha|beta|Alpha|Beta|rc|cr|m|RC|CR|M|milestone).*,4\\..*" -DallowMajorUpdates=false
     -->
     <properties>
-        <jodatime.version>2.14.1</jodatime.version>
-        <org.slf4j-api.version>2.0.17</org.slf4j-api.version>
-        <asm.version>9.9.1</asm.version>
+        <jodatime.version>2.14.2</jodatime.version>
+        <org.slf4j-api.version>2.0.18</org.slf4j-api.version>
+        <asm.version>9.10.1</asm.version>
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
-        <jpaw-bom.version>3.8.0</jpaw-bom.version>
-        <bonaparte-bom.version>6.4.4</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
+        <jpaw-bom.version>3.9.0</jpaw-bom.version>
+        <bonaparte-bom.version>6.5.0</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
 
         <!-- Versions of Xtext & Xtend -->
         <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings", where the variable xtext.version is defined -->
         <xtend.version>${xtext.version}</xtend.version>
 
         <!-- Database driver versions -->
-        <driver.oracle.version>23.26.1.0.0</driver.oracle.version>
+        <driver.oracle.version>23.26.2.0.0</driver.oracle.version>
         <driver.postgresql.version>42.7.11</driver.postgresql.version>     <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
         <driver.sqlserver.version>13.4.0.jre11</driver.sqlserver.version> <!-- not all releases are available on maven central as jre17 builds -->
-        <driver.hana.version>2.28.6</driver.hana.version>
+        <driver.hana.version>2.28.8</driver.hana.version>
         <h2.version>2.3.232</h2.version>
 
         <!-- OR mappers -->
         <eclipselink.version>5.0.0</eclipselink.version>
-        <hibernate.version>7.2.6.Final</hibernate.version>
+        <hibernate.version>7.2.17.Final</hibernate.version>
         <hibernate-validator.version>9.0.1.Final</hibernate-validator.version>
         <hibernate-search.version>8.2.2.Final</hibernate-search.version>
 
@@ -65,14 +65,14 @@
         <jandex.version>3.5.3</jandex.version>
 
         <!-- Javax ws / rs implementation versions -->
-        <jaxb-xjc.version>4.0.7</jaxb-xjc.version>
+        <jaxb-xjc.version>4.0.9</jaxb-xjc.version>
         <jaxws-rt.version>4.0.4-use-rt-instead</jaxws-rt.version>  <!-- despite this should be the more modern version, it causes duplicate jaxb-core dependencies! -->
         <rt.version>4.0.4</rt.version>
 
         <!-- new Jakarta stuff (versions in comment denote jakarta namespace)-->
         <jakarta.xml-bind-api.version>4.0.5</jakarta.xml-bind-api.version>              <!-- 3.0.1 for jakarta namespace -->
-        <jakarta.xml-bind.version>4.0.7</jakarta.xml-bind.version>                      <!-- 3.0.1 for jakarta namespace -->
-        <jakarta.xml-jaxb-core.version>4.0.7</jakarta.xml-jaxb-core.version>            <!-- 3.0.1 for jakarta namespace (skip for javax!) -->
+        <jakarta.xml-bind.version>4.0.9</jakarta.xml-bind.version>                      <!-- 3.0.1 for jakarta namespace -->
+        <jakarta.xml-jaxb-core.version>4.0.9</jakarta.xml-jaxb-core.version>            <!-- 3.0.1 for jakarta namespace (skip for javax!) -->
         <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>          <!-- 3.0.0 for EE 11 core -->
 
         <jakarta.activation-api.version>2.1.4</jakarta.activation-api.version>          <!-- 2.1.3 for EE 11 core -->
@@ -83,7 +83,7 @@
         <jakarta.el.version>4.0.2</jakarta.el.version>                                  <!-- (org.glassfish:jakarta.el) -->
         <jakarta.xml.ws-api.version>4.0.3</jakarta.xml.ws-api.version>
         <jakarta.xml.soap-api.version>3.0.2</jakarta.xml.soap-api.version>
-        <jakarta.xml.soap.version>3.0.4</jakarta.xml.soap.version>                      <!-- (com.sun.xml.messaging.saaj:saaj-impl) -->
+        <jakarta.xml.soap.version>3.0.5</jakarta.xml.soap.version>                      <!-- (com.sun.xml.messaging.saaj:saaj-impl) -->
         <jakarta.jws-api.version>3.0.0</jakarta.jws-api.version>                        <!-- 3.0.0 for jakarta namespace -->
         <jakarta.ws.rs-api.version>4.0.0</jakarta.ws.rs-api.version>                    <!-- 4.0.0 for EE 11 core -->
         <jakarta.validation-api.version>3.1.1</jakarta.validation-api.version>
@@ -99,8 +99,8 @@
         <commons-logging.version>1.3.4-donotuse</commons-logging.version> <!-- should not use at all! -->
         <commons-email.version>99.0-donotuse</commons-email.version>      <!-- no longer used in t9t, because seems to be unmaintained -->
         <commons-cli.version>1.11.0</commons-cli.version>
-        <commons-codec.version>1.21.0</commons-codec.version>
-        <commons-io.version>2.21.0</commons-io.version>                   <!-- regularly updated again -->
+        <commons-codec.version>1.22.0</commons-codec.version>
+        <commons-io.version>2.22.0</commons-io.version>                   <!-- regularly updated again -->
         <commons-lang3.version>3.20.0</commons-lang3.version>             <!-- regularly updated again -->
         <commons-beanutils.version>1.11.0</commons-beanutils.version>     <!-- must be 1.9.2 at least due to CVE-2014-0114, but still pulls in outdated collections3 -->
         <commons-collections4.version>4.5.0</commons-collections4.version>
@@ -109,37 +109,37 @@
         <commons-csv.version>1.14.1</commons-csv.version>                 <!-- not used in t9t, but DM made for downstream projects -->
 
         <!-- AWS SDK v2 -->
-        <aws2-bom.version>2.42.28</aws2-bom.version>
+        <aws2-bom.version>2.46.2</aws2-bom.version>
 
         <!-- AWS JDBC wrapper for Aurora -->
         <aws-jdbc-wrapper.version>2.6.8</aws-jdbc-wrapper.version>
 
         <!-- Azure -->
         <azure-cosmosdb.version>2.6.16</azure-cosmosdb.version>
-        <azure-cosmos-sdk.version>4.79.1</azure-cosmos-sdk.version>
+        <azure-cosmos-sdk.version>4.80.0</azure-cosmos-sdk.version>
 
         <!-- Vector databases -->
         <pinecone.version>6.2.0</pinecone.version>
-        <qdrant-client.version>1.17.0</qdrant-client.version>
+        <qdrant-client.version>1.18.1</qdrant-client.version>
 
         <!-- More AI stuff & DM for its dependencies -->
-        <jsoup.version>1.22.1</jsoup.version>
-        <langchain4j.version>1.12.2</langchain4j.version>
-        <grpc.version>1.79.0</grpc.version>
+        <jsoup.version>1.22.2</jsoup.version>
+        <langchain4j.version>1.15.1</langchain4j.version>
+        <grpc.version>1.81.0</grpc.version>
         <kotlin-stdlib.version>1.9.25</kotlin-stdlib.version>
         <okio.version>3.9.1</okio.version>          <!-- used by pinecone -->
         <okhttp.version>4.12.0</okhttp.version>     <!-- used by pinecone -->
 
         <!-- needed for MCP -->
-        <reactor-core.version>3.8.4</reactor-core.version>
-        <reactor-netty.version>1.3.4</reactor-netty.version>
-        <mcp-sdk.version>1.1.1</mcp-sdk.version>
+        <reactor-core.version>3.8.5</reactor-core.version>
+        <reactor-netty.version>1.3.5</reactor-netty.version>
+        <mcp-sdk.version>1.1.3</mcp-sdk.version>
 
         <!-- Test support -->
         <hamcrest.version>3.0</hamcrest.version>   <!-- avoid unless required -->
         <byte-buddy.version>1.18.8</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
         <org.mockito.version>5.23.0</org.mockito.version>
-        <archunit.version>1.4.1</archunit.version>
+        <archunit.version>1.4.2</archunit.version>
         <hdrhistogram.version>2.2.2</hdrhistogram.version>
 
         <!-- Others -->
@@ -159,34 +159,34 @@
         <httpmime.version>4.5.14</httpmime.version>
         <pdfbox.version>3.0.7</pdfbox.version>
         <freemarker.version>2.3.34</freemarker.version>
-        <jasperreports.version>7.0.6</jasperreports.version>
+        <jasperreports.version>7.0.7</jasperreports.version>
         <openpdf.version>1.3.43</openpdf.version>
         <flyingsaucer.version>9.4.0</flyingsaucer.version>
         <jmh.version>1.37</jmh.version>
         <kubernetes-client.version>7.6.1</kubernetes-client.version>
 
-        <javassist.version>3.30.2-GA</javassist.version>
-        <guava.version>33.5.0-jre</guava.version>
-        <caffeine.version>3.2.3</caffeine.version>
+        <javassist.version>3.31.0-GA</javassist.version>
+        <guava.version>33.6.0-jre</guava.version>
+        <caffeine.version>3.2.4</caffeine.version>
         <antlr.version>3.2</antlr.version>
-        <resteasy.version>7.0.1.Final</resteasy.version>
+        <resteasy.version>7.0.2.Final</resteasy.version>
         <resteasy-vertx.version>2.0.0.Beta1</resteasy-vertx.version>
         <googlemaps.services.version>2.2.0</googlemaps.services.version>
         <uuid-generator.version>4.2.0</uuid-generator.version>
         <apache-poi.version>5.5.1</apache-poi.version>
         <xmlbeans.version>5.3.0</xmlbeans.version>
-        <gson.version>2.13.2</gson.version>
-        <log4j2.version>2.25.4</log4j2.version>     <!-- see comment below -->
+        <gson.version>2.14.0</gson.version>
+        <log4j2.version>2.26.0</log4j2.version>     <!-- see comment below -->
         <reload4j.version>1.2.26</reload4j.version>
 
         <!-- Spring core -->
-        <spring-bom.version>7.0.6</spring-bom.version>
+        <spring-bom.version>7.0.7</spring-bom.version>
         <!-- Spring data -->
-        <spring-data-jpa.version>4.0.4</spring-data-jpa.version>
+        <spring-data-jpa.version>4.0.5</spring-data-jpa.version>
         <!-- Spring boot -->
-        <spring-boot.version>4.0.5</spring-boot.version>
+        <spring-boot.version>4.0.6</spring-boot.version>
 
-        <netty.version>4.2.12.Final</netty.version>
+        <netty.version>4.2.15.Final</netty.version>
         <vertx.version>5.0.10</vertx.version>
         <hazelcast-kubernetes.version>2.2.3</hazelcast-kubernetes.version>
 
@@ -197,20 +197,20 @@
         <hikaricp.version>7.0.2</hikaricp.version>
         <flyway.version>11.19.0</flyway.version>
         <reflections.version>0.9.10</reflections.version>
-        <maven-plugin-api.version>3.9.14</maven-plugin-api.version>
-        <jackson.version>2.21.2</jackson.version>
+        <maven-plugin-api.version>3.9.16</maven-plugin-api.version>
+        <jackson.version>2.21.4</jackson.version>
         <solr.version>8.11.1</solr.version>
-        <camel.version>4.18.1</camel.version>
+        <camel.version>4.20.0</camel.version>
         <jsch.version>2.27.9</jsch.version>
         <kafka.version>3.9.2</kafka.version>
         <error-prone.version>2.48.0</error-prone.version>
 
         <!-- Monitoring -->
-        <micrometer.version>1.16.4</micrometer.version>
+        <micrometer.version>1.16.5</micrometer.version>
         <prometheus.version>0.16.0</prometheus.version>
 
         <!-- Swagger -->
-        <swagger.version>2.2.47</swagger.version>
+        <swagger.version>2.2.50</swagger.version>
         <swagger-ui.version>${swagger-ui-webjars.version}</swagger-ui.version>
 
         <!-- Google Services -->
@@ -219,7 +219,7 @@
         <firebase-admin.version>9.5.0</firebase-admin.version>
 
         <msal4j.version>1.24.1</msal4j.version>
-        <nimbus.version>10.9</nimbus.version>
+        <nimbus.version>10.9.1</nimbus.version>
         <jboss-logging.version>3.6.3.Final</jboss-logging.version>
         <cxf.version>4.2.0</cxf.version>
 
@@ -227,7 +227,7 @@
         <!-- Jython (outdated) -->
         <jython.version>2.7.4</jython.version>
         <!-- Groovy -->
-        <groovy.version>5.0.5</groovy.version>            <!-- Current release (org.apache.grooy) -->
+        <groovy.version>5.0.6</groovy.version>            <!-- Current release (org.apache.grooy) -->
         <groovy-old.version>3.0.25</groovy-old.version>   <!-- Old release (org.codehaus.groovy) -->
         <!-- Apache JEXL -->
         <jexl.version>3.6.2</jexl.version>

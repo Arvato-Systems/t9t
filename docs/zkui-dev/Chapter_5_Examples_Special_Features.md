@@ -66,8 +66,7 @@ public class SalesOrderPaymentUpdate implements IGridContextMenu<PayInstrumentDT
                 // TODO: if it worked, update the model...
 
             } catch (ReturnCodeException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LOGGER.error("Caught a ReturnCodeException.", e);
             }
         });
     }
