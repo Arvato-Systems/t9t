@@ -112,7 +112,7 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
             final ServiceResponse response = execute(requestParameters);
             if (response.getReturnCode() != 0) {
                 if (response.getReturnCode() == errorToIgnore) {
-                    LOGGER.debug("return code {} (expected and ignored", errorToIgnore);
+                    LOGGER.debug("return code {} (expected and ignored)", errorToIgnore);
                 } else {
                     LOGGER.error("Bad return code {} for {}: {} {}",
                             response.getReturnCode(),
@@ -243,22 +243,25 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
     }
 
     protected void logRequest(final RequestParameters requestParameters) {
+        // TBE-1687: no parameters logged as workaround to avoid critical output (passwords, apiKeys, etc.)
         if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace(">>>Request {}(parameters omitted)", requestParameters.ret$PQON());
             // extensive output
-            LOGGER.trace(">>>Request  {}: {}", requestParameters.ret$PQON(), ToStringHelper.toStringML(requestParameters));
+            //#LOGGER.trace(">>>Request {}: {}", requestParameters.ret$PQON(), ToStringHelper.toStringML(requestParameters));
         } else if (LOGGER.isDebugEnabled()) {
-            // medium output
-            LOGGER.debug(">>>Request  {}", requestParameters);
+            LOGGER.debug(">>>Request {}(parameters omitted)", requestParameters.ret$PQON());
         }
     }
 
     protected void logResponse(final ServiceResponse resp) {
+        // TBE-1687: no parameters logged as workaround to avoid critical output (passwords, apiKeys, etc.)
         if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("<<<Response {}(parameters omitted)", resp.ret$PQON());
             // extensive output
-            LOGGER.trace("<<<Response  {}: {}", resp.ret$PQON(), ToStringHelper.toStringML(resp));
+            //#LOGGER.trace("<<<Response {}: {}", resp.ret$PQON(), ToStringHelper.toStringML(resp));
         } else if (LOGGER.isDebugEnabled()) {
             // medium output
-            LOGGER.debug("<<<Response  {}, code {}", resp.ret$PQON(), resp.getReturnCode());
+            LOGGER.debug("<<<Response {}(parameters omitted), returnCode {}", resp.ret$PQON(), resp.getReturnCode());
         }
     }
 

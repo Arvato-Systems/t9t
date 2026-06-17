@@ -30,9 +30,6 @@ import com.arvatosystems.t9t.base.services.IFileUtil;
 
 /**
  * Base class for camel processor implementations. Holds common logic for resolving endpoint tags into URIs.
- *
- * @author greg
- *
  */
 public abstract class AbstractCamelProcessor {
 
@@ -63,17 +60,6 @@ public abstract class AbstractCamelProcessor {
             LOGGER.error("Failed to read camel config from: {}", propsPath);
             LOGGER.error("Camel config load error.", e);
             throw new T9tException(T9tException.LOAD_CAMEL_CONFIG_ERROR);
-
-            // no longer required due to try with resources
-//        } finally {
-//            if (inputStream != null) {
-//                try {
-//                    inputStream.close();
-//                } catch (IOException e) {
-//                    LOGGER.error("Failed to close camelEndpoints input stream.", e);
-//                    throw new T9tException(T9tException.LOAD_CAMEL_CONFIG_ERROR);
-//                }
-//            }
         }
 
         camelPropsInitiated = true;
@@ -88,5 +74,4 @@ public abstract class AbstractCamelProcessor {
         camelPropsInitiated = false;
         camelProps.clear();
     }
-
 }

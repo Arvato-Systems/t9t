@@ -112,64 +112,6 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKeyRequestH
             }
         }
 
-//        final MediaTypeDescriptor desc = MediaTypeInfo.getFormatByType(intended.getCommFormatType());
-//        final MediaType baseType = intended.getCommFormatType().getBaseEnum() instanceof MediaType media ? media : null;
-//
-//        // if category is "REPORT", then only CSV, XLS and PDF are allowed (or a delegation to the report config)
-//        final Enum<?> anyEnum = intended.getCategory().getBaseEnum();
-//        if (anyEnum instanceof DataSinkCategoryType baseEnum) {
-//            switch (baseEnum) {
-//            case REPORT:
-//                switch (intended.getCommTargetChannelType()) {
-//                case FILE:
-//                case KAFKA:
-//                case NULL:
-//                    break; // all OK
-//                default:
-//                    throw new T9tException(T9tException.INVALID_CONFIGURATION, "Invalid channel type for reports");
-//                }
-//                if (baseType == null) {
-//                    throw new T9tException(T9tException.INVALID_CONFIGURATION, "Invalid format type for reports");
-//                }
-//                switch (baseType) {
-//                case CSV:
-//                case PDF:
-//                case XLS:
-//                case UNDEFINED: // in this case, the format is provided by the caller
-//                    // all good
-//                    break;
-//                default:
-//                    throw new T9tException(T9tException.DATASINK_UNSUPPORTED_FORMAT, "report output does not support "
-//                            + intended.getCommFormatType().toString());
-//                }
-//                break;
-//            case USER_DATA:
-//            case DATA_EXPORT:
-//                if ((desc != null && desc.getFormatCategory() == MediaCategory.RECORDS)
-//                  || MediaType.UNDEFINED == baseType
-//                  || MediaType.USER_DEFINED == baseType) {
-//                    break;
-//                }
-//                throw new T9tException(T9tException.DATASINK_UNSUPPORTED_FORMAT, "data export output does not support "
-//                        + intended.getCommFormatType().toString());
-//            case CUSTOMER_COMMUNICATION:
-//                if (desc == null || (desc.getFormatCategory() != MediaCategory.TEXT && desc.getFormatCategory() != MediaCategory.DOCUMENT)) {
-//                    throw new T9tException(T9tException.DATASINK_UNSUPPORTED_FORMAT, "formatted customer communication output does not support "
-//                            + intended.getCommFormatType().toString());
-//                }
-//                break;
-//            case MASTER_DATA:
-//                // can be anything
-//            }
-//        }
-//
-//        if ((intended.getCategory() != null) && (intended.getCategory().getBaseEnum() == DataSinkCategoryType.CUSTOMER_COMMUNICATION)) {
-//            final CommunicationTargetChannelType channelType = intended.getCommTargetChannelType();
-//            if (channelType != CommunicationTargetChannelType.FILE && channelType != CommunicationTargetChannelType.S3) {
-//                throw new T9tException(T9tException.INVALID_CONFIGURATION, "Customer communication data sinks must have channel type FILE or S3");
-//            }
-//        }
-
         if (intended.getCommFormatType().getBaseEnum() == MediaType.USER_DEFINED) {
             // validate that if USER_DEFINED communication format type is used, the communication format name have to be NOT NULL
             if (intended.getCommFormatName() == null) {

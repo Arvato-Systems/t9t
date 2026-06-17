@@ -53,6 +53,8 @@ import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationInfo;
 import com.arvatosystems.t9t.base.services.T9tInternalConstants;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.cfg.be.ServerConfiguration;
 import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.arvatosystems.t9t.server.services.IRequestProcessor;
 
@@ -67,10 +69,12 @@ public class McpEndpointHandler {
     }
     private final Map<String, McpHandler> dispatcher = new ConcurrentHashMap<>();
 
+    private final ServerConfiguration serverConfiguration = ConfigProvider.getConfiguration().getServerConfiguration();
     private final IRequestProcessor requestProcessor = Jdp.getRequired(IRequestProcessor.class);
     private final ObjectMapper objectMapper = JacksonTools.createObjectMapper();
     private final IMcpService mcpService = Jdp.getRequired(IMcpService.class);
     private final String maxMcpVersion;
+    private final String mcpServerName = serverConfiguration != null && serverConfiguration.getMcpServerName() != null ? serverConfiguration.getMcpServerName() : "t9t vert.x embedded MCP Server"; // how the MCP server identifies itself
 
     public McpEndpointHandler(@Nullable final String maxMcpVersion) {
         this.maxMcpVersion = maxMcpVersion;
@@ -132,7 +136,7 @@ public class McpEndpointHandler {
         }
         LOGGER.debug("Initialize request from client: {}, protocol version: {}, will use {}", clientInfo, protocolVersionOfClient, protocolVersionToUse);
         // construct the response
-        return mcpService.getInitializeResult(protocolVersionToUse, "t9t vert.x embedded MCP Server");
+        return mcpService.getInitializeResult(protocolVersionToUse, mcpServerName);
     }
 
     private BonaPortable ping(final JsonObject request, final AuthenticationInfo authInfo, final String protocolVersionOfHeader) {

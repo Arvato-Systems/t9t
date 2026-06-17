@@ -213,6 +213,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Boolean                            updateYieldUntilIfFarFuture;    // if set, synchronously sets the "yieldUntil" field of the workflow status to null if it was FAR_FUTURE before, to avoid lost async tasks (recommended to set)
         optional Unicode(255)                       secondaryKeyStorePath;          // specifies file system path, for external JWT / OIDC validation
         optional Unicode(63)                        secondaryKeyStorePassword;      // if set, overrides the standard secondary keystore password
+        optional Unicode(80)                        mcpServerName;                  // how the embedded MCP server identifies itself (defaults to "t9t vert.x embedded MCP Server")
     }
 
     class ApplicationConfiguration {
