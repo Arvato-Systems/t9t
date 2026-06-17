@@ -35,7 +35,7 @@ import t9t.base.moduleCfg.*
  */
 package (com.arvatosystems) t9t.auth {
     default private unsigned trim noControlChars;
-    properties noJava, simpleref, nodropdown,
+    properties noJava, simpleref, nodropdown, mask,
         tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
         searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
         serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
@@ -230,11 +230,12 @@ package (com.arvatosystems) t9t.auth {
     class ApiKeyRef extends Ref {}
 
     final class ApiKeyKey extends ApiKeyRef {
+        properties mask="apiKey";
         required Uuid                               apiKey;                                 // t9t issues API keys are UUIDs
     }
 
     final class ApiKeyDTO extends ApiKeyRef {
-        properties tenantCategory="I";
+        properties tenantCategory="I", mask="apiKey";
         required (UserRef...,UserDTO)               userRef         properties ref, notupdatable, searchprefix="user", dropdown="userId";  // the user to whom this relates to
         required boolean                            isActive        properties active;
         required Uuid                               apiKey          properties notupdatable;    // issued API keys are UUIDs

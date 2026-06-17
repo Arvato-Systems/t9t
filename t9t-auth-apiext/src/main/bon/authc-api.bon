@@ -24,7 +24,7 @@ import t9t.base.auth.AuthenticationResponse
 /** External API - Authentication requests. */
 package (com.arvatosystems) t9t.authc.api {
     default private unsigned trim noControlChars;
-    properties noJava, simpleref,
+    properties noJava, simpleref, mask,
         searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
         serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
         noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
@@ -140,6 +140,7 @@ package (com.arvatosystems) t9t.authc.api {
     class GetPasswordResetApiKeyRequest extends RequestParameters return GetPasswordResetApiKeyResponse {}
 
     class GetPasswordResetApiKeyResponse extends ServiceResponse {
+        properties mask="apiKey";
         optional Uuid                               apiKey;
     }
 }

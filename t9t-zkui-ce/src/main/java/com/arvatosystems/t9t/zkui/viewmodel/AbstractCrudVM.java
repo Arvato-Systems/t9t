@@ -296,7 +296,7 @@ public abstract class AbstractCrudVM<
         if (data instanceof Ref ref) {
             final ResolveAnyRefRequest rq = new ResolveAnyRefRequest(ref.getObjectRef());
             final ResolveAnyRefResponse res = remoteUtil.executeExpectOk(rq, ResolveAnyRefResponse.class);
-            if (res.getEntityClass() != null || res.getDescription() != null) {
+            if (res.getEntityClass() != null && res.getDescription() != null) {
                 final Description desc = res.getDescription();
                 final String translatedEntityName = session.translate(ENTITY, res.getEntityClass());
                 final String formattedMessage = session.translate(COMMON, DELETE_CONFIRMATION_DETAIL, translatedEntityName, desc.getId(), desc.getName());

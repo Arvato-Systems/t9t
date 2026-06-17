@@ -26,6 +26,7 @@ import t9t.auth.*
 
 package (com.arvatosystems) t9t.auth.request {
     default private unsigned trim noControlChars;
+    properties mask;
 
     /** Standard CRUD and search requests... */
     class AuthModuleCfgCrudRequest              extends CrudModuleCfgRequest    <AuthModuleCfgDTO> {}
@@ -65,6 +66,7 @@ package (com.arvatosystems) t9t.auth.request {
      * This implementation does not initiate an email.
      */
     class UserCrudAndSetPasswordRequest         extends CrudSurrogateKeyRequest <UserRef, UserDTO, FullTrackingWithVersion> {
+        properties mask="password";
         required Unicode(32)                                password;                   // password
     }
 

@@ -24,7 +24,7 @@ import t9t.base.api.*
 /** External API - Authentication requests for initial login - requests declared in this package do not require a valid JWT. */
 package (com.arvatosystems) t9t.base.auth {
     default private unsigned trim noControlChars;
-    properties simpleref,
+    properties simpleref, mask,
         searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
         serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
         noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
@@ -81,6 +81,7 @@ package (com.arvatosystems) t9t.base.auth {
 
     /** Provides authentication information via password or serves as a "change password" request. */
     final class PasswordAuthentication extends AuthenticationParameters {
+        properties mask="password,newPassword";
         required userId                                     userId;                     // every request will belong to the same user ID
         required Unicode(32)                                password;                   // password
         optional Unicode(32)                                newPassword;                // if set, then this is a change password request
@@ -94,6 +95,7 @@ package (com.arvatosystems) t9t.base.auth {
 
     /** Provides authentication information via random UUID API key. */
     final class ApiKeyAuthentication extends AuthenticationParameters {
+        properties mask="apiKey";
         required Uuid                                       apiKey;                     // API Key for this user
     }
 
@@ -117,6 +119,7 @@ package (com.arvatosystems) t9t.base.auth {
     }
 
     class ChangePasswordUI {
+        properties mask="oldPassword,newPassword,retypePassword";
         required Unicode(32)                                oldPassword;                   // password
         required Unicode(32)                                newPassword;                // if set, then this is a change password request
         optional Unicode(32)                                retypePassword;                // if set, then this is a change password request

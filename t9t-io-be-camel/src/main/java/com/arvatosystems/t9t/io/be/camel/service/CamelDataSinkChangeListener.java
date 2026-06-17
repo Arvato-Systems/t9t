@@ -53,10 +53,16 @@ public class CamelDataSinkChangeListener implements IEventHandler {
                 break;
             }
 
-            case ACTIVATE:
-            case CREATE: {
-                LOGGER.debug("Config of data sink id {} changed ({}) - add routes", dataSink.getDataSinkId(), event.getOperation());
+            case ACTIVATE: {
+                LOGGER.debug("Config of data sink id {} activated - add routes", dataSink.getDataSinkId());
                 add(dataSink);
+                break;
+            }
+            case CREATE: {
+                if (dataSink.getIsActive()) {
+                    LOGGER.debug("Config of data sink id {} created as active - add routes", dataSink.getDataSinkId());
+                    add(dataSink);
+                }
                 break;
             }
 
@@ -65,7 +71,10 @@ public class CamelDataSinkChangeListener implements IEventHandler {
             case UPDATE: {
                 LOGGER.debug("Config of data sink id {} changed ({}) - update routes", dataSink.getDataSinkId(), event.getOperation());
                 remove(dataSink);
-                add(dataSink);
+                if (dataSink.getIsActive()) {
+                    LOGGER.debug("New state of data sink id {} is active - add routes again", dataSink.getDataSinkId());
+                    add(dataSink);
+                }
                 break;
             }
             }

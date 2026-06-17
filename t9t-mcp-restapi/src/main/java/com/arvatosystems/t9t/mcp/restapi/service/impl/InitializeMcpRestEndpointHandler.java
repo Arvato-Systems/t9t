@@ -30,17 +30,19 @@ import com.arvatosystems.t9t.ai.mcp.IMcpService;
 import com.arvatosystems.t9t.ai.mcp.McpInitializeResult;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.mcp.restapi.service.IMcpRestEndpointHandler;
+import com.arvatosystems.t9t.rest.utils.RestUtils;
 
 @Singleton
 @Named(T9tAiMcpConstants.METHOD_INITIALIZE)
 public class InitializeMcpRestEndpointHandler implements IMcpRestEndpointHandler {
 
     protected final IMcpService mcpService = Jdp.getRequired(IMcpService.class);
+    protected final String mcpServerName = RestUtils.CONFIG_READER.getProperty("t9t.restapi.mcpname", "t9t jetty REST gateway"); // how the MCP server identifies itself
 
     @Override
     public void handleRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final Object id, final JsonNode body) {
         final String protocolVersion = httpHeaders.getHeaderString(T9tAiMcpConstants.HTTP_HEADER_MCP_PROTOCOL);
-        final McpInitializeResult result = mcpService.getInitializeResult(T9tUtil.nvl(protocolVersion, T9tAiMcpConstants.FALLBACK_MCP_PROTOCOL_VERSION), "t9t jetty REST gateway");
+        final McpInitializeResult result = mcpService.getInitializeResult(T9tUtil.nvl(protocolVersion, T9tAiMcpConstants.FALLBACK_MCP_PROTOCOL_VERSION), mcpServerName);
         final String output = mcpService.out(id, result);
         resp.resume(Response.ok(output).build());
     }
