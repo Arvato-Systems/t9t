@@ -20,9 +20,9 @@
 
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
-        <artifactId>t9t-settings-java</artifactId>
+        <artifactId>t9t-settings-api</artifactId>
         <version>9.3-SNAPSHOT</version>
-        <relativePath>../t9t-settings-java</relativePath>
+        <relativePath>../t9t-settings-api</relativePath>
     </parent>
 
     <artifactId>t9t-alexa</artifactId>
@@ -40,10 +40,6 @@
         <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>bonaparte-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte8-api-alexa</artifactId>
         </dependency>
         <dependency>
             <groupId>io.vertx</groupId>

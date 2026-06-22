@@ -16,7 +16,6 @@
 package com.arvatosystems.t9t.remote.connect
 
 import de.jpaw.annotations.AddLogger
-import de.jpaw.socket.SessionInfo
 import de.jpaw.util.ByteBuilder
 import java.io.IOException
 import java.net.InetAddress

@@ -40,8 +40,8 @@
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonaparte-dsl plugin is set in the parent pom -->
-        <jpaw-bom.version>3.9.1</jpaw-bom.version>
-        <bonaparte-bom.version>6.5.2</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
+        <jpaw-bom.version>4.0.1</jpaw-bom.version>
+        <bonaparte-bom.version>7.0.1</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
 
         <!-- Versions of Xtext & Xtend -->
         <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings", where the variable xtext.version is defined -->
@@ -52,7 +52,7 @@
         <driver.postgresql.version>42.7.11</driver.postgresql.version>     <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
         <driver.sqlserver.version>13.4.0.jre11</driver.sqlserver.version> <!-- not all releases are available on maven central as jre17 builds -->
         <driver.hana.version>2.28.8</driver.hana.version>
-        <h2.version>2.3.232</h2.version>
+        <h2.version>2.4.240</h2.version>
 
         <!-- OR mappers -->
         <eclipselink.version>5.0.0</eclipselink.version>
@@ -149,7 +149,7 @@
         <stax2-api.version>4.2.2</stax2-api.version>
         <icu4j.version>78.3</icu4j.version>
         <zxing.version>3.5.4</zxing.version>
-        <quartz.version>2.5.0</quartz.version>
+        <quartz.version>2.5.2</quartz.version>
         <jsap.version>2.1</jsap.version>
         <picocli.version>4.7.7</picocli.version>
         <httpcore.version>4.4.16</httpcore.version>

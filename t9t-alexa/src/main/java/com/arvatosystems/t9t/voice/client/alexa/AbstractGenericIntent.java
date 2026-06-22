@@ -17,8 +17,8 @@ package com.arvatosystems.t9t.voice.client.alexa;
 
 import java.util.Map;
 
-import de.jpaw.bonaparte.pojos.api.alexa.AlexaIntentIn;
-import de.jpaw.bonaparte.pojos.api.alexa.AlexaSlotIn;
+import de.jpaw.bonaparte.pojos.t9t.api.alexa.AlexaIntentIn;
+import de.jpaw.bonaparte.pojos.t9t.api.alexa.AlexaSlotIn;
 import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.api.RequestParameters;

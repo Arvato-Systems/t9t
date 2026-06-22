@@ -15,8 +15,8 @@
  */
 package com.arvatosystems.t9t.voice.client.alexa;
 
-import de.jpaw.bonaparte.pojos.api.alexa.AlexaIntentIn;
-import de.jpaw.bonaparte.pojos.api.alexa.AlexaResponse;
+import de.jpaw.bonaparte.pojos.t9t.api.alexa.AlexaIntentIn;
+import de.jpaw.bonaparte.pojos.t9t.api.alexa.AlexaResponse;
 
 import com.arvatosystems.t9t.voice.client.VoiceSessionContext;
 
