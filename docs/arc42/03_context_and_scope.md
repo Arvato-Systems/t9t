@@ -120,7 +120,7 @@ The t9t framework serves as an enterprise backend platform that enables organiza
 ┌───────▼──────────────────────────────────────────────────────────┐
 │                   External Systems Layer                         │
 ├──────────────────────────────────────────────────────────────────┤
-│  PostgreSQL │ Kafka │ SMTP │ AWS S3 │ LLMs │ Vector DBs │ ...   │
+│  PostgreSQL │ Kafka │ SMTP │ AWS S3 │ LLMs │ ...   │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -228,13 +228,6 @@ This gateway is not used in production, because it is based on the official SDK 
 | Provider | Protocol | Module |
 |----------|----------|--------|
 | **OpenAI** | REST (HTTPS) | t9t-openai-be |
-| **Ollama** | REST (HTTP) | t9t-ollama-be |
-| **Langchain** | Java Library | t9t-ai-be-langchain |
-
-**Vector Database Support**:
-- Pinecone (t9t-vdb-be-pinecone)
-- Qdrant (t9t-vdb-be-qdrant)
-- pgvector (t9t-vdb-jpa-pgvector)
 
 #### 9. Search Interfaces
 

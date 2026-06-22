@@ -1,6 +1,0 @@
-{
-    "viewModel": "eventSubscriptions",
-    "fields": [
-        "subscriptionId", "activityId", "eventType", "eventName", "created"
-    ]
-}

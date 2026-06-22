@@ -105,7 +105,8 @@ package (com.arvatosystems) t9t.ai {
         required shortText                              greeting;                           // the initial greeting of the assistant
         optional shortText                              aiName;                             // the fictional name of the AI (instead of just default "AI chat")
         // optional configuration of a vector DB
-        optional customizationQualifier                 vectorDbProvider    properties qualifierFor="vdb.service.IVectorIO";       // selects the vector DB implementation
+        @Deprecated
+        optional customizationQualifier                 vectorDbProvider;                   // selects the vector DB implementation (no longer supported)
         // optional configuration of TTS services
         optional customizationQualifier                 ttsProvider         properties qualifierFor="ai.service.ITTSService";      // selects the TTS provider (parlor, OpenAI, VoiceCraft, ...)
         optional modelId                                ttsModel;                           // some TTS providers have an enumeration of voices only (OpenAI)

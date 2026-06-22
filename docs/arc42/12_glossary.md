@@ -35,7 +35,7 @@
 : Maven POM file that centralizes dependency version management. t9t uses multiple BOMs including internal jpaw-bom, jdp-bom, bonaparte-bom.
 
 **BPMN (Business Process Model and Notation)**
-: Standard for business process modeling. t9t includes modules for BPMN support.
+: Standard for business process modeling. t9t includes modules for BPMN support (a state engine, no real BPMN2).
 
 **Business Logic Layer**
 : Layer containing domain-specific business logic, implemented in `*-be` modules.
@@ -164,9 +164,6 @@
 
 ## L
 
-**Langchain**
-: Framework for building LLM applications, integrated via `t9t-ai-be-langchain`.
-
 **Layer**
 : Horizontal slice of architecture with specific responsibilities:
 - API Layer: Interfaces and DTOs
@@ -205,9 +202,6 @@
 
 ## O
 
-**Ollama**
-: Local LLM hosting platform, integrated via `t9t-ollama-*` modules.
-
 **OpenAI**
 : AI platform providing GPT models, integrated via `t9t-openai-*` modules.
 
@@ -225,9 +219,6 @@
 **Persistence Layer**
 : Layer responsible for data storage and retrieval, implemented in `*-jpa` modules.
 
-**Pinecone**
-: Vector database for AI applications, integrated via `t9t-vdb-be-pinecone`.
-
 **Plugin Architecture**
 : Design allowing functionality extension without modifying core code, implemented via service interfaces.
 
@@ -244,9 +235,6 @@
 : Unique identifier for each request execution, used for tracking and correlation.
 
 ## Q
-
-**Qdrant**
-: Vector database for AI applications, integrated via `t9t-vdb-be-qdrant`.
 
 **Quality Gate**
 : Automated check that must pass before code can be merged or deployed.

@@ -329,11 +329,9 @@ Domain Module Pattern (e.g., t9t-auth-*, t9t-doc-*, t9t-io-*)
 - `t9t-ai-api`: AI requests, conversation types
 - `t9t-ai-sapi`: AI service interfaces
 - `t9t-ai-be`: Core AI processing
-- `t9t-ai-be-langchain`: LangChain integration
 - `t9t-ai-jpa`: AI conversation history
 - `t9t-ai-mcp`: MCP tool definitions
 - `t9t-openai-api/be/sapi`: OpenAI integration
-- `t9t-ollama-api/be/sapi`: Ollama integration
 
 **Key Responsibilities**:
 - LLM request/response handling
@@ -392,22 +390,6 @@ Domain Module Pattern (e.g., t9t-auth-*, t9t-doc-*, t9t-io-*)
 - Translation caching
 - Fallback handling
 
-#### 9. Vector Database Domain (t9t-vdb-*)
-
-**Purpose**: Vector storage for AI/ML applications
-
-**Modules**:
-- `t9t-vdb-api/sapi/be/jpa`: Vector DB interfaces
-- `t9t-vdb-be-pinecone`: Pinecone integration
-- `t9t-vdb-be-qdrant`: Qdrant integration
-- `t9t-vdb-jpa-pgvector`: PostgreSQL pgvector
-
-**Key Responsibilities**:
-- Vector embedding storage
-- Similarity search
-- Vector indexing
-- Multiple backend support
-
 ## Level 1: Persistence Layer
 
 ### Whitebox: Persistence
@@ -438,9 +420,6 @@ Domain Module Pattern (e.g., t9t-auth-*, t9t-doc-*, t9t-io-*)
 │  ┌───────────────────▼─────────────────────────────────┐    │
 │  │  Connection Management                              │    │
 │  │  • t9t-base-jpa      (Common base code)             │    │
-│  │  • t9t-base-jpa-rl   (Resource-local)               │    │
-│  │  • t9t-base-jpa-st   (Spring Data based)            │    │
-│  │  • t9t-base-jpa-jta  (JTA support)                  │    │
 │  │  • C3P0 pooling      (Write)                        │    │
 │  │  • Hikari pooling    (Read, JDBC)                   │    │
 │  └───────────────────┬─────────────────────────────────┘    │

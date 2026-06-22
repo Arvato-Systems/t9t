@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-jpa</artifactId>
-        <version>9.3-SNAPSHOT</version>
+        <version>10.0-SNAPSHOT</version>
         <relativePath>../t9t-settings-jpa</relativePath>
     </parent>
 
@@ -32,10 +32,6 @@
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-ai-sapi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-vdb-sapi</artifactId>
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>

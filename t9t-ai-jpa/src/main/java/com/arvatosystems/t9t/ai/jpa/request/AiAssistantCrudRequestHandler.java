@@ -35,7 +35,6 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
-import com.arvatosystems.t9t.vdb.service.IVectorIO;
 
 public class AiAssistantCrudRequestHandler
     extends AbstractCrudSurrogateKeyRequestHandler<AiAssistantRef, AiAssistantDTO, FullTrackingWithVersion, AiAssistantCrudRequest, AiAssistantEntity> {
@@ -51,13 +50,6 @@ public class AiAssistantCrudRequestHandler
             if (aiImplementation == null) {
                 throw new T9tException(T9tException.NO_IMPLEMENTATION_FOR_SPECIFIED_QUALIFIER,
                         IAiChatService.class.getSimpleName() + ": " + dto.getAiProvider());
-            }
-        }
-        if (dto.getVectorDbProvider() != null) {
-            final IVectorIO aiImplementation = Jdp.getOptional(IVectorIO.class, dto.getVectorDbProvider());
-            if (aiImplementation == null) {
-                throw new T9tException(T9tException.NO_IMPLEMENTATION_FOR_SPECIFIED_QUALIFIER,
-                        IVectorIO.class.getSimpleName() + ": " + dto.getVectorDbProvider());
             }
         }
     }

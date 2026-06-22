@@ -21,7 +21,7 @@
 
     <groupId>com.arvato-systems.t9t</groupId>
     <artifactId>t9t-build</artifactId>
-    <version>9.3-SNAPSHOT</version>
+    <version>10.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Global root POM for the t9t framework</description>
 
@@ -55,7 +55,7 @@
         <min-maven.version>3.9.9</min-maven.version>  <!-- version currently used by github -->
 
         <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
-        <t9t.version>9.3-SNAPSHOT</t9t.version>
+        <t9t.version>10.0-SNAPSHOT</t9t.version>
         <xtext.version>2.43.0</xtext.version>
         <jetty.version>12.1.10</jetty.version>
 
@@ -952,9 +952,6 @@
                 <module>t9t-base-be</module>
                 <module>t9t-base-jdbc</module>
                 <module>t9t-base-jpa</module>
-                <module>t9t-base-jpa-rl</module>
-                <module>t9t-base-jpa-jta</module>
-                <module>t9t-base-jpa-st</module>
                 <module>t9t-aws-refgenerator</module>
 
                 <module>t9t-media-resolver</module>
@@ -1009,11 +1006,6 @@
                 <module>t9t-doc-be</module>
                 <module>t9t-doc-be-pdf</module>
                 <module>t9t-doc-jpa</module>
-
-                <module>t9t-voice-api</module>
-                <module>t9t-voice-sapi</module>
-                <module>t9t-voice-be</module>
-                <module>t9t-voice-jpa</module>
 
                 <module>t9t-translation-be</module>
                 <module>t9t-translation-be-intern</module>
@@ -1076,20 +1068,6 @@
                 <module>t9t-bpmn-be</module>
                 <module>t9t-bpmn-jpa</module>
 
-                <!-- BPMN2 integration projects -->
-                <module>t9t-bpmn2-api</module>
-                <module>t9t-bpmn2-sapi</module>
-                <module>t9t-bpmn2-jpa</module>
-                <module>t9t-bpmn2-mock</module>
-
-                <!-- Vector DB connectivity -->
-                <module>t9t-vdb-api</module>
-                <module>t9t-vdb-sapi</module>
-                <module>t9t-vdb-be</module>
-                <module>t9t-vdb-be-pinecone</module>
-                <module>t9t-vdb-be-qdrant</module>
-                <module>t9t-vdb-jpa-pgvector</module>
-
                 <!-- AWS cloud integration -->
                 <module>t9t-io-be-aws</module>
 
@@ -1097,24 +1075,13 @@
                 <module>t9t-ai-api</module>
                 <module>t9t-ai-sapi</module>
                 <module>t9t-ai-be</module>
-                <module>t9t-ai-be-langchain</module>
                 <module>t9t-ai-mcp</module>
                 <module>t9t-ai-jpa</module>
-                <module>t9t-adobe-api</module>
-                <module>t9t-adobe-sapi</module>
-                <module>t9t-adobe-be</module>
-                <module>t9t-ollama-api</module>
-                <module>t9t-ollama-sapi</module>
-                <module>t9t-ollama-be</module>
                 <module>t9t-openai-api</module>
                 <module>t9t-openai-sapi</module>
                 <module>t9t-openai-be</module>
 
                 <!-- modules which are optional addons -->
-                <module>t9t-demo-api</module>
-                <module>t9t-demo-be</module>
-                <module>t9t-demo-plugin</module>
-
                 <module>t9t-sql</module>
                 <module>t9t-sql-migration-executor</module>
 
@@ -1149,8 +1116,6 @@
 
                 <module>t9t-test-dbsetup</module>
                 <module>t9t-test-server</module>
-
-                <module>t9t-alexa</module>
 
                 <module>t9t-hexdump</module>
 
@@ -1248,9 +1213,6 @@
                 <module>t9t-base-be</module>
                 <module>t9t-base-jdbc</module>
                 <module>t9t-base-jpa</module>
-                <module>t9t-base-jpa-rl</module>
-                <module>t9t-base-jpa-jta</module>
-                <module>t9t-base-jpa-st</module>
                 <module>t9t-aws-refgenerator</module>
 
                 <module>t9t-media-resolver</module>
@@ -1305,14 +1267,8 @@
                 <module>t9t-doc-be-pdf</module>
                 <module>t9t-doc-jpa</module>
 
-                <module>t9t-voice-api</module>
-                <module>t9t-voice-sapi</module>
-                <module>t9t-voice-be</module>
-                <module>t9t-voice-jpa</module>
-
                 <module>t9t-translation-be</module>
                 <module>t9t-translation-be-intern</module>
-
 
                 <module>t9t-orm-eclipselink-jpa</module>
                 <module>t9t-orm-hibernate-jpa</module>
@@ -1370,39 +1326,16 @@
                 <module>t9t-bpmn-be</module>
                 <module>t9t-bpmn-jpa</module>
 
-                <module>t9t-bpmn2-api</module>
-                <module>t9t-bpmn2-sapi</module>
-                <module>t9t-bpmn2-jpa</module>
-                <module>t9t-bpmn2-mock</module>
-
-                <module>t9t-vdb-api</module>
-                <module>t9t-vdb-sapi</module>
-                <module>t9t-vdb-be</module>
-                <module>t9t-vdb-be-pinecone</module>
-                <module>t9t-vdb-be-qdrant</module>
-                <module>t9t-vdb-jpa-pgvector</module>
-
                 <module>t9t-io-be-aws</module>
 
                 <module>t9t-ai-api</module>
                 <module>t9t-ai-sapi</module>
                 <module>t9t-ai-be</module>
-                <module>t9t-ai-be-langchain</module>
                 <module>t9t-ai-mcp</module>
                 <module>t9t-ai-jpa</module>
-                <module>t9t-adobe-api</module>
-                <module>t9t-adobe-sapi</module>
-                <module>t9t-adobe-be</module>
-                <module>t9t-ollama-api</module>
-                <module>t9t-ollama-sapi</module>
-                <module>t9t-ollama-be</module>
                 <module>t9t-openai-api</module>
                 <module>t9t-openai-sapi</module>
                 <module>t9t-openai-be</module>
-
-                <module>t9t-demo-api</module>
-                <module>t9t-demo-be</module>
-                <module>t9t-demo-plugin</module>
 
                 <module>t9t-sql</module>
                 <module>t9t-sql-migration-executor</module>

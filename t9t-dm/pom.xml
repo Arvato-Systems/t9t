@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-build</artifactId>
-        <version>9.3-SNAPSHOT</version>
+        <version>10.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>t9t-dm</artifactId>
@@ -287,47 +287,12 @@
             </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-base-jpa-jta</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-base-jpa-rl</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-base-jpa-st</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-base-sapi</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-base-vertx</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-batch-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-batch-be</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-batch-jpa</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-batch-sapi</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -386,26 +351,6 @@
                 <artifactId>t9t-dataloader-maven</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-demo-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-demo-be</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-demo-sapi</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-demo-plugin</artifactId>
-                <version>${project.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
@@ -441,31 +386,6 @@
 
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-voice-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-voice-apiext</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-voice-be</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-voice-jpa</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-voice-sapi</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-openai-be</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -476,37 +396,7 @@
             </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-adobe-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-adobe-sapi</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-adobe-be</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-openai-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-ollama-be</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-ollama-sapi</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-ollama-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -532,38 +422,6 @@
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-ai-jpa</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-vdb-be</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-vdb-sapi</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-vdb-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-vdb-be-pinecone</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-vdb-be-qdrant</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-vdb-jpa-pgvector</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -963,33 +821,7 @@
                 <artifactId>t9t-sql-migration-executor</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-alexa</artifactId>
-                <version>${project.version}</version>
-            </dependency>
 
-            <!-- BPMN2 stuff files -->
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-bpmn2-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-bpmn2-sapi</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-bpmn2-jpa</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-bpmn2-mock</artifactId>
-                <version>${project.version}</version>
-            </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-microbenchmarks</artifactId>
@@ -1012,12 +844,6 @@
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-bpmn-jpa</artifactId>
-                <version>${project.version}</version>
-                <classifier>sql</classifier>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-bpmn2-jpa</artifactId>
                 <version>${project.version}</version>
                 <classifier>sql</classifier>
             </dependency>
@@ -1072,12 +898,6 @@
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-translations-jpa</artifactId>
-                <version>${project.version}</version>
-                <classifier>sql</classifier>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-voice-jpa</artifactId>
                 <version>${project.version}</version>
                 <classifier>sql</classifier>
             </dependency>

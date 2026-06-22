@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings</artifactId>
-        <version>9.3-SNAPSHOT</version>
+        <version>10.0-SNAPSHOT</version>
         <relativePath>../t9t-settings</relativePath>
     </parent>
 
@@ -44,20 +44,12 @@
 
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-base-jpa-rl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-orm-hibernate-jpa</artifactId>
         </dependency>
         <!-- quartz needs JDBC access -->
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-base-jdbc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-adobe-be</artifactId>
         </dependency>
     </dependencies>
 

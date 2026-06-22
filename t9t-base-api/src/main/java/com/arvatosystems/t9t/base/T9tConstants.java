@@ -86,23 +86,14 @@ public final class T9tConstants {
     public static final int EXCEPTION_OFFSET_DOC_EXT        = 24_000;   // The range for t9t-doc exception codes starts here - external API
     public static final int EXCEPTION_OFFSET_JWT            = 25_000;   // The range for t9t-jwt exception codes starts here
     public static final int EXCEPTION_OFFSET_BPMN           = 26_000;   // The range for t9t-bpmn exception codes starts here
-    public static final int EXCEPTION_OFFSET_BPMN2          = 27_000;   // The range for t9t-bpmn2 exception codes starts here
     public static final int EXCEPTION_OFFSET_IO             = 28_000;   // The range for t9t-io exception codes starts here
     public static final int EXCEPTION_OFFSET_EMAIL          = 29_000;   // The range for t9t-email exception codes starts here
     public static final int EXCEPTION_OFFSET_CORE           = 30_000;   // The range for t9t-core exception codes starts here
     public static final int EXCEPTION_OFFSET_DOC            = 34_000;   // The range for t9t-doc exception codes starts here - internal (admin) API
-    public static final int EXCEPTION_OFFSET_VOICE          = 41_000;   // The range for t9t-voice exception codes starts here
     public static final int EXCEPTION_OFFSET_HIBERNATE_SEARCH = 42_000;   // The range for t9t-hibernate-search exception codes starts here
 
-    public static final int EXCEPTION_OFFSET_VDB            = 50_000;   // The range for t9t-vdb exception codes starts here (vector DB exceptions)
-    public static final int EXCEPTION_OFFSET_VDB_PGVECTOR   = 51_000;   // The range for t9t-vdb exception codes related to Postgres pgvector ext. starts here
-    public static final int EXCEPTION_OFFSET_VDB_PINECONE   = 52_000;   // The range for t9t-vdb exception codes related to Pinecone starts here
-    public static final int EXCEPTION_OFFSET_VDB_QDRANT     = 53_000;   // The range for t9t-vdb exception codes related to Qdrant starts here
-
     public static final int EXCEPTION_OFFSET_AI             = 60_000;   // The range for t9t-ai exception codes starts here (generic AI exceptions)
-    public static final int EXCEPTION_OFFSET_LANGCHAIN      = 61_000;   // The range for langchain related exception codes starts here
     public static final int EXCEPTION_OFFSET_OPENAI         = 62_000;   // The range for t9t-openai exception codes starts here (OpenAI specific exceptions)
-    public static final int EXCEPTION_OFFSET_OLLAMA         = 63_000;   // The range for t9t-ollama exception codes starts here (Ollama specific exceptions)
 
     /**
      * The maximum return code which is considered as an "OK" response code.

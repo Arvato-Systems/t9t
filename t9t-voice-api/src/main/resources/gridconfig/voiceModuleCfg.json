@@ -1,9 +1,0 @@
-{
-    "viewModel": "voiceModuleCfg",
-    "filters": [
-        { "filterType": "E", "fieldName": "tenantId" }
-    ],
-    "fields": [
-        "tenantId"
-    ]
-}

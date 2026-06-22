@@ -15,35 +15,24 @@
  */
 package com.arvatosystems.t9t.stdsetup
 
-import com.arvatosystems.t9t.auth.ApiKeyDTO
-import com.arvatosystems.t9t.auth.PermissionsDTO
-import com.arvatosystems.t9t.auth.UserDTO
-import com.arvatosystems.t9t.auth.UserKey
-import com.arvatosystems.t9t.auth.tests.setup.SetupUserTenantRole
 import com.arvatosystems.t9t.base.ITestConnection
+import com.arvatosystems.t9t.base.T9tConstants
+import com.arvatosystems.t9t.doc.DocConfigDTO
+import com.arvatosystems.t9t.doc.DocConstants
+import com.arvatosystems.t9t.doc.DocEmailReceiverDTO
+import com.arvatosystems.t9t.doc.DocTemplateDTO
+import com.arvatosystems.t9t.doc.api.TemplateType
 import com.arvatosystems.t9t.io.CommunicationTargetChannelType
 import com.arvatosystems.t9t.io.DataSinkCategoryType
 import com.arvatosystems.t9t.io.DataSinkDTO
-import com.arvatosystems.t9t.voice.VoiceApplicationDTO
 import de.jpaw.annotations.AddLogger
-import de.jpaw.bonaparte.pojos.api.OperationType
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset
-import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType
 import de.jpaw.bonaparte.pojos.api.media.MediaType
+import de.jpaw.bonaparte.pojos.api.media.MediaXType
 import java.util.UUID
 import org.eclipse.xtend.lib.annotations.Data
 
-import static extension com.arvatosystems.t9t.auth.extensions.AuthExtensions.*
-import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
-import static extension com.arvatosystems.t9t.misc.extensions.VoiceExtensions.*
 import static extension com.arvatosystems.t9t.doc.extensions.DocExtensions.*
-import com.arvatosystems.t9t.base.T9tConstants
-import com.arvatosystems.t9t.doc.DocConfigDTO
-import com.arvatosystems.t9t.doc.DocEmailReceiverDTO
-import com.arvatosystems.t9t.doc.api.TemplateType
-import com.arvatosystems.t9t.doc.DocTemplateDTO
-import com.arvatosystems.t9t.doc.DocConstants
-import de.jpaw.bonaparte.pojos.api.media.MediaXType
+import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
 
 @AddLogger
 @Data
@@ -91,75 +80,6 @@ class T9tStandardSetup {
             '''
             merge(dlg)
         ]
-    }
-
-    /** Creates a user and API key for the global tenant. */
-    def void setupVoiceBaseUser(UUID uuid) {
-        new UserDTO => [
-            userId                  = USER_ID
-            name                    = "voice access root user"
-            isTechnical             = true
-            isActive                = true
-            emailAddress            = "aro_3rdLevel@Bertelsmann.de"  // unused
-            permissions             = new PermissionsDTO => [
-                minPermissions      = Permissionset.ofTokens(OperationType.EXECUTE)
-                maxPermissions      = Permissionset.ofTokens(OperationType.EXECUTE)
-                logLevel            = UserLogLevelType.REQUESTS
-                logLevelErrors      = UserLogLevelType.REQUESTS
-            ]
-            merge(dlg)
-        ]
-        new ApiKeyDTO => [
-            apiKey                  = uuid
-            name                    = "API-Key for voice access root user"
-            isActive                = true
-            userRef                 = new UserKey(USER_ID)
-            permissions             = new PermissionsDTO => [
-                minPermissions      = Permissionset.ofTokens(OperationType.EXECUTE)
-                maxPermissions      = Permissionset.ofTokens(OperationType.EXECUTE)
-                logLevel            = UserLogLevelType.REQUESTS
-                logLevelErrors      = UserLogLevelType.REQUESTS
-                resourceIsWildcard  = true
-                resourceRestriction = "B.t9t.voice.api.ProvideSession"
-            ]
-            merge(dlg)
-        ]
-    }
-
-    /** Creates an application and a user for the current tenant. The user is named as the applicationId */
-    def void setupVoiceApplication(VoiceApplicationDTO application, String resources) {
-        new UserDTO => [
-            userId                  = application.applicationId
-            name                    = application.name
-            isTechnical             = true
-            isActive                = application.isActive
-            emailAddress            = "aro_3rdLevel@Bertelsmann.de"  // unused
-            permissions             = new PermissionsDTO => [
-                minPermissions      = Permissionset.ofTokens(OperationType.EXECUTE)
-                maxPermissions      = SetupUserTenantRole.ALL_PERMISSIONS
-                logLevel            = UserLogLevelType.REQUESTS
-                logLevelErrors      = UserLogLevelType.REQUESTS
-            ]
-            merge(dlg)
-        ]
-        new ApiKeyDTO => [
-            apiKey                  = application.apiKey
-            name                    = "API-Key for voice application " + application.name
-            isActive                = true
-            userRef                 = new UserKey(application.applicationId)
-            permissions             = new PermissionsDTO => [
-                minPermissions      = Permissionset.ofTokens(OperationType.EXECUTE)
-                maxPermissions      = SetupUserTenantRole.ALL_PERMISSIONS
-                logLevel            = UserLogLevelType.REQUESTS
-                logLevelErrors      = UserLogLevelType.REQUESTS
-                resourceIsWildcard  = true
-                resourceRestriction = resources
-            ]
-            merge(dlg)
-        ]
-
-        // finally, create the application itself
-        application.merge(dlg)
     }
 
     /** Installs the basic configuration in the @ tenant. */

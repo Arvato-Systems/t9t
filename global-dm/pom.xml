@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-build</artifactId>
-        <version>9.3-SNAPSHOT</version>
+        <version>10.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>global-dm</artifactId>
@@ -48,10 +48,7 @@
         <xtend.version>${xtext.version}</xtend.version>
 
         <!-- Database driver versions -->
-        <driver.oracle.version>23.26.2.0.0</driver.oracle.version>
         <driver.postgresql.version>42.7.11</driver.postgresql.version>     <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
-        <driver.sqlserver.version>13.4.0.jre11</driver.sqlserver.version> <!-- not all releases are available on maven central as jre17 builds -->
-        <driver.hana.version>2.28.8</driver.hana.version>
         <h2.version>2.4.240</h2.version>
 
         <!-- OR mappers -->
@@ -88,7 +85,6 @@
         <jakarta.ws.rs-api.version>4.0.0</jakarta.ws.rs-api.version>                    <!-- 4.0.0 for EE 11 core -->
         <jakarta.validation-api.version>3.1.1</jakarta.validation-api.version>
         <jakarta.persistence-api.version>3.2.0</jakarta.persistence-api.version>
-        <jakarta.transaction-api.version>2.0.1</jakarta.transaction-api.version>        <!-- 2.0.1 for EE 11 web (unchanged) -->
         <jakarta.servlet-api.version>6.1.0</jakarta.servlet-api.version>                <!-- 6.1.0 for EE 11 web -->
 
         <!-- Microprofile -->
@@ -97,7 +93,6 @@
 
         <!-- Commons (use with care, only few are regularly updated) -->
         <commons-logging.version>1.3.4-donotuse</commons-logging.version> <!-- should not use at all! -->
-        <commons-email.version>99.0-donotuse</commons-email.version>      <!-- no longer used in t9t, because seems to be unmaintained -->
         <commons-cli.version>1.11.0</commons-cli.version>
         <commons-codec.version>1.22.0</commons-codec.version>
         <commons-io.version>2.22.0</commons-io.version>                   <!-- regularly updated again -->
@@ -118,17 +113,8 @@
         <azure-cosmosdb.version>2.6.16</azure-cosmosdb.version>
         <azure-cosmos-sdk.version>4.80.0</azure-cosmos-sdk.version>
 
-        <!-- Vector databases -->
-        <pinecone.version>6.2.0</pinecone.version>
-        <qdrant-client.version>1.18.1</qdrant-client.version>
-
         <!-- More AI stuff & DM for its dependencies -->
-        <jsoup.version>1.22.2</jsoup.version>
-        <langchain4j.version>1.16.2</langchain4j.version>
         <grpc.version>1.81.0</grpc.version>
-        <kotlin-stdlib.version>1.9.25</kotlin-stdlib.version>
-        <okio.version>3.9.1</okio.version>          <!-- used by pinecone -->
-        <okhttp.version>4.12.0</okhttp.version>     <!-- used by pinecone -->
 
         <!-- needed for MCP -->
         <reactor-core.version>3.8.6</reactor-core.version>
@@ -140,7 +126,6 @@
         <byte-buddy.version>1.18.10</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
         <org.mockito.version>5.23.0</org.mockito.version>
         <archunit.version>1.4.2</archunit.version>
-        <hdrhistogram.version>2.2.2</hdrhistogram.version>
 
         <!-- Others -->
         <bouncycastle.version>1.84</bouncycastle.version>
@@ -165,10 +150,8 @@
         <jmh.version>1.37</jmh.version>
         <kubernetes-client.version>7.6.1</kubernetes-client.version>
 
-        <javassist.version>3.31.0-GA</javassist.version>
         <guava.version>33.6.0-jre</guava.version>
         <caffeine.version>3.2.4</caffeine.version>
-        <antlr.version>3.2</antlr.version>
         <resteasy.version>7.0.2.Final</resteasy.version>
         <resteasy-vertx.version>2.0.0.Beta1</resteasy-vertx.version>
         <googlemaps.services.version>2.2.0</googlemaps.services.version>
@@ -180,8 +163,6 @@
 
         <!-- Spring core -->
         <spring-bom.version>7.0.8</spring-bom.version>
-        <!-- Spring data -->
-        <spring-data-jpa.version>4.1.0</spring-data-jpa.version>
         <!-- Spring boot -->
         <spring-boot.version>4.1.0</spring-boot.version>
 
@@ -190,7 +171,6 @@
         <hazelcast-kubernetes.version>2.2.3</hazelcast-kubernetes.version>
 
         <snakeyaml.version>2.6</snakeyaml.version>
-        <classgraph.version>4.8.184</classgraph.version>
 
         <c3p0.version>0.12.0</c3p0.version>
         <hikaricp.version>7.0.2</hikaricp.version>
@@ -265,11 +245,6 @@
                 <artifactId>reflections</artifactId>
                 <version>${reflections.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.hdrhistogram</groupId>
-                <artifactId>HdrHistogram</artifactId>
-                <version>${hdrhistogram.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>com.google.errorprone</groupId>
@@ -320,12 +295,6 @@
                 <groupId>jakarta.annotation</groupId>
                 <artifactId>jakarta.annotation-api</artifactId>
                 <version>${jakarta.annotation-api.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>jakarta.transaction</groupId>
-                <artifactId>jakarta.transaction-api</artifactId>
-                <version>${jakarta.transaction-api.version}</version>
             </dependency>
 
             <!-- jakarta XML bind (JAXB) -->
@@ -525,12 +494,6 @@
                 <groupId>com.fasterxml.woodstox</groupId>
                 <artifactId>woodstox-core</artifactId>
                 <version>${woodstox.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.github.classgraph</groupId>
-                <artifactId>classgraph</artifactId>
-                <version>${classgraph.version}</version>
             </dependency>
 
             <!-- Import External BOMs -->
@@ -762,13 +725,6 @@
             <!-- Dependencies for vector databases: Must be present before loading vector DBs -->
             <!-- kotlin is required for okhttp -->
             <dependency>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-bom</artifactId>
-                <version>${kotlin-stdlib.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
                 <groupId>io.grpc</groupId>
                 <artifactId>grpc-bom</artifactId>
                 <version>${grpc.version}</version>
@@ -777,33 +733,12 @@
             </dependency>
 
             <dependency>
-                <groupId>com.squareup.okio</groupId>
-                <artifactId>okio-jvm</artifactId>
-                <version>${okio.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.squareup.okio</groupId>
-                <artifactId>okio</artifactId>
-                <version>${okio.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.squareup.okhttp3</groupId>
-                <artifactId>okhttp</artifactId>
-                <version>${okhttp.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>com.lowagie</groupId>
                 <artifactId>itext</artifactId>
                 <version>${itext.version}</version>
             </dependency>
 
-            <!-- Spring stuff -->
-            <dependency>
-                <groupId>org.springframework.data</groupId>
-                <artifactId>spring-data-jpa</artifactId>
-                <version>${spring-data-jpa.version}</version>
-            </dependency>
+            <!-- Spring boot -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter</artifactId>
@@ -819,11 +754,6 @@
             </dependency>
 
             <!-- Commons -->
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-email</artifactId>
-                <version>${commons-email.version}</version>
-            </dependency>
             <dependency>
                 <groupId>commons-cli</groupId>
                 <artifactId>commons-cli</artifactId>
@@ -973,11 +903,6 @@
                 <version>${picocli.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.javassist</groupId>
-                <artifactId>javassist</artifactId>
-                <version>${javassist.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.github.ben-manes.caffeine</groupId>
                 <artifactId>caffeine</artifactId>
                 <version>${caffeine.version}</version>
@@ -1021,11 +946,6 @@
                 <version>${gson.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.antlr</groupId>
-                <artifactId>antlr-runtime</artifactId>
-                <version>${antlr.version}</version>
-            </dependency>
             <dependency>
                <groupId>org.jboss.resteasy</groupId>
                <artifactId>resteasy-core-spi</artifactId>
@@ -1441,34 +1361,6 @@
                 <groupId>software.amazon.jdbc</groupId>
                 <artifactId>aws-advanced-jdbc-wrapper</artifactId>
                 <version>${aws-jdbc-wrapper.version}</version>
-            </dependency>
-
-            <!-- an older version of jsoup is pulled by langchain4j -->
-            <dependency>
-                <groupId>org.jsoup</groupId>
-                <artifactId>jsoup</artifactId>
-                <version>${jsoup.version}</version>
-            </dependency>
-
-            <!-- Vector databases (should go before langchain4j BOm import) -->
-            <dependency>
-                <groupId>io.pinecone</groupId>
-                <artifactId>pinecone-client</artifactId>
-                <version>${pinecone.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.qdrant</groupId>
-                <artifactId>client</artifactId>
-                <version>${qdrant-client.version}</version>
-            </dependency>
-
-            <!-- langchain4j -->
-            <dependency>
-                <groupId>dev.langchain4j</groupId>
-                <artifactId>langchain4j-bom</artifactId>
-                <version>${langchain4j.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
             </dependency>
 
             <dependency>
