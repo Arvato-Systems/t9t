@@ -1,5 +1,6 @@
 T9tServerConfiguration
 KafkaConfiguration
+RabbitMqConfiguration
 RelationalDatabaseConfiguration
 HibernateSearchConfiguration
 LuceneConfiguration

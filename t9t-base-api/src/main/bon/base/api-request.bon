@@ -312,6 +312,11 @@ package (com.arvatosystems) t9t.base.request {
         required (EventParameters...)               eventData;
     }
 
+    /** Checks if a system setting is OK to provide via gateway request. */
+    class QuerySystemSettingRequest extends RequestParameters {
+        required Ascii(255)                         settingName;
+    }
+
     /** Executes a request multiple times, used for simple benchmarks.
      * This request is for a rough estimate only, is is not intended to substitute proper benchmarking.
      */

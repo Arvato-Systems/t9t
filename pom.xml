@@ -1039,6 +1039,7 @@
                 <module>t9t-io-be-mfcobol</module>
                 <module>t9t-io-jpa</module>
                 <module>t9t-io-jpa-proxy</module>
+                <module>t9t-io-be-rabbitmq</module>
 
                 <module>t9t-solr-apiext</module>
                 <module>t9t-solr-api</module>
@@ -1334,6 +1335,7 @@
                 <module>t9t-io-be-mfcobol</module>
                 <module>t9t-io-jpa</module>
                 <module>t9t-io-jpa-proxy</module>
+                <module>t9t-io-be-rabbitmq</module>
 
                 <module>t9t-solr-apiext</module>
                 <module>t9t-solr-api</module>

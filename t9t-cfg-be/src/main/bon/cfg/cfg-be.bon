@@ -52,9 +52,10 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional (AWSConfiguration...)              awsConfiguration;
         optional (AzureConfiguration...)            azureConfiguration;
         required (UplinkConfiguration...) List<>    uplinkConfiguration;
-        optional (SearchConfiguration...)           searchConfiguration;
-        optional (KafkaConfiguration...)            kafkaConfiguration;
-        optional (AsyncTransmitterConfiguration...) asyncMsgConfiguration;
+        optional (SearchConfiguration...)           searchConfiguration;            // configuration for generic text based search
+        optional (KafkaConfiguration...)            kafkaConfiguration;             // optional configuration for the kafka based async transmitter
+        optional (RabbitMqConfiguration...)         rabbitMqConfiguration;          // optional configuration for the Rabbit-MQ based async transmitter
+        optional (AsyncTransmitterConfiguration...) asyncMsgConfiguration;          // optional configuration for the internal / generic async transmitter
         optional (LdapConfiguration...)             ldapConfiguration;              // optional external authentication provider (LDAP)
         optional (OidConfiguration...)              oidConfiguration;               // optional external authentication provider (OpenID Connect, currently only MS-AAD supported)
         required (OidcConfiguration...) List<>      oidcConfiguration;              // optional external authentication providers (OpenID Connect, any provider, used for secondary JWT validation)
@@ -96,6 +97,19 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Integer                            shutdownThreadpoolInterval;     // timeout in ms for threadpool shutdown (default is 10000)
         optional Integer                            maxPollRecords;                 // maximum number of records returned in a single call to poll() (max.poll.records)
         optional Integer                            idleInterval;                   // interval in ms to sleep/idle when not busy
+    }
+
+    class RabbitMqConfiguration {
+        required Ascii(150)                         host;                           // host name or IP address of the RabbitMQ server
+        optional Integer                            port;                           // port number of the RabbitMQ server (default 5672)
+        optional Ascii(150)                         username;                       // username for RabbitMQ authentication (default "guest")
+        optional Ascii(150)                         password;                       // password for RabbitMQ authentication (default "guest")
+        optional Integer                            connectionTimeoutInMs;          // connection timeout in milliseconds for RabbitMQ connection (default 60000)
+        optional Integer                            requestedHeartbeatInSec;        // requested heartbeat interval in seconds (default 60)
+        optional Integer                            networkRecoveryIntervalInMs;    // network recovery interval in milliseconds for RabbitMQ connection (default 5000)
+        optional Boolean                            automaticRecoveryEnabled;       // whether automatic recovery is enabled for RabbitMQ connection (default true)
+        optional Integer                            publisherConfirmCacheExpiryInMs; // expiry time in milliseconds for the publisher confirm cache (default 10000)
+        optional Integer                            publisherConfirmCacheMaxSize;   // maximum size of the publisher confirm cache (default 10000). Set to 0 to disable caching of publisher confirms.
     }
 
     class RelationalDatabaseConfiguration {

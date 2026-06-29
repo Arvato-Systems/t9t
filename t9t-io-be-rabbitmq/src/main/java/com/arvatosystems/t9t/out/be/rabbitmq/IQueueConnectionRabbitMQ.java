@@ -13,16 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.auth.be.jwt;
+package com.arvatosystems.t9t.out.be.rabbitmq;
 
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
+import javax.annotation.Nonnull;
 
-import com.arvatosystems.t9t.auth.jwt.IJWT;
-import com.arvatosystems.t9t.auth.jwt.SecondaryJWTPool;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
 
-@Singleton
-@Named("extJwt")
-public class ExtJWTPool extends SecondaryJWTPool implements IJWT {
+import com.arvatosystems.t9t.io.AsyncQueueDTO;
+
+public interface IQueueConnectionRabbitMQ {
+
+    @Nonnull
+    Connection getQueueConnection() throws Exception;
+
+    @Nonnull
+    Channel getQueueChannel(@Nonnull Connection queueConnection, @Nonnull AsyncQueueDTO queueConfig) throws Exception;
 }
-

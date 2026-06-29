@@ -170,6 +170,7 @@ class ConfigProvider {
             uplinkConfiguration     = a.uplinkConfiguration     ?: b.uplinkConfiguration
             searchConfiguration     = a.searchConfiguration     ?: b.searchConfiguration
             kafkaConfiguration      = a.kafkaConfiguration      ?: b.kafkaConfiguration
+            rabbitMqConfiguration   = a.rabbitMqConfiguration   ?: b.rabbitMqConfiguration
             asyncMsgConfiguration   = a.asyncMsgConfiguration   ?: b.asyncMsgConfiguration
             ldapConfiguration       = a.ldapConfiguration       ?: b.ldapConfiguration
             oidConfiguration        = a.oidConfiguration        ?: b.oidConfiguration

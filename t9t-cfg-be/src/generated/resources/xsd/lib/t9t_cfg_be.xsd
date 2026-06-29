@@ -69,6 +69,7 @@
                     <xs:element name="uplinkConfiguration" minOccurs="0" maxOccurs="unbounded" type="t9t_cfg_be:UplinkConfiguration"/>
                     <xs:element name="searchConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:SearchConfiguration"/>
                     <xs:element name="kafkaConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:KafkaConfiguration"/>
+                    <xs:element name="rabbitMqConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:RabbitMqConfiguration"/>
                     <xs:element name="asyncMsgConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:AsyncTransmitterConfiguration"/>
                     <xs:element name="ldapConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:LdapConfiguration"/>
                     <xs:element name="oidConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:OidConfiguration"/>
@@ -258,6 +259,81 @@
                         </xs:simpleType>
                     </xs:element>
                     <xs:element name="idleInterval" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="RabbitMqConfiguration">
+        <xs:complexContent>
+            <xs:extension base="bon:BONAPORTABLE">
+                <xs:sequence>
+                    <xs:element name="host">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="150"/>
+                                <xs:pattern value="\p{IsBasicLatin}*"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="port" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="username" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="150"/>
+                                <xs:pattern value="\p{IsBasicLatin}*"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="password" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="150"/>
+                                <xs:pattern value="\p{IsBasicLatin}*"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="connectionTimeoutInMs" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="requestedHeartbeatInSec" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="networkRecoveryIntervalInMs" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="automaticRecoveryEnabled" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="publisherConfirmCacheExpiryInMs" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="publisherConfirmCacheMaxSize" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:unsignedInt">
                                 <xs:maxInclusive value="2147483647"/>
