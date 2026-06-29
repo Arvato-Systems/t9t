@@ -96,4 +96,8 @@ package (com.arvatosystems) t9t.xml XML PROPERTY bundle t9t.config swagger {
     final class ErrorDescriptionList xmlRoot {
         required (ErrorDescription001) required List<> records;                 // the list of possile return codes
     }
+
+    final class SystemSetting xmlRoot {
+        required Unicode(255)                       setting;                    // the value of the setting
+    }
 }
