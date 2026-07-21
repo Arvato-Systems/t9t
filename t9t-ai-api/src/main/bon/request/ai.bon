@@ -51,6 +51,9 @@ package (com.arvatosystems) t9t.ai.request {
     class AiPromptCrudRequest                       extends CrudSurrogateKeyRequest <AiPromptRef, AiPromptDTO, FullTrackingWithVersion> {}
     class AiPromptSearchRequest                     extends SearchRequest           <AiPromptDTO, FullTrackingWithVersion> {}
 
+    class AiDtoAssistCrudRequest                    extends CrudSurrogateKeyRequest <AiDtoAssistRef, AiDtoAssistDTO, FullTrackingWithVersion> {}
+    class AiDtoAssistSearchRequest                  extends SearchRequest           <AiDtoAssistDTO, FullTrackingWithVersion> {}
+
     /** API to submit user input (initial call without parameters to get the greeting). */
     class AiChatRequest extends RequestParameters return AiChatResponse {
         optional (AiAssistantRef...)                aiAssistantRef;
@@ -109,5 +112,29 @@ package (com.arvatosystems) t9t.ai.request {
     class AiGetPromptResponse extends ServiceResponse {
         required Unicode(64000) allowControlChars           prompt;             // the prompt with populated parameters
         required Unicode(4000) allowControlChars            description;        // a slightly longer description of the prompt
+    }
+
+    enum ChatStatus {
+        DONE                    = "D",            // model has produced desired output
+        NEED_MORE_INFORMATION   = "N"             // user input is incomplete, has contradictions, or references invalid identifiers
+    }
+
+    /** Common superclass for specific DTO creation assistants. */
+    abstract class AbstractAiCreateOrEditDtoRequest<T> extends RequestParameters return AiCreateOrEditDtoResponse<!T> {
+        optional Ascii(255)                                 conversationId;     // ID to refer to chat history
+        optional (!T)                                       dto;                // optional existing DTO
+        required textChunk                                  chatInput;          // user input
+    }
+
+    class AiCreateOrEditDtoResponse<T> extends ServiceResponse {
+        required Ascii(255)                                 conversationId;     // ID to refer to chat history
+        required enum ChatStatus                            chatStatus;         // status of the response
+        optional (!T)                                       dto;                // optional output of DTO
+        optional textChunk                                  response;           // LLM response (usually questions or explanation of the output)
+    }
+
+    /** Generic implementation of DTO creation assistants. */
+    class GenericAiCreateOrEditDtoRequest extends AbstractAiCreateOrEditDtoRequest<Object> {
+        required pqon                                       pqon;               // PQON of the DTO class
     }
 }

@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
@@ -222,9 +223,8 @@ public class QuartzSchedulerService implements ISchedulerService {
                     .withIntervalInMilliseconds(setup.getIntervalMilliseconds() == null ? 1000 : setup.getIntervalMilliseconds())
             );
         } else {
-            builder.withSchedule(
-                    CronScheduleBuilder.cronScheduleNonvalidatedExpression(setup.getCronExpression())
-            );
+            final String timeZone = T9tUtil.nvl(setup.getTimeZone(), "UTC");
+            builder.withSchedule(CronScheduleBuilder.cronScheduleNonvalidatedExpression(setup.getCronExpression()).inTimeZone(TimeZone.getTimeZone(timeZone)));
         }
     }
 

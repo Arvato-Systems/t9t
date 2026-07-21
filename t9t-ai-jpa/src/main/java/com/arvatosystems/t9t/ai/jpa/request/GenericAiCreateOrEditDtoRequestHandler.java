@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.ai.openai.assistants.be.request;
+package com.arvatosystems.t9t.ai.jpa.request;
 
-import de.jpaw.dp.Jdp;
+import de.jpaw.bonaparte.core.BonaPortable;
 
-import com.arvatosystems.t9t.ai.openai.assistants.request.OpenAIAddMessagesToThreadRequest;
-import com.arvatosystems.t9t.ai.openai.service.IOpenAIClient;
+import com.arvatosystems.t9t.ai.request.GenericAiCreateOrEditDtoRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
-public class OpenAIAddMessagesToThreadRequestHandler extends AbstractRequestHandler<OpenAIAddMessagesToThreadRequest> {
-
-    private final IOpenAIClient openAIClient = Jdp.getRequired(IOpenAIClient.class);
+public class GenericAiCreateOrEditDtoRequestHandler extends AbstractAiCreateOrEditDtoRequestHandler<BonaPortable, GenericAiCreateOrEditDtoRequest> {
 
     @Override
-    public ServiceResponse execute(final RequestContext ctx, final OpenAIAddMessagesToThreadRequest request) throws Exception {
-        openAIClient.addMessagesToThread(request.getThreadId(), request.getMessages());
-        return ok();
+    public ServiceResponse execute(final RequestContext ctx, final GenericAiCreateOrEditDtoRequest request) throws Exception {
+        return super.execute(ctx, request, request.getPqon());
     }
 }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="aiDtoAssist28"?>
+
+<window28 id="aiDtoAssistWin">
+    <threesections28 gridId="aiDtoAssist">
+        <crud28 cachesDropdown="assistantId"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM', vmId='aiDtoAssist')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="aiDtoAssistCrudMain" aspect="1" numColumns="2">
+                <rows>
+                    <cells228 id ="pqon"                                  value ="@load(vm.data.pqon)            @save(vm.data.pqon,before='commandSave')"
+                              id2="aiAssistantRef"                        value2="@load(vm.data.aiAssistantRef)  @save(vm.data.aiAssistantRef,before='commandSave')"/>
+                    <cells28  id ="description"                           value ="@bind(vm.data.description)"    colspan1="3"/>
+                    <cells28  id ="role"                                  value ="@load(vm.data.role)            @save(vm.data.role,before='commandSave')"            colspan1="3" rows1="4"/>
+                    <cells28  id ="dtoInstructions"                       value ="@load(vm.data.dtoInstructions) @save(vm.data.dtoInstructions,before='commandSave')" colspan1="3" rows1="8"/>
+                    <cells28  id ="dtoSchema"                             value ="@load(vm.data.dtoSchema)       @save(vm.data.dtoSchema,before='commandSave')"       colspan1="3" rows1="4"/>
+                    <cells28  id ="z"                                     value ="@load(vm.data.z)               @save(vm.data.z,before='commandSave')"               colspan1="3" rows1="4"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

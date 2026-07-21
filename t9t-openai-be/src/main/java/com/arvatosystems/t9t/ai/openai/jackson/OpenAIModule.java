@@ -33,7 +33,7 @@ import com.arvatosystems.t9t.ai.openai.OpenAISortOrderType;
 import com.arvatosystems.t9t.ai.openai.OpenAIToolChoiceType;
 import com.arvatosystems.t9t.ai.openai.OpenAIToolType;
 import com.arvatosystems.t9t.ai.openai.OpenAIVectorStoreStatusType;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIRunStatusType;
+import com.arvatosystems.t9t.ai.openai.responses.OpenAIResponseStatusType;
 
 public class OpenAIModule extends SimpleModule {
     private static final long serialVersionUID = -5852568871709312156L;
@@ -50,13 +50,13 @@ public class OpenAIModule extends SimpleModule {
         this.addDeserializer(OpenAIToolChoiceType.class,     new OpenAIEnumDeserializer<OpenAIToolChoiceType>(OpenAIToolChoiceType::factory));
         this.addDeserializer(OpenAIFinishReasonType.class,   new OpenAIEnumDeserializer<OpenAIFinishReasonType>(OpenAIFinishReasonType::factory));
         this.addDeserializer(OpenAIParameterType.class,      new OpenAIEnumDeserializer<OpenAIParameterType>(OpenAIParameterType::factory));
-        this.addDeserializer(OpenAIRunStatusType.class,      new OpenAIEnumDeserializer<OpenAIRunStatusType>(OpenAIRunStatusType::factory));
         this.addDeserializer(OpenAISortOrderType.class,      new OpenAIEnumDeserializer<OpenAISortOrderType>(OpenAISortOrderType::factory));
         this.addDeserializer(OpenAIObjectType.class,         new OpenAIEnumDeserializer<OpenAIObjectType>(OpenAIObjectType::factory));
         this.addDeserializer(OpenAIPurposeType.class,        new OpenAIEnumDeserializer<OpenAIPurposeType>(OpenAIPurposeType::factory));
         this.addDeserializer(OpenAIFileStatusType.class,     new OpenAIEnumDeserializer<OpenAIFileStatusType>(OpenAIFileStatusType::factory));
         this.addDeserializer(OpenAIVectorStoreStatusType.class, new OpenAIEnumDeserializer<OpenAIVectorStoreStatusType>(OpenAIVectorStoreStatusType::factory));
         this.addDeserializer(OpenAIImageDetailType.class,    new OpenAIEnumDeserializer<OpenAIImageDetailType>(OpenAIImageDetailType::factory));
+        this.addDeserializer(OpenAIResponseStatusType.class, new OpenAIEnumDeserializer<OpenAIResponseStatusType>(OpenAIResponseStatusType::factory));
 
         this.addDeserializer(Instant.class,                  new OpenAIInstantDeserializer());
     }

@@ -55,6 +55,8 @@ public class JettyServer {
     static final int DEFAULT_IDLE_TIMEOUT = 5000;
     static final int DEFAULT_STOP_TIMEOUT = 5000;
     static final int DEFAULT_CONNECTION_IDLE_TIMEOUT = 300000;
+    static final int DEFAULT_MAX_REQUEST_HEADER_SIZE = 16 * 1024; // default is 8 KB which is too small for some PSPs
+
     static final String DEFAULT_CONTEXT_ROOT = "/rest";
     static final String DEFAULT_METRICS_PATH = "/metrics";
     static final String DEFAULT_APPLICATION_PATH = "";
@@ -79,16 +81,17 @@ public class JettyServer {
 
     public void run() throws Exception {
 
-        final int port        = RestUtils.CONFIG_READER.getIntProperty("jetty.http.port",              DEFAULT_PORT);
-        final int minThreads  = RestUtils.CONFIG_READER.getIntProperty("jetty.threadPool.minThreads",  DEFAULT_MIN_THREADS);
-        final int maxThreads  = RestUtils.CONFIG_READER.getIntProperty("jetty.threadPool.maxThreads",  DEFAULT_MAX_THREADS);
-        final int idleTimeout = RestUtils.CONFIG_READER.getIntProperty("jetty.threadPool.idleTimeout", DEFAULT_IDLE_TIMEOUT);  // in millis
-        final int connectionIdleTimeout = RestUtils.CONFIG_READER.getIntProperty("jetty.connection.idleTimeout", DEFAULT_CONNECTION_IDLE_TIMEOUT); // in millis
-        final int stopTimeout = RestUtils.CONFIG_READER.getIntProperty("jetty.stopTimeout",            DEFAULT_STOP_TIMEOUT);  // in millis
-        final String contextRoot     = RestUtils.CONFIG_READER.getProperty("jetty.contextRoot",        DEFAULT_CONTEXT_ROOT);
-        final String applicationPath = RestUtils.CONFIG_READER.getProperty("jetty.applicationPath",    DEFAULT_APPLICATION_PATH);
-        final String metricsPath     = RestUtils.CONFIG_READER.getProperty("jetty.metricsPath",        DEFAULT_METRICS_PATH);
-        final String uriCompliance   = RestUtils.CONFIG_READER.getProperty("jetty.httpConfig.uriCompliance", null);
+        final int port                  = RestUtils.CONFIG_READER.getIntProperty("jetty.http.port",              DEFAULT_PORT);
+        final int minThreads            = RestUtils.CONFIG_READER.getIntProperty("jetty.threadPool.minThreads",  DEFAULT_MIN_THREADS);
+        final int maxThreads            = RestUtils.CONFIG_READER.getIntProperty("jetty.threadPool.maxThreads",  DEFAULT_MAX_THREADS);
+        final int idleTimeout           = RestUtils.CONFIG_READER.getIntProperty("jetty.threadPool.idleTimeout", DEFAULT_IDLE_TIMEOUT);             // in milliseconds
+        final int connectionIdleTimeout = RestUtils.CONFIG_READER.getIntProperty("jetty.connection.idleTimeout", DEFAULT_CONNECTION_IDLE_TIMEOUT);  // in milliseconds
+        final int stopTimeout           = RestUtils.CONFIG_READER.getIntProperty("jetty.stopTimeout",            DEFAULT_STOP_TIMEOUT);             // in milliseconds
+        final int requestHeaderSize     = RestUtils.CONFIG_READER.getIntProperty("jetty.requestHeaderSize",      DEFAULT_MAX_REQUEST_HEADER_SIZE);  // in bytes
+        final String contextRoot        = RestUtils.CONFIG_READER.getProperty("jetty.contextRoot",               DEFAULT_CONTEXT_ROOT);
+        final String applicationPath    = RestUtils.CONFIG_READER.getProperty("jetty.applicationPath",           DEFAULT_APPLICATION_PATH);
+        final String metricsPath        = RestUtils.CONFIG_READER.getProperty("jetty.metricsPath",               DEFAULT_METRICS_PATH);
+        final String uriCompliance      = RestUtils.CONFIG_READER.getProperty("jetty.httpConfig.uriCompliance", null);
 
         LOGGER.info("Using the following configuration values: port {}, min/max threads = {}/{}", port, minThreads, maxThreads);
         LOGGER.info("  idle timeout = {}, connection idle timeout = {}, context = {}, application path = {}", idleTimeout, connectionIdleTimeout, contextRoot, applicationPath);
@@ -108,7 +111,8 @@ public class JettyServer {
 
         // code below is for adding http/2 (h2c). Works, but also throws sporadic exceptions
         final HttpConfiguration hconfig = new HttpConfiguration();
-        hconfig.setSendServerVersion(false); // remove the Jetty version from the error pages
+        hconfig.setSendServerVersion(false);               // remove the Jetty version from the error pages
+        hconfig.setRequestHeaderSize(requestHeaderSize);   // default is 8 KB which is too small for some PSPs
         if (!T9tUtil.isBlank(uriCompliance)) {
             hconfig.setUriCompliance(UriCompliance.from(getAllowedViolations(uriCompliance)));
         }

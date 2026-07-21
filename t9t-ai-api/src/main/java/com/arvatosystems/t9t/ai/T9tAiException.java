@@ -42,6 +42,7 @@ public class T9tAiException extends T9tException {
     public static final int TOOLS_NOT_AVAILABLE         = OFFSET + 107;
     public static final int PROMPTS_NOT_AVAILABLE       = OFFSET + 108;
     public static final int PROMPTS_MISSING_PARAMETERS  = OFFSET + 109;
+    public static final int INVALID_PQON                = OFFSET_ILE + 110;
 
     static {
         registerRange(CORE_OFFSET, false, T9tAiException.class, ApplicationLevelType.FRAMEWORK, "t9t general AI integration layer");
@@ -56,5 +57,6 @@ public class T9tAiException extends T9tException {
         registerCode(TOOLS_NOT_AVAILABLE,       "Tools cannot be fetched");
         registerCode(PROMPTS_NOT_AVAILABLE,     "Prompts cannot be fetched");
         registerCode(PROMPTS_MISSING_PARAMETERS, "Prompt parameters missing");
+        registerCode(INVALID_PQON,               "PQON does not specify a known/loaded Bonaportable class");
     }
 }

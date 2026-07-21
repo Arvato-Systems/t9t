@@ -12,8 +12,10 @@
                     <cells228 id ="request"              value ="@load(vm.data.request)              @save(vm.data.request,before='commandSave')"
                               id2="apiKey"               value2="@load(vm.data.apiKey)               @save(vm.data.apiKey,before='commandSave')"/>
                     <cells228 id ="userId"               value ="@load(vm.data.userId)               @save(vm.data.userId,before='commandSave')"
-                              id2="languageCode"         value2="@load(vm.data.languageCode)         @save(vm.data.languageCode,before='commandSave')"/>
+                              id2="mailingGroupId"       value2="@load(vm.data.mailingGroupId)       @save(vm.data.mailingGroupId,before='commandSave')"/>
                     <cells28  id ="additionalPermissions" value="@load(vm.data.additionalPermissions) @save(vm.data.additionalPermissions,before='commandSave')" colspan1="3"/>
+                    <cells228 id ="timeZone"             value ="@load(vm.data.timeZone)             @save(vm.data.timeZone,before='commandSave')"
+                              id2="languageCode"         value2="@load(vm.data.languageCode)         @save(vm.data.languageCode,before='commandSave')"/>
                     <cells228 visible="@load(vm.data.recurrencyType.token eq 'M' or vm.data.recurrencyType.token eq 'Y')"
                               id ="validFrom"            value ="@load(vm.data.validFrom)            @save(vm.data.validFrom,before='commandSave')"
                               id2="validTo"              value2="@load(vm.data.validTo)              @save(vm.data.validTo,before='commandSave')"/>
@@ -43,7 +45,6 @@
                               id2="timeLimit"            value2="@bind(vm.data.timeLimit)"/>
                     <cells228 id ="schedulerEnvironment" value ="@bind(vm.data.schedulerEnvironment)"
                               id2="runOnNode"            value2="@bind(vm.data.runOnNode)"/>
-                    <cells28  id ="mailingGroupId"       value ="@bind(vm.data.mailingGroupId)"/>
                     <row>
                         <cell>
                             <button28 id="executeCannedRequest" onClick="@command('executeCannedRequest')" />

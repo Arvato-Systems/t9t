@@ -232,7 +232,8 @@ package (com.arvatosystems) t9t.io {
         optional Unicode(64)                            xmlRootElementName;         // xml name of root element  (to be derived from object?)
         optional Unicode(64)                            xmlRecordName;              // xml name of main record
         optional Unicode(64)                            xmlNamespacePrefix;         // xml prefix of main record
-        optional Boolean                                writeTenantId;              // write the tenantId (currently primarily used in XML exports)
+        @Deprecated
+        optional Boolean                                writeTenantId;              // DEPRECATED - do not use, value is always false
         optional shortText                              description;                // should be required, but came late...
         optional Integer                                maxNumberOfRecords;         // hint to the application to limit the number of records by this
         optional Unicode(255)                           importQueueName;            // If provided, queue import data in an internal directory and proceed processing from this queue directory to disconnect data retrieval and processing
@@ -281,7 +282,8 @@ package (com.arvatosystems) t9t.io {
         optional Unicode(64)                            xmlNamespacePrefix;         // xml prefix of main record
         optional Unicode(100)                           xmlHeaderElements;          // scalar header information
         optional Unicode(100)                           xmlFooterElements;          // scalar footer information
-        optional Boolean                                writeTenantId;              // write the tenantId (currently primarily used in XML exports)
+        @Deprecated
+        optional Boolean                                writeTenantId;              // DEPRECATED - do not use, value is always false
     }
 
     /** Records all asynchronous outgoing communication. For every file created, there is one entry of this type.

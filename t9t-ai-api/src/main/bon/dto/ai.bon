@@ -26,6 +26,7 @@ package (com.arvatosystems) t9t.ai {
     default private unsigned trim noControlChars;
     properties inherited, qualifierFor, active, length, serialized, compact, compact2,
         tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        dropdown is com.arvatosystems.t9t.annotations.UseDropDownInUI(),
         searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
         noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
         notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
@@ -79,7 +80,19 @@ package (com.arvatosystems) t9t.ai {
         optional (AiConversationRef...)                 currentConversationRef  properties ref, searchprefix="currentConversation";
     }
 
-
+    /** Set for model reasoning - tokens are the strings accepted by OpenAI in the Responses API - may need to map to other values for different providers. */
+    enum ReasoningEffort {
+        ^NONE, MINIMAL, LOW, MEDIUM, HIGH, XHIGH, MAX
+    }
+    enum ReasoningContext {
+        AUTO, CURRENT_TURN, ALL_TURNS
+    }
+    enum ReasoningMode {
+        STANDARD, PRO
+    }
+    enum ReasoningSummary {
+        AUTO, CONCISE, DETAILED
+    }
 
     class AiAssistantRef RTTI 445 extends Ref {}
     final class AiAssistantKey extends AiAssistantRef {
@@ -100,6 +113,7 @@ package (com.arvatosystems) t9t.ai {
         required boolean                                toolsPermitted;                     // if tool access (t9t procedures) is allowed at all (detailed permissions handled elsewhere)
         required boolean                                executePermitted;                   // if the assistant is allowed to run code in a sandbox (OpenAI specific, expensive!)
         optional Json                                   metadata;                           // assistant metadata / parameters
+        @Deprecated
         optional Enum AiSyncStatusType                  syncStatus;                         // specifies if the assistant has been created at the provider
         optional aiId                                   aiAssistantId;                      // the ID in the provider's namespace
         required shortText                              greeting;                           // the initial greeting of the assistant
@@ -113,6 +127,11 @@ package (com.arvatosystems) t9t.ai {
         optional textChunk                              ttsInstructions;                    // some TTS providers allow a detailed description of the desired speaker
 
         optional Json                                   z;
+        optional Boolean                                store;                              // OpenAI Responses API: store response for subsequent reference
+        optional Enum ReasoningEffort                   reasoningEffort;                    // strength of reasoning
+        optional Enum ReasoningContext                  reasoningContext;                   // "auto" or "current_turn" or "all_turns" for OpenAI
+        optional Enum ReasoningMode                     reasoningMode;                      // "standard" or "pro" for OpenAI
+        optional Enum ReasoningSummary                  reasoningSummary;                   // "auto" or "concise" or "detailed" for OpenAI
     }
     class AiAssistantDescription extends AiAssistantRef {
         required assistantId                            assistantId properties notupdatable;
@@ -163,5 +182,22 @@ package (com.arvatosystems) t9t.ai {
     class AiPromptParameter {
         required boolean                                isRequired;                               // true if the prompt is a required parameter
         required Unicode(4000) allowControlChars        description;                              // description of the parameter
+    }
+
+    /**
+     * Configuration of data for AI assisted DTO creation.
+     */
+    class AiDtoAssistRef RTTI 449 extends Ref {}
+    final class AiDtoAssistKey extends AiDtoAssistRef {
+        required defaultExternalId                      pqon;           // PQON of the DTO to be created / edited
+    }
+    class AiDtoAssistDTO extends AiDtoAssistRef {
+        required defaultExternalId                      pqon            properties notupdatable;  // PQON of the DTO to be created / edited
+        required shortText                              description;                              // description / notes
+        required (AiAssistantRef..., AiAssistantDescription) aiAssistantRef properties ref, searchprefix="aiAssistant", dropdown="assistantId"; // which LLM to use / LLM parameters
+        required textChunk                              role;                                     // role input for the LLM
+        required textChunk                              dtoInstructions;                          // DTO specific instructions, will be pasted into the prompt
+        optional textChunk                              dtoSchema;                                // JSON schema for the DTO. If missing, it will be autogenerated
+        optional Json                                   z;                                  // project specific extensions
     }
 }

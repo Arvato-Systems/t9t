@@ -57,11 +57,12 @@ public interface IAiChatService {
      * @param attachedDocumentRef the provider specific reference to a previously thread related uploaded document, if any
      * @param uploadedDocumentType the type of the uploaded document, if any
      * @param textResponses a list of text responses to be filled by the chat service
+     * @param extractEmbeddedFileContent flag to extract embedded file content from the response if true
      *
      * @return             a file output response from the chat service (optional)
      */
     @Nullable
     MediaData chat(@Nonnull RequestContext ctx, @Nonnull AiAssistantDTO assistant, @Nonnull AiConversationDTO conversation,
       @Nonnull String question, @Nullable Object attachedDocumentRef, @Nullable MediaTypeDescriptor uploadedDocumentType,
-      @Nonnull List<String> textResponses);
+      @Nonnull List<String> textResponses, boolean extractEmbeddedFileContent);
 }

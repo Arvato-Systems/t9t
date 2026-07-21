@@ -24,7 +24,6 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -89,22 +88,12 @@ import com.arvatosystems.t9t.ai.openai.OpenAIToolCall;
 import com.arvatosystems.t9t.ai.openai.OpenAIToolType;
 import com.arvatosystems.t9t.ai.openai.T9tOpenAIConstants;
 import com.arvatosystems.t9t.ai.openai.T9tOpenAIException;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAICreateAssistantReq;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAICreateVectorStoreReq;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIObjectAssistant;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIObjectListAssistants;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIObjectListThreadMessages;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIObjectListThreadRuns;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIObjectThreadMessage;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIObjectThreadRun;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIObjectVectorStore;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIThread;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIThreadMessageReq;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIThreadRunReq;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIToolOutput;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIToolOutputReq;
 import com.arvatosystems.t9t.ai.openai.jackson.OpenAIModule;
 import com.arvatosystems.t9t.ai.openai.request.AIModel;
+import com.arvatosystems.t9t.ai.openai.responses.OpenAICreateResponseReq;
+import com.arvatosystems.t9t.ai.openai.responses.OpenAIResponseInputItem;
+import com.arvatosystems.t9t.ai.openai.responses.OpenAIResponseOutputItem;
+import com.arvatosystems.t9t.ai.openai.responses.OpenAIResponseResult;
 import com.arvatosystems.t9t.ai.openai.service.IOpenAIClient;
 import com.arvatosystems.t9t.ai.service.AiToolDescriptor;
 import com.arvatosystems.t9t.ai.service.AiToolRegistry;
@@ -129,12 +118,8 @@ import com.arvatosystems.t9t.jackson.JpawModule;
 public class OpenAIClient implements IOpenAIClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenAIClient.class);
     private static final OpenAIBetaSpecifier ASSISTANTS_BETA = OpenAIBetaSpecifier.ASST_V2;
-    private static final String ASSISTANTS_PATH = "/v1/assistants";
-    private static final String THREADS_PATH = "/v1/threads";
-    private static final String RUNS_SUFFIX = "/runs";
-    private static final String MESSAGES_SUFFIX = "/messages";
-    private static final String SUBMIT_SUFFIX = "/submit_tool_outputs";
     private static final String FILES_PATH = "/v1/files";
+    private static final String RESPONSES_PATH = "/v1/responses";
 
     private final IAiChatLogService aiChatLogService = Jdp.getRequired(IAiChatLogService.class);
     protected final IAiToolService toolService = Jdp.getRequired(IAiToolService.class);
@@ -568,56 +553,6 @@ public class OpenAIClient implements IOpenAIClient {
     }
 
     @Override
-    public OpenAIObjectAssistant createAssistant(final OpenAICreateAssistantReq assistantReq,
-      final boolean addAllTools, final boolean allowCoding, final boolean allowFileSearch) {
-        if (addAllTools) {
-            assistantReq.setTools(buildToolsFromStack(null, allowCoding, allowFileSearch));
-        }
-        return performOpenAIRequest(assistantReq, ASSISTANTS_BETA, OpenAIObjectAssistant.class);
-    }
-
-    @Override
-    public OpenAIObjectAssistant getAssistantById(final String assistantId) {
-        return performOpenAIGetRequest(ASSISTANTS_PATH + "/" + assistantId, ASSISTANTS_BETA, OpenAIObjectAssistant.class);
-    }
-
-    @Override
-    public OpenAIObjectListAssistants listAssistants(final OpenAIQueryParameters queryParameters) {
-        final String fullPath = addQueryParameters(ASSISTANTS_PATH, queryParameters);
-        return performOpenAIGetRequest(fullPath, ASSISTANTS_BETA, OpenAIObjectListAssistants.class);
-    }
-
-    @Override
-    public OpenAIThread createThread() {
-        return performOpenAIRequestWithoutPayload(THREADS_PATH, ASSISTANTS_BETA, OpenAIThread.class);
-    }
-
-    @Override
-    public OpenAIThread getThreadById(final String threadId) {
-        return performOpenAIGetRequest(THREADS_PATH + "/" + threadId, ASSISTANTS_BETA, OpenAIThread.class);
-    }
-
-    @Override
-    public OpenAIObjectThreadRun createRun(final String threadId, final OpenAIThreadRunReq request) {
-        if (request.getThread() != null) {
-            throw new T9tException(T9tOpenAIException.OPENAI_INVALID_REQUEST, "thread field must be null to start an existing thread");
-        }
-        final String fullPath = THREADS_PATH + "/" + threadId + RUNS_SUFFIX;
-        return performOpenAIRequest(request, fullPath, ASSISTANTS_BETA, OpenAIObjectThreadRun.class);
-    }
-
-    @Override
-    public OpenAIObjectThreadRun createThreadAndRun(final OpenAIThreadRunReq request) {
-        return performOpenAIRequest(request, THREADS_PATH + RUNS_SUFFIX, ASSISTANTS_BETA, OpenAIObjectThreadRun.class);
-    }
-
-    @Override
-    public OpenAIObjectListThreadRuns listThreadRuns(final String threadId, final OpenAIQueryParameters queryParameters) {
-        final String fullPath = addQueryParameters(THREADS_PATH + "/" + threadId + RUNS_SUFFIX, queryParameters);
-        return performOpenAIGetRequest(fullPath, ASSISTANTS_BETA, OpenAIObjectListThreadRuns.class);
-    }
-
-    @Override
     public String addQueryParameters(final String path, final OpenAIQueryParameters queryParameters) {
         if (queryParameters == null) {
             return path;  // nothing to do
@@ -648,107 +583,6 @@ public class OpenAIClient implements IOpenAIClient {
         return fullPath.toString();
     }
 
-    @Override
-    public OpenAIObjectThreadRun getRun(final String threadId, final String runId) {
-        final String fullPath = THREADS_PATH + "/" + threadId + RUNS_SUFFIX + "/" + runId;
-        return performOpenAIGetRequest(fullPath, ASSISTANTS_BETA, OpenAIObjectThreadRun.class);
-    }
-
-    @Override
-    public OpenAIObjectThreadRun submitToolOutputs(final String threadId, final String runId, final OpenAIToolOutputReq toolOutputs) {
-        final String fullPath = THREADS_PATH + "/" + threadId + RUNS_SUFFIX + "/" + runId + SUBMIT_SUFFIX;
-        return performOpenAIRequest(toolOutputs, fullPath, ASSISTANTS_BETA, OpenAIObjectThreadRun.class);
-    }
-
-    @Override
-    public OpenAIObjectThreadRun createRunAndLoop(final RequestContext ctx, final String threadId, final OpenAIThreadRunReq request,
-      final int maxSeconds, final long pollMillis, final Long conversationRef) {
-        if (request.getThread() != null) {
-            throw new T9tException(T9tOpenAIException.OPENAI_INVALID_REQUEST, "thread field must be null to start an existing thread");
-        }
-        final String fullPath = THREADS_PATH + "/" + threadId + RUNS_SUFFIX;
-        final OpenAIObjectThreadRun initialState = performOpenAIRequest(request, fullPath, ASSISTANTS_BETA, OpenAIObjectThreadRun.class);
-        return loopUntilCompletion(ctx, initialState, maxSeconds, pollMillis, conversationRef);
-    }
-
-    @Override
-    public OpenAIObjectThreadRun loopUntilCompletion(final RequestContext ctx, final OpenAIObjectThreadRun initialState,
-      final int maxSeconds, final long pollMillis, final Long conversationRef) {
-        final Instant start = Instant.now();
-        final Instant deadline = start.plusSeconds(maxSeconds);
-        final String runId = initialState.getId();
-        final String threadId = initialState.getThreadId();
-        OpenAIObjectThreadRun currentState = initialState;
-        while (Instant.now().isBefore(deadline)) {
-            // check current state
-            LOGGER.debug("   Current run state is {}", currentState.getStatus());
-            switch (currentState.getStatus()) {
-            case CANCELLED:
-            case CANCELLING:
-            case COMPLETED:
-            case EXPIRED:
-            case FAILED:
-            case INCOMPLETE:
-                // LOGGER.info("Returning {}", ToStringHelper.toStringML(currentState));
-                return currentState;
-            case IN_PROGRESS:
-            case QUEUED:
-                // wait
-                T9tUtil.sleepAndWarnIfInterrupted(pollMillis, LOGGER, "Sleep interrupted while waiting for OpenAI run completion");
-                // get fresh current state without doing anything
-                currentState = getRun(threadId, runId);
-                break;
-            case REQUIRES_ACTION:
-                final OpenAIToolOutputReq toolOutputs = computeToolOutputs(ctx, currentState, conversationRef);
-                currentState = submitToolOutputs(threadId, runId, toolOutputs);
-                break;
-            default:
-                throw new T9tException(T9tOpenAIException.OPENAI_UNKNOWN_RUN_STATUS, currentState.getStatus());
-            }
-        }
-        // LOGGER.info("Returning {}", ToStringHelper.toStringML(currentState));
-        return currentState;  // timed out!
-    }
-
-    protected OpenAIToolOutputReq computeToolOutputs(final RequestContext ctx, final OpenAIObjectThreadRun currentState, final Long conversationRef) {
-        if (currentState.getRequiredAction() == null || currentState.getRequiredAction().getSubmitToolOutputs() == null) {
-            throw new T9tException(T9tOpenAIException.OPENAI_EXPECTED_TOOL_OUTPUTS,
-              currentState.getRequiredAction() == null ? "requiredAction" : "submitToolOutputs");
-        }
-        final List<OpenAIToolCall> toolCalls = currentState.getRequiredAction().getSubmitToolOutputs().getToolCalls();
-        if (toolCalls == null) {
-            throw new T9tException(T9tOpenAIException.OPENAI_EXPECTED_TOOL_OUTPUTS, "toolCalls null");
-        }
-        if (toolCalls.isEmpty()) {
-            throw new T9tException(T9tOpenAIException.OPENAI_EXPECTED_TOOL_OUTPUTS, "toolCalls empty");
-        }
-        final OpenAIToolOutputReq toolOutputReq = new OpenAIToolOutputReq();
-        final List<OpenAIToolOutput> toolOutputs = new ArrayList<>(toolCalls.size());
-        toolOutputReq.setToolOutputs(toolOutputs);
-        for (final OpenAIToolCall toolCall : toolCalls) {
-            final OpenAIMessage result = performToolCall(ctx, toolCall, conversationRef);
-            final OpenAIToolOutput toolOutput = new OpenAIToolOutput();
-            toolOutput.setToolCallId(toolCall.getId());
-            toolOutput.setOutput(result.getContent());
-            toolOutputs.add(toolOutput);
-        }
-        return toolOutputReq;
-    }
-
-    @Override
-    public void addMessagesToThread(final String threadId, final List<OpenAIThreadMessageReq> messages) {
-        final String fullPath = THREADS_PATH + "/" + threadId + MESSAGES_SUFFIX;
-        for (final OpenAIThreadMessageReq message : messages) {
-            // currently the OpenAI API does not support adding more than one message at a time to a thread: Do it one by one
-            performOpenAIRequest(message, fullPath, ASSISTANTS_BETA, OpenAIObjectThreadMessage.class);
-        }
-    }
-
-    @Override
-    public OpenAIObjectListThreadMessages listThreadMessages(final String threadId, final OpenAIQueryParameters queryParameters) {
-        final String fullPath = addQueryParameters(THREADS_PATH + "/" + threadId + MESSAGES_SUFFIX, queryParameters);
-        return performOpenAIGetRequest(fullPath, ASSISTANTS_BETA, OpenAIObjectListThreadMessages.class);
-    }
 
     @Override
     public OpenAIObjectFile performOpenAIFileUpload(final MediaData content, final OpenAIPurposeType purpose) {
@@ -771,8 +605,82 @@ public class OpenAIClient implements IOpenAIClient {
     }
 
     @Override
-    public OpenAIObjectVectorStore createVectorStore(final OpenAICreateVectorStoreReq createVectorStoreReq) {
-        return performOpenAIRequest(createVectorStoreReq, ASSISTANTS_BETA, OpenAIObjectVectorStore.class);
+    public OpenAIResponseResult performOpenAICreateResponse(final RequestContext ctx, final OpenAICreateResponseReq request,
+      final int maxToolCalls, @Nullable final Long conversationRef) {
+        // make initial request to /v1/responses (no beta header required)
+        OpenAIResponseResult response = performOpenAIRequest(request, RESPONSES_PATH, null, OpenAIResponseResult.class);
+
+        if (maxToolCalls <= 0) {
+            return response;
+        }
+
+        int toolCallCount = 0;
+        while (toolCallCount < maxToolCalls) {
+            // collect any function_call items from the current output
+            final List<OpenAIResponseOutputItem> functionCalls = new ArrayList<>();
+            if (response.getOutput() != null) {
+                for (final OpenAIResponseOutputItem item : response.getOutput()) {
+                    if ("function_call".equals(item.getType())) {
+                        functionCalls.add(item);
+                    }
+                }
+            }
+
+            if (functionCalls.isEmpty()) {
+                break;  // no tool calls in this response, we are done
+            }
+
+            // execute the tool calls and collect their outputs
+            final List<OpenAIResponseInputItem> toolOutputItems = new ArrayList<>(functionCalls.size());
+            for (final OpenAIResponseOutputItem fc : functionCalls) {
+                final String toolOutput = executeResponseFunctionCall(ctx, fc, conversationRef);
+                final OpenAIResponseInputItem outputItem = new OpenAIResponseInputItem();
+                outputItem.setType("function_call_output");
+                outputItem.setCallId(fc.getCallId());
+                outputItem.setOutput(toolOutput);
+                toolOutputItems.add(outputItem);
+                if (++toolCallCount >= maxToolCalls) {
+                    break;
+                }
+            }
+
+            // build the follow-up request that submits the tool results
+            final OpenAICreateResponseReq followupReq = new OpenAICreateResponseReq();
+            followupReq.setModel(request.getModel());
+            followupReq.setPreviousResponseId(response.getId());
+            followupReq.setInput(toolOutputItems);
+            followupReq.setTools(request.getTools());
+            // copy optional parameters to maintain consistency
+            followupReq.setInstructions(request.getInstructions());
+            followupReq.setTemperature(request.getTemperature());
+            followupReq.setTopP(request.getTopP());
+            followupReq.setMaxOutputTokens(request.getMaxOutputTokens());
+            followupReq.setStore(request.getStore());
+            followupReq.setReasoning(request.getReasoning());
+            // submit and loop
+            response = performOpenAIRequest(followupReq, RESPONSES_PATH, null, OpenAIResponseResult.class);
+        }
+
+        return response;
+    }
+
+    /**
+     * Executes a function call referenced in a Responses API output item.
+     * Returns the function's result as a string.
+     */
+    protected String executeResponseFunctionCall(final RequestContext ctx, final OpenAIResponseOutputItem fc, @Nullable final Long conversationRef) {
+        // reuse existing performToolCall logic by adapting the types
+        final OpenAIFunctionCall functionCall = new OpenAIFunctionCall();
+        functionCall.setName(fc.getName());
+        functionCall.setArguments(fc.getArguments());
+
+        final OpenAIToolCall toolCall = new OpenAIToolCall();
+        toolCall.setType(OpenAIToolType.FUNCTION);
+        toolCall.setId(fc.getCallId() != null ? fc.getCallId() : fc.getId());
+        toolCall.setFunction(functionCall);
+
+        final OpenAIMessage resultMessage = performToolCall(ctx, toolCall, conversationRef);
+        return resultMessage.getContent();
     }
 
     @Override

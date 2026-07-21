@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<T9tServerConfiguration xmlns="http://arvatosystems.com/schema/t9t_cfg_be.xsd">
+    <persistenceUnitName>t9t-DS</persistenceUnitName>
+    <databaseConfiguration>
+        <username>fortytwo</username>
+        <password></password>
+        <databaseBrand>H2</databaseBrand>
+        <jdbcDriverClass>org.h2.Driver</jdbcDriverClass>
+        <jdbcConnectString>jdbc:h2:mem:fortytwo;NON_KEYWORDS=KEY,DAY,INTERVAL,YEAR,VALUE</jdbcConnectString>
+    </databaseConfiguration>
+    <secondaryDatabaseConfig>
+        <username>fortytwo</username>
+        <password></password>
+        <databaseBrand>H2</databaseBrand>
+        <jdbcDriverClass>org.h2.Driver</jdbcDriverClass>
+        <jdbcConnectString>jdbc:h2:mem:fortytwo;NON_KEYWORDS=KEY,DAY,INTERVAL,YEAR,VALUE</jdbcConnectString>
+    </secondaryDatabaseConfig>
+    <keyPrefetchConfiguration>
+        <strategy></strategy>
+    </keyPrefetchConfiguration>
+    <logWriterConfiguration>
+        <strategy>asynchronous</strategy>
+        <queueSize>1000</queueSize>
+    </logWriterConfiguration>
+    <applicationConfiguration>
+        <workerPoolSize>10</workerPoolSize>
+        <maxWorkerExecuteTime>43200</maxWorkerExecuteTime>
+    </applicationConfiguration>
+    <serverConfiguration>
+        <maxMcpVersion>2025-06-18</maxMcpVersion>
+    </serverConfiguration>
+    <searchConfiguration>
+        <strategy>SOLR</strategy>
+        <defaultUrl>http://localhost:8880/solr6</defaultUrl>
+    </searchConfiguration>
+    <uplinkConfiguration>
+        <key>OPENAI</key>
+        <url>https://api.openai.com</url>
+        <timeoutInMs>15000</timeoutInMs>
+        <basicAuth>API_KEY_PLACEHOLDER</basicAuth>
+    </uplinkConfiguration>
+</T9tServerConfiguration>
+

@@ -46,7 +46,6 @@ public abstract class AbstractXmlFormatConverter extends AbstractInputFormatConv
     protected Unmarshaller m = null;
     protected XMLStreamReader writer = null;
     protected final boolean formatted = true;
-    protected final boolean writeTenantId = true;
     protected String defaultNamespace;
 
     @Override

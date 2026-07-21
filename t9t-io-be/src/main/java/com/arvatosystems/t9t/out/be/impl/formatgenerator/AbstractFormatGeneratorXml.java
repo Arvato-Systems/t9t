@@ -61,7 +61,6 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
     protected String xmlRecordName;
     protected String xmlRootElementName;
     protected Map<String, String> xmlNamespaceMapping = emptyMap();
-    protected Boolean writeTenantId;
 
     protected QName getQname(final String id) {
         if (xmlNamespacePrefix == null)
@@ -84,16 +83,6 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
 
         writer = factory.createXMLStreamWriter(outputResource.getOutputStream(), encoding.name());
         setDefaultNamespace();
-    }
-
-    protected void doWriteTenantId() {
-        storeCustomElement("tenantId", String.class, tenantId);
-        try {
-            nl();
-        } catch (XMLStreamException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new T9tException(T9tIOException.XML_MARSHALLING_ERROR, ExceptionUtil.causeChain(e));
-        }
     }
 
     @Override
@@ -162,7 +151,6 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
         xmlNamespaceMapping = parseNamespaceMapping(sinkCfg.getXmlNamespaceMappings());
         xmlRecordName       = sinkCfg.getXmlRecordName();               // records, instance field name or List element
         xmlRootElementName  = sinkCfg.getXmlRootElementName();          // simple name of xml root element class
-        writeTenantId       = sinkCfg.getWriteTenantId();               // write the tenantId field?
 
         // repair default namespace
         xmlDefaultNamespace = xmlDefaultNamespace == null ? "" : xmlDefaultNamespace.trim();
@@ -199,9 +187,6 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
             writer.writeStartElement(xmlDefaultNamespace, sinkCfg.getXmlRootElementName());
             writeNamespaces();
             nl();
-            if (Boolean.TRUE.equals(writeTenantId)) {
-                doWriteTenantId();
-            }
             writeCustomElements(sinkCfg.getXmlHeaderElements());
         } catch (XMLStreamException | FactoryConfigurationError | JAXBException e1) {
             LOGGER.error(e1.getMessage(), e1);

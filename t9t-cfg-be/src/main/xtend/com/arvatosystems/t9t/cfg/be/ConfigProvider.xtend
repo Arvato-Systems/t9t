@@ -320,6 +320,11 @@ class ConfigProvider {
         readConfiguration(filename, null)
     }
 
+/** Merges the provided configuration with internal defaults and stores it. */
+    def static void mergeConfiguration(T9tServerConfiguration in, Consumer<T9tServerConfiguration> customizer) {
+        mergeConfigurations(in, postgresConfig, customizer)
+    }
+
     // read the configuration from the provided file, or fallback to the home cfg file if none has been specified
     def static void readConfiguration(String filename, Consumer<T9tServerConfiguration> customizer) {
         if (filename === null) {

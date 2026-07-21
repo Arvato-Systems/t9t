@@ -109,7 +109,8 @@ package (com.arvatosystems) t9t.ai.openai {
         THREAD_MESSAGE          = "thread.message",
         THREAD_RUN              = "thread.run",
         VECTOR_STORE            = "vector_store",
-        VECTOR_FILE             = "vector_file"
+        VECTOR_FILE             = "vector_file",
+        RESPONSE                = "response"
     }
 
     enum OpenAIPurposeType {

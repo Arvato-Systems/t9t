@@ -64,4 +64,12 @@ package (com.arvatosystems) t9t.ai.jpa.entities owner fortytwo prefix p28 {
         pk (objectRef)
         index unique (tenantId, promptId)
     }
+
+    entity AiDtoAssistEntity category cfg is AiDtoAssistDTO inheritance tablePerClass {
+        cacheable
+        tenantClass InternalTenantId
+        pk (objectRef)
+        index unique (tenantId, pqon)
+        @ManyToOne AiAssistantEntity aiAssistant EAGER for (aiAssistantRef)
+    }
 }

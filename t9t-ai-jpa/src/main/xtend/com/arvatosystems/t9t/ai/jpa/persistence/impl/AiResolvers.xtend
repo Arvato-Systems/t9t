@@ -18,11 +18,13 @@ package com.arvatosystems.t9t.ai.jpa.persistence.impl
 import com.arvatosystems.t9t.ai.AiAssistantRef
 import com.arvatosystems.t9t.ai.AiChatLogRef
 import com.arvatosystems.t9t.ai.AiConversationRef
+import com.arvatosystems.t9t.ai.AiDtoAssistRef
 import com.arvatosystems.t9t.ai.AiPromptRef
 import com.arvatosystems.t9t.ai.AiUserStatusRef
 import com.arvatosystems.t9t.ai.jpa.entities.AiAssistantEntity
 import com.arvatosystems.t9t.ai.jpa.entities.AiChatLogEntity
 import com.arvatosystems.t9t.ai.jpa.entities.AiConversationEntity
+import com.arvatosystems.t9t.ai.jpa.entities.AiDtoAssistEntity
 import com.arvatosystems.t9t.ai.jpa.entities.AiModuleCfgEntity
 import com.arvatosystems.t9t.ai.jpa.entities.AiPromptEntity
 import com.arvatosystems.t9t.ai.jpa.entities.AiUserStatusEntity
@@ -40,7 +42,9 @@ class AiResolvers {
     def AiConversationEntity           getAiConversationEntity(AiConversationRef entityRef) { return null; }
     def AiChatLogEntity                getAiChatLogEntity(AiChatLogRef entityRef) { return null; }
     def AiPromptEntity                 getAiPromptEntity(AiPromptRef entityRef) { return null; }
+    def AiDtoAssistEntity              getAiDtoAssistEntity(AiDtoAssistRef entityRef) { return null; }
     def List<AiConversationEntity>     findByUserIdAndSessionRef(boolean onlyActive, String userId, Long createdBySessionRef) { return null; }
     def List<AiUserStatusEntity>       findByUserId(boolean onlyActive, String userId) { return null; }
     def List<AiAssistantEntity>        findByAllAssistants(boolean onlyActive) { return null; }
+    def List<AiDtoAssistEntity>        findByPqon(boolean onlyActive, String pqon) { return null; }
 }

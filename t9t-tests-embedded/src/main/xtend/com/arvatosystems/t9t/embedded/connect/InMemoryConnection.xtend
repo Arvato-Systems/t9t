@@ -29,6 +29,8 @@ import de.jpaw.dp.Alternative
 import java.util.Map
 import java.util.Properties
 import org.h2.tools.Server
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import static extension de.jpaw.dp.JdpExtensions.*
 
@@ -44,6 +46,7 @@ import static extension de.jpaw.dp.JdpExtensions.*
  * </ul>
  */
 class InMemoryConnection extends AbstractConnection {
+    static final Logger LOGGER = LoggerFactory.getLogger(InMemoryConnection);
 
     static final Object STATIC_INITIALIZER = {
         val h2args = newLinkedList()
@@ -66,31 +69,47 @@ class InMemoryConnection extends AbstractConnection {
             }
         }
 
-        if (!h2args.isEmpty)
+        if (!h2args.isEmpty) {
             Server.main(h2args)
-
-        ConfigProvider.configuration => [
-            databaseConfiguration = new RelationalDatabaseConfiguration => [
-                username                = "fortytwo"
-                password                = ""
-                databaseBrand           = DatabaseBrandType.H2
-                jdbcDriverClass         = "org.h2.Driver"
-                jdbcConnectString       = "jdbc:h2:mem:fortytwo;NON_KEYWORDS=KEY,DAY,INTERVAL,YEAR,VALUE"
-            ]
-            secondaryDatabaseConfig = databaseConfiguration
-            keyPrefetchConfiguration = new KeyPrefetchConfiguration => [
-                strategy                = ""    // Use fallback NoopRefGenerator
-            ]
-            hibernateSearchConfiguration    = new HibernateSearchConfiguration => [
-                searchType                  = "lucene"
-                schemaManagementStrategy    = "none"
-                mappingConfigurer           = "com.arvatosystems.t9t.hs.configurate.be.core.impl.EntityConfigurer"
-                luceneConfiguration         = new LuceneConfiguration => [
-                    directoryType               = "local-filesystem"
-                    directoryRoot               = "./lucene-indexes"
+        }
+        val configFilename = System.getProperty("t9t.cfgfile");
+        if (configFilename !== null) {
+            val loadedCfg = ConfigProvider.configFromFile(configFilename)
+            ConfigProvider.mergeConfiguration(loadedCfg, null)
+            LOGGER.info("Using server configuration from local file {}", configFilename)
+        } else {
+            val defaultCfgFilename = System.getProperty("user.home") + "/.t9tconfig-embedded.xml";
+            try {
+                val defaultCfg = ConfigProvider.configFromFile(defaultCfgFilename)
+                ConfigProvider.mergeConfiguration(defaultCfg, null)
+                LOGGER.info("Using server configuration from local file {}", defaultCfgFilename)
+            } catch (Exception e) {
+                // ignore issues because we are working on the default
+                LOGGER.info("Failed to read embedded test config-file {} due to {}, falling back to default", defaultCfgFilename, e.message);
+                ConfigProvider.configuration => [
+                    databaseConfiguration = new RelationalDatabaseConfiguration => [
+                        username                = "fortytwo"
+                        password                = ""
+                        databaseBrand           = DatabaseBrandType.H2
+                        jdbcDriverClass         = "org.h2.Driver"
+                        jdbcConnectString       = "jdbc:h2:mem:fortytwo;NON_KEYWORDS=KEY,DAY,INTERVAL,YEAR,VALUE"
+                    ]
+                    secondaryDatabaseConfig = databaseConfiguration
+                    keyPrefetchConfiguration = new KeyPrefetchConfiguration => [
+                        strategy                = ""    // Use fallback NoopRefGenerator
+                    ]
+                    hibernateSearchConfiguration    = new HibernateSearchConfiguration => [
+                        searchType                  = "lucene"
+                        schemaManagementStrategy    = "none"
+                        mappingConfigurer           = "com.arvatosystems.t9t.hs.configurate.be.core.impl.EntityConfigurer"
+                        luceneConfiguration         = new LuceneConfiguration => [
+                            directoryType               = "local-filesystem"
+                            directoryRoot               = "./lucene-indexes"
+                        ]
+                    ]
                 ]
-            ]
-        ]
+            }
+        }
 
         Init.initializeT9t [
             IEMFCustomizer         .isNow(new InMemoryEMFCustomizer)

@@ -31,19 +31,9 @@ import com.arvatosystems.t9t.ai.openai.OpenAIObjectFile;
 import com.arvatosystems.t9t.ai.openai.OpenAIPurposeType;
 import com.arvatosystems.t9t.ai.openai.OpenAIQueryParameters;
 import com.arvatosystems.t9t.ai.openai.OpenAITool;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAICreateAssistantReq;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAICreateVectorStoreReq;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIObjectAssistant;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIObjectListAssistants;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIObjectListThreadMessages;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIObjectListThreadRuns;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIObjectThreadRun;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIObjectVectorStore;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIThread;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIThreadMessageReq;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIThreadRunReq;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIToolOutputReq;
 import com.arvatosystems.t9t.ai.openai.request.AIModel;
+import com.arvatosystems.t9t.ai.openai.responses.OpenAICreateResponseReq;
+import com.arvatosystems.t9t.ai.openai.responses.OpenAIResponseResult;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 /**
@@ -77,51 +67,16 @@ public interface IOpenAIClient {
     /** Uploads a file. */
     @Nonnull OpenAIObjectFile performOpenAIFileUpload(@Nonnull MediaData content, @Nonnull OpenAIPurposeType purpose);
 
-
-    /** Creates an assistant. */
-    @Nonnull OpenAIObjectAssistant createAssistant(@Nonnull OpenAICreateAssistantReq assistantReq,
-      boolean addAllTools, boolean allowCoding, boolean allowFileSearch);
-
-    /** Retrieves a specific assistant. */
-    @Nonnull OpenAIObjectAssistant getAssistantById(@Nonnull String assistantId);
-
-    /** List existing assistants. */
-    @Nonnull OpenAIObjectListAssistants listAssistants(@Nullable OpenAIQueryParameters queryParameters);
-
-    /** Creates a thread. */
-    @Nonnull OpenAIThread createThread();
-
-    /** Retrieves a specific thread. */
-    @Nonnull OpenAIThread getThreadById(@Nonnull String threadId);
-
-    /** Adds messages to a specific thread. */
-    @Nonnull void addMessagesToThread(@Nonnull String threadId, @Nonnull List<OpenAIThreadMessageReq> messages);
-
-    /** Starts a prepared thread. */
-    @Nonnull OpenAIObjectThreadRun createRun(@Nonnull String threadId, @Nonnull OpenAIThreadRunReq request);
-
-    /** Creates a new thread and starts it. */
-    @Nonnull OpenAIObjectThreadRun createThreadAndRun(@Nonnull OpenAIThreadRunReq request);
-
-    @Nonnull OpenAIObjectThreadRun loopUntilCompletion(@Nonnull RequestContext ctx, @Nonnull OpenAIObjectThreadRun initialState,
-         int maxSeconds, long pollMillis, Long conversationRef);
-
-    /** List existing runs for a given thread. */
-    @Nonnull OpenAIObjectListThreadRuns listThreadRuns(@Nonnull String threadId, @Nullable OpenAIQueryParameters queryParameters);
-
-    /** List existing messages for a given thread. */
-    @Nonnull OpenAIObjectListThreadMessages listThreadMessages(@Nonnull String threadId, @Nullable OpenAIQueryParameters queryParameters);
-
-    /** Retrieves a run status. */
-    @Nonnull OpenAIObjectThreadRun getRun(@Nonnull String threadId, @Nonnull String runId);
-
-    /** Submit tool output to a run. */
-    @Nonnull OpenAIObjectThreadRun submitToolOutputs(@Nonnull String threadId, @Nonnull String runId, @Nonnull OpenAIToolOutputReq toolOutputs);
-
-    /** Starts a prepared thread amd loops until output is available or a problem encountered, or the maximum time exceeded. */
-    @Nonnull OpenAIObjectThreadRun createRunAndLoop(@Nonnull RequestContext ctx,  @Nonnull String threadId, @Nonnull OpenAIThreadRunReq request,
-      int maxSeconds, long pollMillis, Long conversationRef);
-
-    /** Creates an assistant. */
-    @Nonnull OpenAIObjectVectorStore createVectorStore(@Nonnull OpenAICreateVectorStoreReq createVectorStoreReq);
+    /**
+     * Creates a response using the Responses API (/v1/responses), performing tool calls as needed.
+     * This replaces the deprecated assistants thread/run workflow.
+     *
+     * @param ctx             the RequestContext
+     * @param request         the response request (model, input, instructions, previousResponseId, tools)
+     * @param maxToolCalls    maximum number of tool calls to execute (0 = no tools)
+     * @param conversationRef optional reference for logging tool calls
+     * @return the final response result
+     */
+    @Nonnull OpenAIResponseResult performOpenAICreateResponse(@Nonnull RequestContext ctx, @Nonnull OpenAICreateResponseReq request,
+      int maxToolCalls, @Nullable Long conversationRef);
 }

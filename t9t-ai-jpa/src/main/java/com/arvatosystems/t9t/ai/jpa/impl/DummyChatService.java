@@ -53,7 +53,8 @@ public class DummyChatService implements IAiChatService {
 
     @Override
     public MediaData chat(final RequestContext ctx, final AiAssistantDTO assistant, final AiConversationDTO conversation,
-      final String question, final Object attachedDocumentRef, final MediaTypeDescriptor uploadedDocumentType, final List<String> textResponses) {
+      final String question, final Object attachedDocumentRef, final MediaTypeDescriptor uploadedDocumentType,
+      final List<String> textResponses, final boolean extractEmbeddedFileContent) {
         textResponses.add("I'm sorry, I don't know, I am just a dummy!");
         return null;
     }
