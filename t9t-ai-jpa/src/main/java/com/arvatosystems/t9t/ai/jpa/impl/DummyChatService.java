@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Named;
@@ -26,6 +27,7 @@ import de.jpaw.dp.Singleton;
 
 import com.arvatosystems.t9t.ai.AiAssistantDTO;
 import com.arvatosystems.t9t.ai.AiConversationDTO;
+import com.arvatosystems.t9t.ai.AiResponseStructure;
 import com.arvatosystems.t9t.ai.service.IAiChatService;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
@@ -53,7 +55,8 @@ public class DummyChatService implements IAiChatService {
 
     @Override
     public MediaData chat(final RequestContext ctx, final AiAssistantDTO assistant, final AiConversationDTO conversation,
-      final String question, final Object attachedDocumentRef, final MediaTypeDescriptor uploadedDocumentType, final List<String> textResponses) {
+      final String question, final Object attachedDocumentRef, final MediaTypeDescriptor uploadedDocumentType,
+      final List<String> textResponses, final boolean extractEmbeddedFileContent) {
         textResponses.add("I'm sorry, I don't know, I am just a dummy!");
         return null;
     }
@@ -61,5 +64,12 @@ public class DummyChatService implements IAiChatService {
     @Override
     public Object upload(final RequestContext ctx, final AiAssistantDTO assistant, final AiConversationDTO conversation, final MediaData document) {
         return UUID.randomUUID().toString();
+    }
+
+    @Override
+    public <T extends BonaPortable> AiResponseStructure<T> chat2(final RequestContext ctx, final AiAssistantDTO assistant,
+            final String previousResponseId, final String dtoSpecificInstructions, final BonaPortable previousDto,
+            final String userInput, final BonaPortable jsonOutputSchema, final String verbosity) {
+        return new AiResponseStructure<T>();
     }
 }

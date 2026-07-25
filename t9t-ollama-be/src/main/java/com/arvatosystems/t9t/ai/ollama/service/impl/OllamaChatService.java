@@ -50,7 +50,7 @@ public class OllamaChatService implements IAiChatService {
 
     @Override
     public MediaData chat(final RequestContext ctx, final AiAssistantDTO assistant, final AiConversationDTO conversation,
-      final String question, final Object attachedDocumentRef, final MediaTypeDescriptor uploadedDocumentType, final List<String> responses) {
+      final String question, final Object attachedDocumentRef, final MediaTypeDescriptor uploadedDocumentType, final List<String> responsesi, final boolean dummy) {
         // TODO Auto-generated method stub
         return null;
     }

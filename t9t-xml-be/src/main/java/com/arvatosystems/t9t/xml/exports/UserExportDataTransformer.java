@@ -72,7 +72,6 @@ public class UserExportDataTransformer implements IPreOutputDataTransformer {
         dataSinkPresets.setXmlRecordName("records");
         dataSinkPresets.setXmlHeaderElements(null);
         dataSinkPresets.setXmlFooterElements(null);
-        dataSinkPresets.setWriteTenantId(true);
         return dataSinkPresets;
     }
 

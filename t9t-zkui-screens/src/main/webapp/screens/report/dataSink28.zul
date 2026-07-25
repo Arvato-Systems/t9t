@@ -64,8 +64,7 @@
 
                                 <cells228 id ="jsonWritePqon"           value ="@bind(vm.data.jsonWritePqon)"
                                           id2="jsonUseEnumTokens"       value2="@bind(vm.data.jsonUseEnumTokens)"/>
-                                <cells228 id ="jsonWriteNulls"          value ="@bind(vm.data.jsonWriteNulls)"
-                                          id2="writeTenantId"           value2="@bind(vm.data.writeTenantId)"/>
+                                <cells28  id ="jsonWriteNulls"          value ="@bind(vm.data.jsonWriteNulls)"/>
                             </rows>
                         </form28>
                     </tabpanel>

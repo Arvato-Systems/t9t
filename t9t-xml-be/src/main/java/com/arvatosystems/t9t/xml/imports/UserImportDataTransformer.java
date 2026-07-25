@@ -53,7 +53,6 @@ public class UserImportDataTransformer extends AbstractInputDataTransformer<User
         dataSinkPresets.setXmlRecordName("records");
         dataSinkPresets.setXmlHeaderElements(null);
         dataSinkPresets.setXmlFooterElements(null);
-        dataSinkPresets.setWriteTenantId(true);
         return dataSinkPresets;
     }
 

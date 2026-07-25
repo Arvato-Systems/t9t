@@ -44,6 +44,8 @@ import com.arvatosystems.t9t.ai.openai.assistants.OpenAIThreadMessageReq;
 import com.arvatosystems.t9t.ai.openai.assistants.OpenAIThreadRunReq;
 import com.arvatosystems.t9t.ai.openai.assistants.OpenAIToolOutputReq;
 import com.arvatosystems.t9t.ai.openai.request.AIModel;
+import com.arvatosystems.t9t.ai.openai.responses.OpenAICreateResponseReq;
+import com.arvatosystems.t9t.ai.openai.responses.OpenAIResponseResult;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 /**
@@ -122,6 +124,19 @@ public interface IOpenAIClient {
     @Nonnull OpenAIObjectThreadRun createRunAndLoop(@Nonnull RequestContext ctx,  @Nonnull String threadId, @Nonnull OpenAIThreadRunReq request,
       int maxSeconds, long pollMillis, Long conversationRef);
 
-    /** Creates an assistant. */
+    /** Creates a vector store. */
     @Nonnull OpenAIObjectVectorStore createVectorStore(@Nonnull OpenAICreateVectorStoreReq createVectorStoreReq);
+
+    /**
+     * Creates a response using the Responses API (/v1/responses), performing tool calls as needed.
+     * This replaces the deprecated assistants thread/run workflow.
+     *
+     * @param ctx             the RequestContext
+     * @param request         the response request (model, input, instructions, previousResponseId, tools)
+     * @param maxToolCalls    maximum number of tool calls to execute (0 = no tools)
+     * @param conversationRef optional reference for logging tool calls
+     * @return the final response result
+     */
+    @Nonnull OpenAIResponseResult performOpenAICreateResponse(@Nonnull RequestContext ctx, @Nonnull OpenAICreateResponseReq request,
+      int maxToolCalls, @Nullable Long conversationRef);
 }

@@ -25,10 +25,10 @@
         <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
         <properties>
             <!-- Common properties (most likely to be overwritten by values from the configuration file t9t-config.xml or its hardcoded fallback in project t9t-cfg-be) -->
-            <property name="jakarta.persistence.jdbc.driver"            value="org.postgresql.Driver" />
-            <property name="jakarta.persistence.jdbc.url"               value="jdbc:postgresql://10.6.237.202:8432/fortytwo" />
+            <property name="jakarta.persistence.jdbc.driver"            value="org.h2.Driver" />
+            <property name="jakarta.persistence.jdbc.url"               value="jdbc:h2:mem:fortytwo;NON_KEYWORDS=KEY,DAY,INTERVAL,YEAR,VALUE" />
             <property name="jakarta.persistence.jdbc.user"              value="fortytwo" />
-            <property name="jakarta.persistence.jdbc.password"          value="secret/changeMe" />
+            <property name="jakarta.persistence.jdbc.password"          value="" />
 
             <!-- Properties for Hibernate -->
             <!-- C3P0 settings -->

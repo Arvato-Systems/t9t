@@ -15,15 +15,10 @@
  */
 package com.arvatosystems.t9t.ai;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
-import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.meta.Multiplicity;
 
 public final class T9tAiTools {
     private T9tAiTools() { }
@@ -68,16 +63,5 @@ public final class T9tAiTools {
             ++pos;
         }
         return pos;
-    }
-
-    /** Returns the list of required parameters. */
-    public static List<String> buildRequiredFromFields(final List<FieldDefinition> fields) {
-        final List<String> required = new ArrayList<>(fields.size());
-        for (final FieldDefinition field : fields) {
-            if (field.getMultiplicity() == Multiplicity.SCALAR ? field.getIsRequired() : field.getIsAggregateRequired()) {
-                required.add(field.getName());
-            }
-        }
-        return required;
     }
 }

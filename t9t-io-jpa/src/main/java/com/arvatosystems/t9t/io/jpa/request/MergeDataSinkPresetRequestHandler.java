@@ -54,7 +54,6 @@ public class MergeDataSinkPresetRequestHandler extends AbstractRequestHandler<Me
                 dataSink.setXmlNamespacePrefix(preset.getXmlNamespacePrefix());
                 dataSink.setXmlHeaderElements(preset.getXmlHeaderElements());
                 dataSink.setXmlFooterElements(preset.getXmlFooterElements());
-                dataSink.setWriteTenantId(preset.getWriteTenantId());
             }
         }
         resp.setDwt(mapper.mapToDwt(dataSink));

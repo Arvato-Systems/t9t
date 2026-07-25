@@ -123,8 +123,14 @@ public class AiChatRequestHandler extends AbstractRequestHandler<AiChatRequest> 
             aiChatLogService.saveAiChatLog(chatLog);
 
             if (userInput != null) {
-                response.setMediaOutput(chatService.chat(ctx, assistantDto, conversationDto, userInput, uploadedDocumentRef, mtd, responses));
+                response.setMediaOutput(chatService.chat(ctx, assistantDto, conversationDto, userInput, uploadedDocumentRef, mtd, responses, true));
                 conversation.setNumberOfMessages(conversation.getNumberOfMessages() + 1);
+                // propagate any providerThreadId change back to the entity
+                // (needed by providers like the Responses API that update this ID per turn)
+                if (conversationDto.getProviderThreadId() != null
+                  && !conversationDto.getProviderThreadId().equals(conversation.getProviderThreadId())) {
+                    conversation.setProviderThreadId(conversationDto.getProviderThreadId());
+                }
             }
             response.setTextOutput(responses);
         }

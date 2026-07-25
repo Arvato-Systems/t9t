@@ -40,8 +40,8 @@
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonaparte-dsl plugin is set in the parent pom -->
-        <jpaw-bom.version>4.0.1</jpaw-bom.version>
-        <bonaparte-bom.version>7.0.1</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
+        <jpaw-bom.version>4.0.3</jpaw-bom.version>
+        <bonaparte-bom.version>7.0.4</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
 
         <!-- Versions of Xtext & Xtend -->
         <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings", where the variable xtext.version is defined -->
@@ -192,14 +192,14 @@
         <snakeyaml.version>2.6</snakeyaml.version>
         <classgraph.version>4.8.184</classgraph.version>
 
-        <c3p0.version>0.12.0</c3p0.version>
+        <c3p0.version>0.14.1</c3p0.version>
         <hikaricp.version>7.0.2</hikaricp.version>
         <flyway.version>11.19.0</flyway.version>
         <reflections.version>0.9.10</reflections.version>
         <maven-plugin-api.version>3.9.16</maven-plugin-api.version>
-        <jackson.version>2.21.4</jackson.version>
+        <jackson.version>2.21.5</jackson.version>
         <solr.version>8.11.1</solr.version>
-        <camel.version>4.20.0</camel.version>
+        <camel.version>4.21.0</camel.version>
         <jsch.version>2.27.9</jsch.version>
         <mina.version>2.2.9</mina.version>
         <kafka.version>3.9.2</kafka.version>

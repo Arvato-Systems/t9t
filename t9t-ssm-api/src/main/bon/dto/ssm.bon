@@ -111,12 +111,12 @@ package (com.arvatosystems) t9t.ssm {
      * If intervalMinutes > 1, then the valid range for intervalOffset is [0 .. intervalMinutes - 1].
      */
     class SchedulerSetupDTO extends SchedulerSetupRef {
-        required schedulerId                        schedulerId properties notupdatable; // Scheduler setup name (functional id)
-        required boolean                            isActive    properties active;
+        required schedulerId                        schedulerId             properties notupdatable; // Scheduler setup name (functional id)
+        required boolean                            isActive                properties active;
         optional shortText                          name;                   // Some name or description of the setup
 
-        required (CannedRequestRef...,CannedRequestDTO) request properties ref, dropdown="cannedRequestId", searchprefix="cannedRequest";              // the ID referencing the invocation, using ExecuteCannedRequest()
-        required userId                             userId      properties dropdown="userId";          // the user ID to run this request under
+        required (CannedRequestRef...,CannedRequestDTO) request             properties ref, dropdown="cannedRequestId", searchprefix="cannedRequest";              // the ID referencing the invocation, using ExecuteCannedRequest()
+        required userId                             userId                  properties dropdown="userId";          // the user ID to run this request under
         optional Uuid                               apiKey;                 // the API key to use for job execution (required, but will be created on the fly)
         optional languageTag                        languageCode;           // which language should the job use? (important for scheduled reports)
 
@@ -137,10 +137,11 @@ package (com.arvatosystems) t9t.ssm {
         optional resourceId                         additionalPermissions;  // additional permissions that required by report scheduler
         optional Enum SchedulerConcurrencyType      concurrencyType;        // Concurrency setting while within limits. If null, it defaults to RUN_PARALLEL
         optional Enum SchedulerConcurrencyType      concurrencyTypeStale;   // Concurrency setting after time limit exceeded. If null, it defaults to RUN_PARALLEL
-        optional customizationQualifier             concurrencyHook    properties qualifierFor = "ssm.services.ISchedulerHook";
+        optional customizationQualifier             concurrencyHook         properties qualifierFor = "ssm.services.ISchedulerHook";
         optional unsigned Integer                   timeLimit;              // time limit for a single execution (in seconds). Once exceeded, the stale concurrency is used, and an email is generated (if the mailingGroup has been defined). If null, there is no limit
-        optional t9tShortId                         mailingGroupId     properties dropdown="mailGroupId";
+        optional t9tShortId                         mailingGroupId          properties dropdown="mailGroupId";
         optional unsigned Integer                   runOnNode;              // node / shard to use in a clustered environment (leave blank to run it on any node) or set to >= 400 for all nodes
         optional Unicode(36)                        schedulerEnvironment;   // allows to select the server on which this should run
+        optional Unicode(64)                        timeZone                properties dropdown="timeZoneId";  // time zone identifier such as "Europe/Berlin" used for cron trigger evaluation
     }
 }

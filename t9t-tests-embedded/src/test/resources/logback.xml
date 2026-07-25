@@ -32,6 +32,7 @@
 
     <!-- this is where we are interested in -->
     <logger name="com.arvatosystems" level="DEBUG"/>
+    <logger name="com.arvatosystems.t9t.ai.openai" level="TRACE"/>
     <!-- logger name="org.hibernate.hql.internal.ast.QueryTranslatorImpl" level="DEBUG"/>   -->
     <logger name="org.hibernate.SQL" level="DEBUG"/>
 
