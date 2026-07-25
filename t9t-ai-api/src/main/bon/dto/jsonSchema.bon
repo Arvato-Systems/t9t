@@ -1,0 +1,71 @@
+/*
+ * Copyright (c) 2012 - 2025 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import t9t.base.types.*
+
+/**
+ * Data structures to define a JSON schema.
+ */
+package (com.arvatosystems) t9t.ai.jsonSchema {
+    default private unsigned trim noControlChars;
+    properties jsonName is com.fasterxml.jackson.annotation.JsonProperty();
+
+    /** Information to describe a single field of any type (common superclass). */
+    abstract class AbstractJsonSchemaField {
+        required Element                                    ^type;              // usually string or, with OpenAI workaround: [ (type), "null" ]
+        optional Unicode(255)                               description;        // missing on top level element, because part of header
+    }
+
+    /** Information to describe an object. */
+    final class JsonSchemaObject extends AbstractJsonSchemaField {
+        required (AbstractJsonSchemaField...) Map<String>   ^properties;
+        required defaultExternalId List<>                   ^required;
+        required boolean                                    additionalProperties properties jsonName="additionalProperties"; // no snake case here!
+    }
+
+    /** Information to describe a string field (this includes temporal types). */
+    final class JsonSchemaString extends AbstractJsonSchemaField {
+        optional Integer                                    minLength   properties jsonName="minLength";    // no snake case here!
+        optional Integer                                    maxLength   properties jsonName="maxLength";    // no snake case here!
+        optional Unicode(255)                               pattern;
+        optional Unicode(255)                               format;
+    }
+
+    /** Information to describe an enum field. */
+    final class JsonSchemaEnum extends AbstractJsonSchemaField {
+        required defaultExternalId required List<>          enums       properties jsonName="enum";         // using enum directly here causes compile error
+    }
+
+    /** Information to describe a boolean field. */
+    final class JsonSchemaBoolean extends AbstractJsonSchemaField {
+    }
+
+    /** Information to describe a numeric field. None additional fields because the defined properties are not supported in bonaparte. */
+    final class JsonSchemaNumber extends AbstractJsonSchemaField {
+    }
+
+    /** Information to describe an array field. */
+    final class JsonSchemaArray extends AbstractJsonSchemaField {
+        optional Integer                                    minItems    properties jsonName="minItems";     // minimum number of entries
+        optional Integer                                    maxItems    properties jsonName="maxItems";     // maximum number of entries
+        optional (AbstractJsonSchemaField...)               items;                                          // type of the items
+    }
+
+    /** Information to describe a set field. */
+    final class JsonSchemaSet extends AbstractJsonSchemaField {
+        required boolean                                    uniqueItems properties jsonName="uniqueItems";  // must be true!
+        optional (AbstractJsonSchemaField...)               items;              // type of the items
+    }
+}

@@ -122,19 +122,25 @@ package (com.arvatosystems) t9t.ai.request {
     /** Common superclass for specific DTO creation assistants. */
     abstract class AbstractAiCreateOrEditDtoRequest<T> extends RequestParameters return AiCreateOrEditDtoResponse<!T> {
         optional Ascii(255)                                 conversationId;     // ID to refer to chat history
-        optional (!T)                                       dto;                // optional existing DTO
+        optional (!T...)                                    dto;                // optional existing DTO
         required textChunk                                  chatInput;          // user input
     }
 
     class AiCreateOrEditDtoResponse<T> extends ServiceResponse {
         required Ascii(255)                                 conversationId;     // ID to refer to chat history
         required enum ChatStatus                            chatStatus;         // status of the response
-        optional (!T)                                       dto;                // optional output of DTO
+        optional (!T...)                                    dto;                // optional output of DTO
         optional textChunk                                  response;           // LLM response (usually questions or explanation of the output)
     }
 
     /** Generic implementation of DTO creation assistants. */
     class GenericAiCreateOrEditDtoRequest extends AbstractAiCreateOrEditDtoRequest<Object> {
         required pqon                                       pqon;               // PQON of the DTO class
+    }
+
+    class InternalResponseWrapper<T> {
+        required enum ChatStatus                            chatStatus;         // status of the response: DONE if the dto has been defined, or NEED_MORE_INFORMATION if the user has not specified enough information
+        optional textChunk                                  questionsOrSummary; // clarification questions, or result summary for the user
+        optional (!T...)                                    dto;                // the result object, provided in case chatStatus is DONE
     }
 }

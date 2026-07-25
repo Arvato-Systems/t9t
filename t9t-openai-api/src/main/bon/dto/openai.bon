@@ -57,6 +57,13 @@ package (com.arvatosystems) t9t.ai.openai {
         IMAGE_URL               = "image_url"                   // new for gpt4o
     }
 
+    enum OpenAIResponseInputFormatType {
+        TEXT                    = "input_text",
+        JSON                    = "input_json",
+        JSON_SCHEMA             = "json_schema",
+        IMAGE_FILE              = "input_image"
+    }
+
     enum OpenAIToolType {
         FUNCTION                = "function",
         CODE_INTERPRETER        = "code_interpreter",

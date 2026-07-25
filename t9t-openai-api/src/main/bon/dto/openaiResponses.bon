@@ -24,7 +24,7 @@ import t9t.ai.openai.*
  */
 package (com.arvatosystems) t9t.ai.openai.responses {
     default private unsigned trim noControlChars;
-    properties path;
+    properties path, jsonName is com.fasterxml.jackson.annotation.JsonProperty();
 
     /** Status values returned by the Responses API. */
     enum OpenAIResponseStatusType {
@@ -44,9 +44,17 @@ package (com.arvatosystems) t9t.ai.openai.responses {
     final class OpenAIResponseInputItem {
         required openaiId                           ^type;          // "message" or "function_call_output"
         optional Enum OpenAIRoleType                role;           // user, assistant, system (for type="message")
-        optional Unicode(65536) allowControlChars   content;        // text content (for type="message")
+        required (OpenAIResponseInputContent) List<> content;       // list of input items
         optional openaiId                           callId;         // function call ID (for type="function_call_output")
         optional Unicode(65536) allowControlChars   output;         // tool result text (for type="function_call_output")
+        optional Object                             value;          // if type = "input_json"
+    }
+
+    final class OpenAIResponseInputContent {
+        required openaiId                           ^type;          // "message" or "function_call_output"
+        optional Unicode(65536) allowControlChars   text;           // if type = "input_text"
+        optional Unicode(255)                       imageUrl;       // if type = "input_image"
+        optional Object                             value;          // if type = "input_json"
     }
 
     /**
@@ -68,9 +76,9 @@ package (com.arvatosystems) t9t.ai.openai.responses {
         required openaiId                           ^type;          // "message" or "function_call"
         optional openaiId                           id;             // item ID
         optional openaiText                         role;           // "assistant" (for type="message")
-        optional (OpenAIResponseOutputContent) List<> content;     // content items (for type="message")
+        optional (OpenAIResponseOutputContent) List<> content;      // content items (for type="message")
         optional openaiId                           callId;         // function call ID (for type="function_call")
-        optional Ascii(64) regexp "[A-Za-z0-9_-]+" name;           // function name (for type="function_call")
+        optional Ascii(64) regexp "[A-Za-z0-9_-]+"  name;           // function name (for type="function_call")
         optional Unicode(16384) allowControlChars   arguments;      // JSON arguments (for type="function_call")
         optional openaiText                         status;         // "completed", "in_progress", "incomplete"
     }
@@ -83,6 +91,7 @@ package (com.arvatosystems) t9t.ai.openai.responses {
         properties path="/v1/responses";
         required openaiModel                        model;
         required (OpenAIResponseInputItem) List<>   input;              // one or more input items
+        optional (OpenAIResponseInputJsonFormat)    text;               // a wrapped JSON schema specification for structured output
         optional openaiText                         instructions;       // system-level instructions (replaces assistant.instructions)
         optional openaiId                           previousResponseId; // links to prior response for multi-turn conversation
         required (OpenAITool) List<>                tools;              // available tools (function calls, file search, code interpreter)
@@ -98,6 +107,29 @@ package (com.arvatosystems) t9t.ai.openai.responses {
         optional Ascii(20)                          effort;
         optional Ascii(20)                          mode;
         optional Ascii(20)                          summary;
+    }
+
+    /** Specification of the desired output.
+     * "format" is an object with the following structure:
+     {
+      "type": "json_schema",
+      "name": "(name of the DTO)",
+      "schema": {
+        "type": "object",
+        "properties": {
+        ....
+     */
+    class OpenAIResponseInputJsonSchema {
+        required openaiId                           ^type;             // "json_schema"
+        required Ascii(60)                          name;              // name of the DTO
+        optional Boolean                            strict;            // instruction to follow the schema strictly
+        required Object                             schema;            // the JSON schema
+        required boolean                            additionalProperties properties jsonName="additionalProperties";  // required by OpenAI
+    }
+
+    class OpenAIResponseInputJsonFormat {
+        required (OpenAIResponseInputJsonSchema)    format;            // the JSON schema
+        optional Ascii(20)                          verbosity;         // verbosity of the result text elements
     }
 
     /**

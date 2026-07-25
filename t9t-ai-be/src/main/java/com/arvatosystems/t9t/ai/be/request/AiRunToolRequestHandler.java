@@ -90,10 +90,10 @@ public class AiRunToolRequestHandler extends AbstractRequestHandler<AiRunToolReq
         try {
             final AbstractAiTool requestObject = tool.requestClass().newInstance();
             if (params != null) {
-                requestObject.deserialize(new MapParser(params, false, false, false));
+                requestObject.deserialize(new MapParser(params));
             } else if (json != null) {
                 final Map<String, Object> parameters = new JsonParser(json, false).parseObject();
-                requestObject.deserialize(new MapParser(parameters, false, false, false));
+                requestObject.deserialize(new MapParser(parameters));
             }
             // call the tool (hack to get it around type checks)
             final IAiTool toolInstance = tool.toolInstance();

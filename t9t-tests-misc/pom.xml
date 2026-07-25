@@ -62,6 +62,10 @@
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-translations-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-ai-api</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>

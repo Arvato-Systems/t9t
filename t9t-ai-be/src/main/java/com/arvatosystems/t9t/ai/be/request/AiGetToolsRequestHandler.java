@@ -26,6 +26,7 @@ import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.ai.JsonSchemaCreator;
 import com.arvatosystems.t9t.ai.T9tAiTools;
 import com.arvatosystems.t9t.ai.mcp.AiToolSpecification;
 import com.arvatosystems.t9t.ai.request.AiGetToolsRequest;
@@ -57,7 +58,7 @@ public class AiGetToolsRequestHandler extends AbstractReadOnlyRequestHandler<AiG
             spec.setName(tool.name());
             spec.setTitle(null);  // TODO: not yet available
             spec.setDescription(T9tAiTools.getToolDescription(metaData));
-            spec.setInputSchema(T9tAiTools.buildJsonSchemaObject(metaData, null));
+            spec.setInputSchema(JsonSchemaCreator.buildJsonSchemaObject(metaData, null, false));
             // optionally specify result structure
             final ClassDefinition resultMetaData = tool.resultClass().getMetaData();
             if (resultMetaData != null) {
@@ -69,7 +70,7 @@ public class AiGetToolsRequestHandler extends AbstractReadOnlyRequestHandler<AiG
                 } else if (resultType.equals(AiToolMediaDataResult.class.getCanonicalName())) {
                     spec.setOutputSchema(null); // uses unstructured result
                 } else {
-                    spec.setOutputSchema(T9tAiTools.buildJsonSchemaObject(resultMetaData, null));
+                    spec.setOutputSchema(JsonSchemaCreator.buildJsonSchemaObject(resultMetaData, null, false));
                 }
             }
 

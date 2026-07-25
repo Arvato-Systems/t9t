@@ -21,6 +21,7 @@ import t9t.base.entities.*
 import t9t.base.crud.*
 import t9t.base.search.*
 import t9t.ai.*
+import t9t.ai.jsonSchema.*
 
 /**
  * Core AI request definitions, draft 1
@@ -57,56 +58,10 @@ package (com.arvatosystems) t9t.ai.mcp {
         required (PromptParameter) required List<>          arguments;
     }
 
-    /** Information to describe a single field of any type (common superclass). */
-    abstract class AbstractJsonSchemaField {
-        required Ascii(16)                                  ^type;
-        optional Unicode(255)                               description;        // missing on top level element, because part of header
-    }
-
-    /** Information to describe an object. */
-    final class JsonSchemaObject extends AbstractJsonSchemaField {
-        required (AbstractJsonSchemaField...) Map<String>   ^properties;
-        required defaultExternalId List<>                   ^required;
-    }
-
     final class PromptParameter {
         required defaultExternalId                          name;
         required boolean                                    isRequired;
         required Unicode(64000) allowControlChars           description;
-    }
-
-    /** Information to describe a string field (this includes temporal types). */
-    final class JsonSchemaString extends AbstractJsonSchemaField {
-        optional Integer                                    minLength;
-        optional Integer                                    maxLength;
-        optional Unicode(255)                               pattern;
-        optional Unicode(255)                               format;
-    }
-
-    /** Information to describe an enum field. */
-    final class JsonSchemaEnum extends AbstractJsonSchemaField {
-        required defaultExternalId required List<>          enums;              // enum causes compile error
-    }
-
-    /** Information to describe a boolean field. */
-    final class JsonSchemaBoolean extends AbstractJsonSchemaField {
-    }
-
-    /** Information to describe a numeric field. None additional fields because the defined properties are not supported in bonaparte. */
-    final class JsonSchemaNumber extends AbstractJsonSchemaField {
-    }
-
-    /** Information to describe an array field. */
-    final class JsonSchemaArray extends AbstractJsonSchemaField {
-        optional Integer                                    minItems;           // minimum number of entries
-        optional Integer                                    maxItems;           // maximum number of entries
-        optional (AbstractJsonSchemaField...)               items;              // type of the items
-    }
-
-    /** Information to describe a set field. */
-    final class JsonSchemaSet extends AbstractJsonSchemaField {
-        required boolean                                    uniqueItems;        // must be true!
-        optional (AbstractJsonSchemaField...)               items;              // type of the items
     }
 
     /** Top level data structure for MCP responses. */

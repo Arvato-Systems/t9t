@@ -35,6 +35,7 @@ import jakarta.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -62,6 +63,7 @@ import de.jpaw.util.ExceptionUtil;
 import com.arvatosystems.t9t.ai.AiChatLogDTO;
 import com.arvatosystems.t9t.ai.AiConversationRef;
 import com.arvatosystems.t9t.ai.AiRoleType;
+import com.arvatosystems.t9t.ai.JsonSchemaCreator;
 import com.arvatosystems.t9t.ai.T9tAiTools;
 import com.arvatosystems.t9t.ai.openai.AbstractOpenAIObject;
 import com.arvatosystems.t9t.ai.openai.OpenAIBetaSpecifier;
@@ -173,9 +175,7 @@ public class OpenAIClient implements IOpenAIClient {
         return builder.build();
     }
 
-    private HttpRequest buildRequest(@Nonnull final BodyPublisher publisher,
-      @Nullable final String contentType, @Nonnull final String path, @Nullable final OpenAIBetaSpecifier betaHeader) throws Exception {
-
+    private HttpRequest buildRequest(@Nonnull final BodyPublisher publisher, @Nullable final String contentType, @Nonnull final String path, @Nullable final OpenAIBetaSpecifier betaHeader) throws Exception {
         final HttpRequest.Builder httpRequestBuilder = HttpRequest.newBuilder(new URI(url + path))
                 .version(Version.HTTP_2)
                 .POST(publisher)
@@ -200,8 +200,7 @@ public class OpenAIClient implements IOpenAIClient {
     }
 
 
-    protected <U extends AbstractOpenAIObject> U openAIHttpRequest(@Nonnull final HttpRequest httpReq, @Nonnull final Class<U> responseClass,
-      @Nullable BonaPortable payload) throws Exception {
+    protected <U extends AbstractOpenAIObject> U openAIHttpRequest(@Nonnull final HttpRequest httpReq, @Nonnull final Class<U> responseClass, @Nullable BonaPortable payload) throws Exception {
         final HttpResponse<byte[]> resp = httpClient.send(httpReq, HttpResponse.BodyHandlers.ofByteArray());
         if (resp.statusCode() != 200) {
             final String errmsg = new String(resp.body(), StandardCharsets.UTF_8);
@@ -224,10 +223,10 @@ public class OpenAIClient implements IOpenAIClient {
             throw new T9tException(T9tOpenAIException.OPENAI_CONNECTION_PROBLEM, resp.statusCode());
         }
         try {
-            final U r = objectMapper.readValue(resp.body(), responseClass);
             if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace("Full response from OpenAI is {}", ToStringHelper.toStringML(r));
+                LOGGER.trace("Full response from OpenAI is {}", new String(resp.body(), StandardCharsets.UTF_8));
             }
+            final U r = objectMapper.readValue(resp.body(), responseClass);
             r.validate();
             return r;
         } catch (final Exception e) {
@@ -237,16 +236,14 @@ public class OpenAIClient implements IOpenAIClient {
     }
 
     /** Perform a POST with a payload, taking path and beta information from properties. */
-    protected <T extends OpenAIReq, U extends AbstractOpenAIObject> U performOpenAIRequest(final T request, final OpenAIBetaSpecifier betaHeader,
-      final Class<U> responseClass) {
+    protected <T extends OpenAIReq, U extends AbstractOpenAIObject> U performOpenAIRequest(final T request, final OpenAIBetaSpecifier betaHeader, final Class<U> responseClass) {
         final Map<String, String> requestProperties = request.ret$MetaData().getProperties();
         final String path = requestProperties.get("path");
         return performOpenAIRequest(request, path, betaHeader, responseClass);
     }
 
     /** Perform a POST with a multipart payload and specified path and header. */
-    protected <U extends AbstractOpenAIObject> U performOpenAIRequest(@Nonnull final Map<String, Object> data,
-      final String path, final OpenAIBetaSpecifier betaHeader, final Class<U> responseClass) {
+    protected <U extends AbstractOpenAIObject> U performOpenAIRequest(@Nonnull final Map<String, Object> data, final String path, final OpenAIBetaSpecifier betaHeader, final Class<U> responseClass) {
         if (!configured) {
             throw new T9tException(T9tOpenAIException.OPENAI_NOT_CONFIGURED);
         }
@@ -263,14 +260,23 @@ public class OpenAIClient implements IOpenAIClient {
     }
 
     /** Perform a POST with a payload and specified path and header. */
-    protected <T extends OpenAIReq, U extends AbstractOpenAIObject> U performOpenAIRequest(final T request,
-      final String path, final OpenAIBetaSpecifier betaHeader, final Class<U> responseClass) {
+    protected <T extends OpenAIReq, U extends AbstractOpenAIObject> U performOpenAIRequest(final T request, final String path, final OpenAIBetaSpecifier betaHeader, final Class<U> responseClass) {
         if (!configured) {
             throw new T9tException(T9tOpenAIException.OPENAI_NOT_CONFIGURED);
         }
         try {
-            final HttpRequest httpReq = buildRequest(BodyPublishers.ofByteArray(objectMapper.writeValueAsBytes(request)),
-              MimeTypes.MIME_TYPE_JSON, path, betaHeader);
+            final byte[] requestBody = objectMapper.writeValueAsBytes(request);
+            if (LOGGER.isTraceEnabled()) {
+                try {
+                    final JsonNode jsonNode = objectMapper.readTree(requestBody);
+                    final String prettyJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonNode);
+                    LOGGER.trace("Request to OpenAI is {} {} with payload {}", request.getClass().getSimpleName(), path, prettyJson);
+                } catch (final Exception e) {
+                    LOGGER.warn("Could not parse request body for pretty printing: {}, will show request as raw data", e.getMessage());
+                    LOGGER.trace("Request to OpenAI is {} {} with payload {}", request.getClass().getSimpleName(), path, new String(requestBody, StandardCharsets.UTF_8));
+                }
+            }
+            final HttpRequest httpReq = buildRequest(BodyPublishers.ofByteArray(requestBody), MimeTypes.MIME_TYPE_JSON, path, betaHeader);
             return openAIHttpRequest(httpReq, responseClass, request);
         } catch (final Exception e) {
             LOGGER.error("Exception in OpenAI POST request", e);
@@ -279,8 +285,7 @@ public class OpenAIClient implements IOpenAIClient {
     }
 
     /** Perform a POST without a payload. */
-    protected <U extends AbstractOpenAIObject> U performOpenAIRequestWithoutPayload(final String path, final OpenAIBetaSpecifier betaHeader,
-      final Class<U> responseClass) {
+    protected <U extends AbstractOpenAIObject> U performOpenAIRequestWithoutPayload(final String path, final OpenAIBetaSpecifier betaHeader, final Class<U> responseClass) {
         if (!configured) {
             throw new T9tException(T9tOpenAIException.OPENAI_NOT_CONFIGURED);
         }
@@ -294,8 +299,7 @@ public class OpenAIClient implements IOpenAIClient {
     }
 
     /** Perform a GET. */
-    protected <U extends AbstractOpenAIObject> U performOpenAIGetRequest(final String path, final OpenAIBetaSpecifier betaHeader,
-      final Class<U> responseClass) {
+    protected <U extends AbstractOpenAIObject> U performOpenAIGetRequest(final String path, final OpenAIBetaSpecifier betaHeader, final Class<U> responseClass) {
         if (!configured) {
             throw new T9tException(T9tOpenAIException.OPENAI_NOT_CONFIGURED);
         }
@@ -330,8 +334,7 @@ public class OpenAIClient implements IOpenAIClient {
     }
 
     @Override
-    public OpenAIObjectChatCompletion performOpenAIChatCompletionWithToolCalls(final RequestContext ctx, final OpenAIChatCompletionReq request,
-      final List<String> toolSelection, final int maxToolCalls) {
+    public OpenAIObjectChatCompletion performOpenAIChatCompletionWithToolCalls(final RequestContext ctx, final OpenAIChatCompletionReq request, final List<String> toolSelection, final int maxToolCalls) {
         // shortcut in case no tools provided or no tool calls allowed
         if (maxToolCalls <= 0) {
             // delegate to simpler variant
@@ -451,7 +454,7 @@ public class OpenAIClient implements IOpenAIClient {
             final OpenAIFunctionParameters parameters = new OpenAIFunctionParameters();
             parameters.setType(OpenAIParameterType.OBJECT);
             parameters.setProperties(buildPropertiesFromFields(cd.getFields()));
-            parameters.setRequired(T9tAiTools.buildRequiredFromFields(cd.getFields()));
+            parameters.setRequired(JsonSchemaCreator.buildRequiredFromFields(cd.getFields(), false));
             function.setParameters(parameters);
         }
         return tool;
@@ -605,8 +608,7 @@ public class OpenAIClient implements IOpenAIClient {
     }
 
     @Override
-    public OpenAIResponseResult performOpenAICreateResponse(final RequestContext ctx, final OpenAICreateResponseReq request,
-      final int maxToolCalls, @Nullable final Long conversationRef) {
+    public OpenAIResponseResult performOpenAICreateResponse(final RequestContext ctx, final OpenAICreateResponseReq request, final int maxToolCalls, @Nullable final Long conversationRef) {
         // make initial request to /v1/responses (no beta header required)
         OpenAIResponseResult response = performOpenAIRequest(request, RESPONSES_PATH, null, OpenAIResponseResult.class);
 

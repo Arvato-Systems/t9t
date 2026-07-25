@@ -21,11 +21,13 @@ import java.util.Map;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
+import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 
 import com.arvatosystems.t9t.ai.AiAssistantDTO;
 import com.arvatosystems.t9t.ai.AiConversationDTO;
+import com.arvatosystems.t9t.ai.AiResponseStructure;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 /**
@@ -65,4 +67,23 @@ public interface IAiChatService {
     MediaData chat(@Nonnull RequestContext ctx, @Nonnull AiAssistantDTO assistant, @Nonnull AiConversationDTO conversation,
       @Nonnull String question, @Nullable Object attachedDocumentRef, @Nullable MediaTypeDescriptor uploadedDocumentType,
       @Nonnull List<String> textResponses, boolean extractEmbeddedFileContent);
+
+    /**
+     * Performs structured chat, using the OpenAI responses API (or similar).
+     * This method relies on chat history managed by the server.
+     * Chat events of a conversation are linked via input previousResponseId.
+     *
+     * Information about instructions, the model to use, temperature, reasoning depth, tools to use etc are taken from the AiAssistantDTO configuration.
+     * (Tool support depends on the provider implementation and assistant configuration.)
+     *
+     * @param ctx
+     * @param assistant
+     * @param previousResponseId
+     * @param userInput
+     * @param jsonOutputSchema   the JSON schema for the output (describes type T)
+     * @param verbosity          controls the length of the output. (For OpenAI, "low", "medium", "high" are supported)
+     */
+    <T extends BonaPortable> AiResponseStructure<T> chat2(@Nonnull RequestContext ctx, @Nonnull AiAssistantDTO assistant,
+            @Nullable String previousResponseId, @Nullable String dtoSpecificInstructions, @Nullable BonaPortable previousDto,
+            @Nonnull String userInput, @Nonnull BonaPortable jsonOutputSchema, @Nullable String verbosity);
 }

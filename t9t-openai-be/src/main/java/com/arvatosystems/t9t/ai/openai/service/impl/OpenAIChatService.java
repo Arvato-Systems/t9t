@@ -23,21 +23,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.api.media.MediaTypeInfo;
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.BonaPortableClass;
+import de.jpaw.bonaparte.core.BonaPortableFactory;
+import de.jpaw.bonaparte.core.MapParser;
+import de.jpaw.bonaparte.core.MimeTypes;
 import de.jpaw.bonaparte.pojos.api.media.MediaCategory;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+import de.jpaw.json.JsonParser;
 
 import com.arvatosystems.t9t.ai.AiAssistantDTO;
 import com.arvatosystems.t9t.ai.AiConversationDTO;
+import com.arvatosystems.t9t.ai.AiResponseStructure;
 import com.arvatosystems.t9t.ai.openai.OpenAIObjectFile;
 import com.arvatosystems.t9t.ai.openai.OpenAIPurposeType;
+import com.arvatosystems.t9t.ai.openai.OpenAIResponseInputFormatType;
 import com.arvatosystems.t9t.ai.openai.OpenAIRoleType;
 import com.arvatosystems.t9t.ai.openai.OpenAITool;
 import com.arvatosystems.t9t.ai.openai.responses.OpenAICreateResponseReq;
+import com.arvatosystems.t9t.ai.openai.responses.OpenAIResponseInputContent;
 import com.arvatosystems.t9t.ai.openai.responses.OpenAIResponseInputItem;
+import com.arvatosystems.t9t.ai.openai.responses.OpenAIResponseInputJsonFormat;
+import com.arvatosystems.t9t.ai.openai.responses.OpenAIResponseInputJsonSchema;
 import com.arvatosystems.t9t.ai.openai.responses.OpenAIResponseOutputContent;
 import com.arvatosystems.t9t.ai.openai.responses.OpenAIResponseOutputItem;
 import com.arvatosystems.t9t.ai.openai.responses.OpenAIResponseResult;
@@ -92,15 +103,10 @@ public class OpenAIChatService implements IAiChatService {
       final List<String> textResponses, final boolean extractEmbeddedFileContent) {
 
         // Build the user input message
-        final StringBuilder contentBuilder = new StringBuilder();
-        if (question != null) {
-            contentBuilder.append(question);
-        }
-
         final OpenAIResponseInputItem userMessage = new OpenAIResponseInputItem();
         userMessage.setType("message");
         userMessage.setRole(OpenAIRoleType.USER);
-        userMessage.setContent(contentBuilder.toString());
+        userMessage.setContent(List.of(makeTextInput(question)));
 
         final List<OpenAIResponseInputItem> inputItems = new ArrayList<>(2);
         inputItems.add(userMessage);
@@ -118,35 +124,11 @@ public class OpenAIChatService implements IAiChatService {
         }
 
         // Build the Responses API request
-        final OpenAICreateResponseReq req = new OpenAICreateResponseReq();
-        req.setModel(assistant.getModel());
-        req.setInstructions(assistant.getInstructions());
-        req.setPreviousResponseId(conversation.getProviderThreadId());
+        final OpenAICreateResponseReq req = createPartialResponseRequest(assistant, conversation.getProviderThreadId());
+
         req.setInput(inputItems);
-        req.setTemperature(assistant.getTemperature());
-        req.setTopP(assistant.getTopP());
-        req.setStore(assistant.getStore());
-        if (assistant.getReasoningContext() != null || assistant.getReasoningEffort() != null || assistant.getReasoningMode() != null || assistant.getReasoningSummary() != null) {
-            final OpenAiReasoning reasoning = new OpenAiReasoning();
-            reasoning.setContext(cvtReasoningEnum(assistant.getReasoningContext()));
-            reasoning.setEffort(cvtReasoningEnum(assistant.getReasoningEffort()));
-            reasoning.setMode(cvtReasoningEnum(assistant.getReasoningMode()));
-            reasoning.setSummary(cvtReasoningEnum(assistant.getReasoningSummary()));
-            req.setReasoning(reasoning);
-        }
 
-        // Attach available tools if the assistant is permitted to use them
-        final List<OpenAITool> tools;
-        if (assistant.getToolsPermitted()) {
-            tools = openAIClient.buildToolsFromStack(
-              null, assistant.getExecutePermitted(), assistant.getDocumentAccessPermitted());
-        } else {
-            tools = List.of();
-        }
-        req.setTools(tools);
-
-        final int maxToolCalls = assistant.getToolsPermitted()
-          ? JsonUtil.getZInteger(assistant.getZ(), "maxToolCalls", DEFAULT_MAX_TOOL_CALLS) : 0;
+        final int maxToolCalls = assistant.getToolsPermitted() ? JsonUtil.getZInteger(assistant.getZ(), "maxToolCalls", DEFAULT_MAX_TOOL_CALLS) : 0;
 
         // Execute the request (including any tool-call loops)
         LOGGER.debug("Calling Responses API (model={}, previousResponseId={}, maxToolCalls={})",
@@ -224,5 +206,153 @@ public class OpenAIChatService implements IAiChatService {
           ? OpenAIPurposeType.VISION : OpenAIPurposeType.ASSISTANTS;
         final OpenAIObjectFile fileData = openAIClient.performOpenAIFileUpload(document, purpose);
         return fileData.getId();
+    }
+
+    protected OpenAICreateResponseReq createPartialResponseRequest(final AiAssistantDTO assistant, final String previousResponseId) {
+        final OpenAICreateResponseReq req = new OpenAICreateResponseReq();
+        req.setModel(assistant.getModel());
+        req.setInstructions(assistant.getInstructions());
+        req.setPreviousResponseId(previousResponseId);
+        req.setTemperature(assistant.getTemperature());
+        req.setTopP(assistant.getTopP());
+        req.setStore(assistant.getStore());
+        if (assistant.getReasoningContext() != null || assistant.getReasoningEffort() != null || assistant.getReasoningMode() != null || assistant.getReasoningSummary() != null) {
+            final OpenAiReasoning reasoning = new OpenAiReasoning();
+            reasoning.setContext(cvtReasoningEnum(assistant.getReasoningContext()));
+            reasoning.setEffort(cvtReasoningEnum(assistant.getReasoningEffort()));
+            reasoning.setMode(cvtReasoningEnum(assistant.getReasoningMode()));
+            reasoning.setSummary(cvtReasoningEnum(assistant.getReasoningSummary()));
+            req.setReasoning(reasoning);
+        }
+
+        // Attach available tools if the assistant is permitted to use them
+        final List<OpenAITool> tools;
+        if (assistant.getToolsPermitted()) {
+            tools = openAIClient.buildToolsFromStack(
+              null, assistant.getExecutePermitted(), assistant.getDocumentAccessPermitted());
+        } else {
+            tools = List.of();
+        }
+        req.setTools(tools);
+
+        return req;
+    }
+
+    protected OpenAIResponseInputContent makeTextInput(final String text) {
+        final OpenAIResponseInputContent content = new OpenAIResponseInputContent();
+        content.setType(OpenAIResponseInputFormatType.TEXT.getToken());
+        content.setText(T9tUtil.nvl(text, ""));
+        return content;
+    }
+
+    @Override
+    public <T extends BonaPortable> AiResponseStructure<T> chat2(final RequestContext ctx, final AiAssistantDTO assistant,
+            final String previousResponseId, final String dtoSpecificInstructions, final BonaPortable previousDto,
+            final String userInput, final BonaPortable jsonOutputSchema, final String verbosity) {
+
+        final List<OpenAIResponseInputItem> inputItems = new ArrayList<>(3);
+
+        // Build the user input message
+        final OpenAIResponseInputItem userMessage = new OpenAIResponseInputItem();
+        final List<OpenAIResponseInputContent> contentList = new ArrayList<>(4);
+        userMessage.setType("message");
+        userMessage.setRole(OpenAIRoleType.USER);
+        userMessage.setContent(contentList);
+
+        if (dtoSpecificInstructions != null) {
+            contentList.add(makeTextInput(dtoSpecificInstructions));
+        }
+        contentList.add(makeTextInput(userInput));
+        inputItems.add(userMessage);
+
+        if (previousDto != null) {
+            // Add the previous DTO as a JSON input item
+            final OpenAIResponseInputItem dtoMessage = new OpenAIResponseInputItem();
+            dtoMessage.setType(OpenAIResponseInputFormatType.JSON.getToken());
+            // dtoMessage.setRole(OpenAIRoleType.USER);
+            dtoMessage.setValue(previousDto);
+            inputItems.add(dtoMessage);
+        }
+
+        // Build the Responses API request
+        final OpenAICreateResponseReq req = createPartialResponseRequest(assistant, previousResponseId);
+
+        req.setInput(inputItems);
+
+        if (jsonOutputSchema != null) {
+            final OpenAIResponseInputJsonSchema inputJsonSchema = new OpenAIResponseInputJsonSchema();
+            inputJsonSchema.setType("json_schema");
+            inputJsonSchema.setName("InternalResponseWrapperDTO");
+            // Info about a special requirement from OpenAI:
+            // If strict=true all fields of the object must usually be in the schema's "required" list!
+            // Optional parameters can be set with strict=true like this: "type": ["string", "null"]
+            // This is a guideline for the schema generation in T9T. NOTE: strict=true is NOT tested yet!
+            inputJsonSchema.setStrict(true);
+            inputJsonSchema.setSchema(jsonOutputSchema);
+
+            final OpenAIResponseInputJsonFormat inputJsonFormat = new OpenAIResponseInputJsonFormat();
+            inputJsonFormat.setFormat(inputJsonSchema);
+            inputJsonFormat.setVerbosity(verbosity);
+            req.setText(inputJsonFormat);
+        }
+
+        final int maxToolCalls = assistant.getToolsPermitted() ? JsonUtil.getZInteger(assistant.getZ(), "maxToolCalls", DEFAULT_MAX_TOOL_CALLS) : 0;
+        // Execute the request (including any tool-call loops)
+        LOGGER.debug("Calling Responses API (model={}, previousResponseId={}, maxToolCalls={})",
+          req.getModel(), req.getPreviousResponseId(), maxToolCalls);
+
+        final OpenAIResponseResult response = openAIClient.performOpenAICreateResponse(ctx, req, maxToolCalls, null);
+        final AiResponseStructure<T> result = new AiResponseStructure<>();
+        result.setConversationId(response.getId());
+        LOGGER.debug("Returned parameter from Responses API: conversationId = {}", response.getId());
+
+        T resultObject = null;
+
+        if (response.getOutput() != null) {
+            for (final OpenAIResponseOutputItem item : response.getOutput()) {
+                if (!"message".equals(item.getType()) || item.getContent() == null) {
+                    continue;
+                }
+                for (final OpenAIResponseOutputContent content : item.getContent()) {
+                    if (!"output_text".equals(content.getType()) || content.getText() == null) {
+                        continue;
+                    }
+                    final Map<String, Object> parsedResponse = new JsonParser(content.getText(), false).parseObject();
+                    final Object pqon = parsedResponse.get(MimeTypes.JSON_FIELD_PQON);
+                    if (!(pqon instanceof String pqonString)) {
+                        final String errorMessage = "Structured OpenAI response does not contain a valid @PQON field: " + parsedResponse.toString();
+                        result.setErrorMessage(errorMessage);
+                        LOGGER.error(errorMessage);
+                        return result;
+                    }
+                    final BonaPortableClass<?> resultClass = BonaPortableFactory.getBClassForPqon(pqonString);
+                    if (resultClass == null) {
+                        final String errorMessage = "Unknown @PQON in structured OpenAI response: " + pqonString;
+                        result.setErrorMessage(errorMessage);
+                        LOGGER.error(errorMessage);
+                        return result;
+                    }
+                    final BonaPortable parsedObject = resultClass.newInstance();
+                    try {
+                        parsedObject.deserialize(new MapParser(parsedResponse));
+                        @SuppressWarnings("unchecked")
+                        final T typedObject = (T) parsedObject;
+                        resultObject = typedObject;
+                        break;
+                    } catch (final Exception e) {
+                        final String errorMessage = "Can't deserialize the response DTO from OpenAI: " + e.getMessage();
+                        result.setErrorMessage(errorMessage);
+                        LOGGER.error("Can't deserialize the response DTO from OpenAI with error: {}, response={}", e.getMessage(), parsedResponse.toString());
+                        return result;
+                    }
+                }
+                if (resultObject != null) {
+                    break;
+                }
+            }
+        }
+
+        result.setResult(resultObject);
+        return result;
     }
 }
