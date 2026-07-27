@@ -34,7 +34,7 @@
          mvn versions:display-dependency-updates -Dmaven.version.ignore=".*-(alpha|beta|Alpha|Beta|rc|cr|m|RC|CR|M|milestone).*,4\\..*" -DallowMajorUpdates=false
     -->
     <properties>
-        <jodatime.version>2.14.2</jodatime.version>
+        <jodatime.version>2.14.3</jodatime.version>
         <org.slf4j-api.version>2.0.18</org.slf4j-api.version>
         <asm.version>9.10.1</asm.version>
 
@@ -53,7 +53,7 @@
 
         <!-- OR mappers -->
         <eclipselink.version>5.0.1</eclipselink.version>
-        <hibernate.version>7.4.1.Final</hibernate.version>
+        <hibernate.version>7.4.5.Final</hibernate.version>
         <hibernate-validator.version>9.0.1.Final</hibernate-validator.version>
         <hibernate-search.version>8.4.0.Final</hibernate-search.version>
 
@@ -104,17 +104,17 @@
         <commons-csv.version>1.14.1</commons-csv.version>                 <!-- not used in t9t, but DM made for downstream projects -->
 
         <!-- AWS SDK v2 -->
-        <aws2-bom.version>2.48.3</aws2-bom.version>
+        <aws2-bom.version>2.49.3</aws2-bom.version>
 
         <!-- AWS JDBC wrapper for Aurora -->
         <aws-jdbc-wrapper.version>2.6.8</aws-jdbc-wrapper.version>
 
         <!-- Azure -->
         <azure-cosmosdb.version>2.6.16</azure-cosmosdb.version>
-        <azure-cosmos-sdk.version>4.80.0</azure-cosmos-sdk.version>
+        <azure-cosmos-sdk.version>4.81.0</azure-cosmos-sdk.version>
 
         <!-- More AI stuff & DM for its dependencies -->
-        <grpc.version>1.82.2</grpc.version>
+        <grpc.version>1.83.0</grpc.version>
 
         <!-- needed for MCP -->
         <reactor-core.version>3.8.6</reactor-core.version>
@@ -140,7 +140,7 @@
         <httpcore.version>4.4.16</httpcore.version>
         <httpclient.version>4.5.14</httpclient.version>
         <httpcore5.version>5.4.3</httpcore5.version>
-        <httpclient5.version>5.5.1</httpclient5.version>
+        <httpclient5.version>5.6.2</httpclient5.version>
         <httpmime.version>4.5.14</httpmime.version>
         <pdfbox.version>3.0.8</pdfbox.version>
         <freemarker.version>2.3.34</freemarker.version>
@@ -173,21 +173,21 @@
         <snakeyaml.version>2.6</snakeyaml.version>
 
         <c3p0.version>0.14.1</c3p0.version>
-        <hikaricp.version>7.0.2</hikaricp.version>
+        <hikaricp.version>7.1.0</hikaricp.version>
         <flyway.version>11.19.0</flyway.version>
         <reflections.version>0.9.10</reflections.version>
         <maven-plugin-api.version>3.9.16</maven-plugin-api.version>
         <jackson.version>2.22.1</jackson.version>
         <solr.version>8.11.1</solr.version>
         <camel.version>4.21.0</camel.version>
-        <jsch.version>2.28.4</jsch.version>
+        <jsch.version>2.28.5</jsch.version>
         <mina.version>2.2.9</mina.version>
         <kafka.version>3.9.2</kafka.version>
         <rabbitmq.version>5.34.0</rabbitmq.version>
-        <error-prone.version>2.48.0</error-prone.version>
+        <error-prone.version>2.50.0</error-prone.version>
 
         <!-- Monitoring -->
-        <micrometer.version>1.16.5</micrometer.version>
+        <micrometer.version>1.17.0</micrometer.version>
         <prometheus.version>0.16.0</prometheus.version>
 
         <!-- Swagger -->
@@ -199,7 +199,7 @@
         <google-auth-library.version>1.17.0</google-auth-library.version>
         <firebase-admin.version>9.5.0</firebase-admin.version>
 
-        <msal4j.version>1.24.1</msal4j.version>
+        <msal4j.version>1.25.1</msal4j.version>
         <nimbus.version>10.9.1</nimbus.version>
         <jboss-logging.version>3.6.3.Final</jboss-logging.version>
         <cxf.version>4.2.2</cxf.version>

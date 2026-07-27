@@ -116,20 +116,20 @@
         <xtext-maven-plugin.version>${xtext.version}</xtext-maven-plugin.version>
         <jdt.version>3.46.0</jdt.version>
 
-        <bonaparte-plugin.version>6.5.2</bonaparte-plugin.version>
-        <license-plugin.version>5.0.0</license-plugin.version>
+        <bonaparte-plugin.version>6.5.3</bonaparte-plugin.version>
+        <license-plugin.version>5.1.1</license-plugin.version>
         <cyclonedx-maven-plugin.version>2.9.2</cyclonedx-maven-plugin.version>
 
         <checkstyle.version>12.2.0</checkstyle.version>
         <spotless.version>3.8.0</spotless.version>
-        <spotbugs.version>4.10.2</spotbugs.version>
+        <spotbugs.version>4.10.3</spotbugs.version>
         <spotbugs-plugin.version>4.9.8.3</spotbugs-plugin.version>
-        <logback.version>1.5.38</logback.version>
+        <logback.version>1.6.0</logback.version>
         <logstash-logback.version>8.1</logstash-logback.version>
         <junit.version>6.1.2</junit.version>
         <!-- Swagger -->
         <swagger-maven-plugin.version>2.2.52</swagger-maven-plugin.version>
-        <swagger-ui-webjars.version>5.32.8</swagger-ui-webjars.version>
+        <swagger-ui-webjars.version>5.32.11</swagger-ui-webjars.version>
 
         <!-- OpenApi -->
         <openapi-generator.version>7.20.0</openapi-generator.version>
