@@ -36,7 +36,7 @@ package (com.arvatosystems) t9t.ai {
 
     type modelId                                    is Ascii(64);       // identifier of a model, could include pathnames (Huggingface models)
     type aiId                                       is Ascii(64);       // identifier of any ID at the provider (some providers use longer IDs than allowed by our defaultExternalId)
-    type textChunk                                  is Unicode(65536) allowControlChars;   // used for requests or results
+    type textChunk                                  is Unicode(4096000) allowControlChars;   // used for requests or results
     type assistantId                                is defaultExternalId;  // The ID of an assistant - not shortId because OpenAIs ID are usually longer
 
     enum AiSyncStatusType {

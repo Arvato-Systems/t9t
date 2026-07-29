@@ -35,12 +35,17 @@
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-activeannotations-jpa</artifactId>
-            <scope>provided</scope>
+            <artifactId>t9t-core-jpa</artifactId>
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-core-jpa</artifactId>
+            <artifactId>t9t-jackson</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-activeannotations-jpa</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

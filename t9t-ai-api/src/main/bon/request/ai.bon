@@ -23,6 +23,7 @@ import t9t.base.search.*
 import t9t.ai.*
 import t9t.ai.tools.*
 import t9t.ai.mcp.*
+import t9t.ai.jsonSchema.*
 
 /**
  * Core AI request definitions, draft 1
@@ -142,5 +143,14 @@ package (com.arvatosystems) t9t.ai.request {
         required enum ChatStatus                            chatStatus;         // status of the response: DONE if the dto has been defined, or NEED_MORE_INFORMATION if the user has not specified enough information
         optional textChunk                                  questionsOrSummary; // clarification questions, or result summary for the user
         optional (!T...)                                    dto;                // the result object, provided in case chatStatus is DONE
+    }
+
+    /** Creates OpenAI compatible schema data for the given PQON. */
+    class CreateJsonSchemaRequest extends RequestParameters return CreateJsonSchemaResponse {
+        required pqon                                       pqon;               // partially qualified object name of the desired object
+        optional pqon Map<String>                           mappings;           // any mapping from source to replacement PQON
+    }
+    class CreateJsonSchemaResponse extends ServiceResponse {
+        required (JsonSchemaObject)                         jsonSchema;         // the JSON schema, including the wrapper object (root schema with $defs for the requested PQON)
     }
 }

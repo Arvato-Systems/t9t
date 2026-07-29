@@ -15,6 +15,11 @@
  */
 package com.arvatosystems.t9t.ai.jpa.request;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +31,9 @@ import de.jpaw.dp.Jdp;
 import com.arvatosystems.t9t.ai.AiAssistantDTO;
 import com.arvatosystems.t9t.ai.AiDtoAssistKey;
 import com.arvatosystems.t9t.ai.AiResponseStructure;
+import com.arvatosystems.t9t.ai.ClassWalker;
 import com.arvatosystems.t9t.ai.JsonSchemaCreatorWithOpenAiWorkaround;
+import com.arvatosystems.t9t.ai.JsonSchemaData;
 import com.arvatosystems.t9t.ai.T9tAiException;
 import com.arvatosystems.t9t.ai.jpa.entities.AiDtoAssistEntity;
 import com.arvatosystems.t9t.ai.jpa.mapping.IAiAssistantDTOMapper;
@@ -41,10 +48,15 @@ import com.arvatosystems.t9t.ai.service.IAiChatService;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.jackson.JacksonTools;
 
 public abstract class AbstractAiCreateOrEditDtoRequestHandler<T extends BonaPortable, R extends AbstractAiCreateOrEditDtoRequest<T>> extends AbstractRequestHandler<R> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAiCreateOrEditDtoRequestHandler.class);
     private static final BonaPortableClass<?> WRAPPER_BCLASS = InternalResponseWrapper.BClass.INSTANCE;
+    private static final Map<String, JsonSchemaObject> CACHED_SCHEMA_DATA = new ConcurrentHashMap<>(512);
+    private static final ObjectMapper OBJECT_MAPPER = JacksonTools.createObjectMapper();
+    private static final TypeReference<Map<String, String>> STRING_MAP_TYPE_REF = new TypeReference<>() { };
+
 
     protected final IAiDtoAssistEntityResolver dtoAssistResolver = Jdp.getRequired(IAiDtoAssistEntityResolver.class);
     protected final IAiAssistantEntityResolver assistantResolver = Jdp.getRequired(IAiAssistantEntityResolver.class);
@@ -57,9 +69,32 @@ public abstract class AbstractAiCreateOrEditDtoRequestHandler<T extends BonaPort
         // get the assistant configuration
         final AiAssistantDTO assistant = assistantMapper.mapToDto(dtoAssist.getAiAssistant());
 
+        // Make redirection map (to avoid providing DTOs for all refs)
+        final Map<String, String> redirectionMap = dtoAssist.getDtoSchema() == null ? Map.of() : OBJECT_MAPPER.readValue(dtoAssist.getDtoSchema(), STRING_MAP_TYPE_REF);
+
         // auto-generate JSON schema from class definition
-        final JsonSchemaObject jsonSchemaObjOfDto = JsonSchemaCreatorWithOpenAiWorkaround.buildJsonSchemaObject(bclass.getMetaData(), null, true, false);
-        final JsonSchemaObject jsonSchemaObjWrapper = JsonSchemaCreatorWithOpenAiWorkaround.buildJsonSchemaObject(WRAPPER_BCLASS.getMetaData(), null, true, true);
+        // initialize the required class tree
+        final JsonSchemaData jsonSchemaData = ClassWalker.getSchemaData(bclass.getPqon());
+
+        // validate the redirection data
+        for (final var entry : redirectionMap.entrySet()) {
+            final String refPqon = entry.getKey();
+            final String targetPqon = entry.getValue();
+            if (ClassWalker.getCachedSchemaData(refPqon) == null) {
+                LOGGER.error("Redirection map contains reference PQON {} which is not part of the schema data for DTO {}", refPqon, bclass.getPqon());
+            }
+            if (ClassWalker.getCachedSchemaData(targetPqon) == null) {
+                LOGGER.error("Redirection map contains target PQON {} which is not part of the schema data for DTO {}", targetPqon, bclass.getPqon());
+            }
+        }
+        // jsonSchemaData.log(2);
+        // generate the JSON schema for the DTO and the wrapper
+        final JsonSchemaObject jsonSchemaObjOfDto = CACHED_SCHEMA_DATA.computeIfAbsent(bclass.getPqon(), x -> JsonSchemaCreatorWithOpenAiWorkaround.buildJsonSchemaObject(bclass.getMetaData(), null, true, true));
+        final JsonSchemaObject jsonSchemaObjWrapper = JsonSchemaCreatorWithOpenAiWorkaround.buildJsonSchemaObject(WRAPPER_BCLASS.getMetaData(), "The desired DTO", true, false);
+        // Log the raw wrapper
+        // LOGGER.debug("Generated JSON schema for Wrapper: {}", ToStringHelper.toStringML(jsonSchemaObjWrapper));
+        // link the DTO schema to the wrapper schema via $defs and $ref
+        jsonSchemaObjWrapper.setDefs(JsonSchemaCreatorWithOpenAiWorkaround.createDefs(jsonSchemaData, redirectionMap));
         jsonSchemaObjWrapper.getProperties().put(InternalResponseWrapper.meta$$dto.getName(), jsonSchemaObjOfDto);
 
         // call the LLM service

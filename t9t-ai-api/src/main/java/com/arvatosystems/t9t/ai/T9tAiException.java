@@ -27,7 +27,6 @@ public class T9tAiException extends T9tException {
 
     private static final int CORE_OFFSET    = T9tConstants.EXCEPTION_OFFSET_AI;
     private static final int OFFSET         = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_PARAMETER_ERROR;
-    private static final int OFFSET_TIMEOUT = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_TIMEOUT;
     private static final int OFFSET_ILE     = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_INTERNAL_LOGIC_ERROR;
     private static final int OFFSET_ERR     = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_DATABASE_ERROR;
 
