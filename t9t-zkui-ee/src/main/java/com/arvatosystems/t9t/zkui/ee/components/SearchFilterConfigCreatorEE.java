@@ -71,8 +71,7 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
         createGrid(grid, firstLevelColumns);
     }
 
-    public void initUiFilters(final List<UIColumnConfiguration> uiColumns, final List<UIFilter> selectedUiFilters,
-            final List<SearchFilterUiModel> firstLevelColumns) {
+    public void initUiFilters(final List<UIColumnConfiguration> uiColumns, final List<UIFilter> selectedUiFilters, final List<SearchFilterUiModel> firstLevelColumns) {
         final Map<String, SearchFilterRowVM> activeUIFilterMap = new HashMap<>(FreezeTools.getInitialHashMapCapacity(uiColumns.size()));
 
         for (final UIFilter uiFilter : selectedUiFilters) {
@@ -162,6 +161,7 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
         columns.appendChild(new Column(as.translate("editSearchFilters", "title")));
         columns.appendChild(new Column(as.translate("editSearchFilters", "filterType")));
         columns.appendChild(new Column(as.translate("editSearchFilters", "filterNegate")));
+        columns.appendChild(new Column(as.translate("editSearchFilters", "filterCaseInsensitive")));
 
         grid.appendChild(columns);
         grid.setModel(new ListModelList<>(data));
@@ -171,6 +171,7 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
             public void render(final Row row, final SearchFilterUiModel data, final int index) throws Exception {
                 final Combobox combobox = new Combobox();
                 final Checkbox negateCb = new Checkbox();
+                Checkbox caseInsensitiveCb = new Checkbox();
                 final String translatedLabel = as.translate(viewModelId, data.getFieldName());
                 final SearchFilterRowVM searchFilter = data.searchFilter;
                 if (columnsByKey.containsKey(data.getFieldName())) {
@@ -196,10 +197,12 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
                             selectedFilters.add(searchFilter);
                             combobox.setDisabled(false);
                             negateCb.setDisabled(false);
+                            caseInsensitiveCb.setDisabled(false);
                         } else {
                             selectedFilters.remove(searchFilter);
                             combobox.setDisabled(true);
                             negateCb.setDisabled(true);
+                            caseInsensitiveCb.setDisabled(true);
                         }
                     });
                     cb.setParent(row);
@@ -232,6 +235,13 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
                 });
                 negateCb.setDisabled(!searchFilter.getSelected());
                 negateCb.setParent(row);
+
+                caseInsensitiveCb.setChecked(searchFilter.getCaseInsensitive() == null ? false : searchFilter.getCaseInsensitive());
+                caseInsensitiveCb.addEventListener(Events.ON_CHECK, (e) -> {
+                    searchFilter.setCaseInsensitive(((Checkbox) e.getTarget()).isChecked());
+                });
+                caseInsensitiveCb.setDisabled(!searchFilter.getSelected());
+                caseInsensitiveCb.setParent(row);
             }
         });
     }

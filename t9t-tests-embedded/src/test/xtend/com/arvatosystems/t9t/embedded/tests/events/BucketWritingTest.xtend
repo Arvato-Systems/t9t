@@ -16,14 +16,14 @@
 package com.arvatosystems.t9t.embedded.tests.events
 
 import com.arvatosystems.t9t.base.ITestConnection
+import com.arvatosystems.t9t.base.search.ReadAllResponse
 import com.arvatosystems.t9t.bucket.request.BucketEntrySearchRequest
 import com.arvatosystems.t9t.bucket.request.SingleBucketWriteRequest
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
-import de.jpaw.bonaparte.pojos.api.AsciiFilter
+import de.jpaw.bonaparte.api.SearchFilters
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import com.arvatosystems.t9t.base.search.ReadAllResponse
-import org.junit.jupiter.api.Assertions
 
 class BucketWritingTest {
     static private ITestConnection dlg
@@ -36,9 +36,7 @@ class BucketWritingTest {
 
     def protected void searchBucket(String qualifier) {
         val rq = new BucketEntrySearchRequest => [
-            searchFilter        = new AsciiFilter("qualifier") => [
-                equalsValue     = qualifier
-            ]
+            searchFilter        = SearchFilters.equalsFilter("qualifier", qualifier)
         ]
         val rs = dlg.typeIO(rq, ReadAllResponse)
         Assertions.assertEquals(1, rs.dataList.size)

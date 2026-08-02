@@ -19,9 +19,9 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Bandbox;
 
+import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Jdp;
 
@@ -59,10 +59,7 @@ public abstract class AbstractBandboxDataField<T> extends AbstractDataField<Band
         if (objectRef == null)
             return null;
         SearchCriteria rq = popup.getCrudViewModel().searchClass.newInstance();
-        LongFilter f = new LongFilter();
-        f.setFieldName("objectRef");
-        f.setEqualsValue(objectRef);
-        rq.setSearchFilter(f);
+        rq.setSearchFilter(SearchFilters.equalsFilter("objectRef", objectRef));
         ReadAllResponse res = remoteUtils.executeExpectOk(rq, ReadAllResponse.class);
         if (res.getReturnCode() == 0) {
             if (res.getDataList().size() > 0) {

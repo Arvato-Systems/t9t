@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.T9tConstants;
@@ -57,7 +57,7 @@ public class ConvertTemplatesRequestHandler extends AbstractRequestHandler<Conve
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ConvertTemplatesRequest request) throws Exception {
-        final UnicodeFilter tenantFilter = new UnicodeFilter(T9tConstants.TENANT_ID_FIELD_NAME);
+        final StringFilter tenantFilter = new StringFilter(T9tConstants.TENANT_ID_FIELD_NAME);
         final SearchCriteria tenantCriteria = new DummySearchCriteria();
         tenantFilter.setEqualsValue(ctx.tenantId);
         tenantFilter.freeze();
@@ -71,7 +71,7 @@ public class ConvertTemplatesRequestHandler extends AbstractRequestHandler<Conve
             // and writing these back would fail.
             criteriaToApply = tenantCriteria;
         } else {
-            final UnicodeFilter templateFilter = new UnicodeFilter("documentId");
+            final StringFilter templateFilter = new StringFilter("documentId");
             templateFilter.setEqualsValue(request.getDocumentId());
             criteriaToApply = new DummySearchCriteria();
             criteriaToApply.setSearchFilter(SearchFilters.and(tenantFilter, templateFilter));

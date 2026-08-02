@@ -21,13 +21,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.AndFilter;
-import de.jpaw.bonaparte.pojos.api.AsciiFilter;
 import de.jpaw.bonaparte.pojos.api.BooleanFilter;
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.T9tException;
@@ -126,10 +126,8 @@ public class LoadedPluginCrudRequestHandler
     @SuppressWarnings("unchecked")
     ReadAllResponse<LoadedPluginDTO, FullTrackingWithVersion> getLoadedPlugin(final String tenantId, final String pluginId) {
         final BooleanFilter activeFilter = new BooleanFilter("isActive", true);
-        final UnicodeFilter tenantFilter = new UnicodeFilter("tenantId");
-        tenantFilter.setEqualsValue(tenantId);
-        final AsciiFilter pluginFilter = new AsciiFilter("pluginId");
-        pluginFilter.setEqualsValue(pluginId);
+        final StringFilter tenantFilter = SearchFilters.equalsFilter("tenantId", tenantId);
+        final StringFilter pluginFilter = SearchFilters.equalsFilter("pluginId", pluginId);
 
         final AndFilter andFilter2 = new AndFilter(pluginFilter, tenantFilter);
         final AndFilter andFilter = new AndFilter(activeFilter, andFilter2);

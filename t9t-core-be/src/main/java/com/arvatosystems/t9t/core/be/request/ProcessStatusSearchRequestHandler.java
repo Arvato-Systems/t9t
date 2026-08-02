@@ -31,7 +31,7 @@ import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.NoTracking;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.request.ProcessStatusDTO;
@@ -146,7 +146,7 @@ public class ProcessStatusSearchRequestHandler extends AbstractSearchRequestHand
             if (FIELD_NAME_AGE_IN_MS.equals(longFilter.getFieldName()) && longFilter.getLowerBound() != null) {
                 psCmd.setMinAgeInMs(longFilter.getLowerBound());
             }
-        } else if (searchFilter instanceof UnicodeFilter unicodeFilter) {
+        } else if (searchFilter instanceof StringFilter unicodeFilter) {
             if (unicodeFilter.getEqualsValue() != null) {
                 String equalsValue = unicodeFilter.getEqualsValue();
                 if (FIELD_NAME_TENANT_ID.equals(unicodeFilter.getFieldName())) {

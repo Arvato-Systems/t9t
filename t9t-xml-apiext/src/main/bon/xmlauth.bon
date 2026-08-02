@@ -33,7 +33,7 @@ package (com.arvatosystems) t9t.xml.auth XML PROPERTY bundle t9t.config swagger 
     /** Authenticate via user ID / password. */
     final class AuthByUserIdPassword xmlRoot {
         properties path = "userpw";
-        required Unicode(16)                        userId      example "john";         // specifies the user ID (example is not a valid one of course!)
+        required Unicode(255)                       userId      example "john";         // specifies the user ID or email (example is not a valid one of course!)
         required Unicode(32)                        password    example "Zx55dggZ!/J";  // specifies the password (example is not a valid one of course!)
         optional (SessionParameters)                sessionParameters;
     }

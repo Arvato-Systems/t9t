@@ -53,6 +53,7 @@ import com.arvatosystems.t9t.auth.OidClaims;
 import com.arvatosystems.t9t.auth.PasswordUtil;
 import com.arvatosystems.t9t.auth.RoleRef;
 import com.arvatosystems.t9t.auth.SessionDTO;
+import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.jpa.IPasswordChangeService;
 import com.arvatosystems.t9t.auth.jpa.IPasswordSettingService;
@@ -83,6 +84,7 @@ import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.IAuthSessionService;
 import com.arvatosystems.t9t.base.services.IHighRiskSituationNotificationService;
+import com.arvatosystems.t9t.base.services.ISimpleEmailAddressNormalizer;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.OidConfiguration;
@@ -96,6 +98,7 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
     private static final String GET_CURRENT_PASSWORD = "SELECT pwd FROM " + UserStatusEntity.class.getSimpleName() + " us JOIN "
         + PasswordEntity.class.getSimpleName() + " pwd ON us.objectRef = pwd.objectRef AND us.currentPasswordSerialNumber = pwd.passwordSerialNumber"
         + " WHERE us.objectRef = :userRef";
+    private static final String GET_USER_BY_EMAIL = "SELECT e FROM UserEntity e WHERE e.emailAddress = :email AND e.isActive = :isActive";
 
     protected final OidConfiguration oidConfiguration = ConfigProvider.getConfiguration().getOidConfiguration();
 
@@ -107,6 +110,7 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
     protected final IUserEntity2UserDataMapper userEntity2UserDataMapper = Jdp.getRequired(IUserEntity2UserDataMapper.class);
     protected final IHighRiskSituationNotificationService hrSituationNotificationService = Jdp.getRequired(IHighRiskSituationNotificationService.class);
     protected final IAuthModuleCfgDtoResolver moduleCfgResolver = Jdp.getRequired(IAuthModuleCfgDtoResolver.class);
+    protected final ISimpleEmailAddressNormalizer emailNormalizer = Jdp.getRequired(ISimpleEmailAddressNormalizer.class);
 
     @IsLogicallyFinal
     protected IAuthSessionService authSessionService;
@@ -208,7 +212,13 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
 
     @Override
     public DataWithTrackingS<UserDTO, FullTrackingWithVersion> getUserById(String userId) {
-        final UserEntity userEntity = getUserByUserIdIgnoringTenant(userId, false);
+        final UserEntity userEntity;
+        if (userId.contains("@")) {
+            // attempt to find user by email address
+            userEntity = getUserByEmailIgnoringTenant(userId);
+        } else {
+            userEntity = getUserByUserIdIgnoringTenant(userId, false); // first find the user
+        }
         if (userEntity == null) {
             return null;
         }
@@ -239,6 +249,22 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
             return null;
         }
         return results.get(0);
+    }
+
+    protected UserEntity getUserByEmailIgnoringTenant(@Nonnull final String email) {
+        final String normalizedEmail = emailNormalizer.normalizeEmail(email);
+        final TypedQuery<UserEntity> query = userEntityResolver.getEntityManager().createQuery(GET_USER_BY_EMAIL, UserEntity.class);
+        query.setParameter("email", normalizedEmail);
+        query.setParameter("isActive", Boolean.TRUE);
+        query.setMaxResults(2);
+        final List<UserEntity> results = query.getResultList();
+        if (results.isEmpty()) {
+            return null;
+        }
+        if (results.size() > 1) {
+            throw new T9tException(T9tAuthException.NON_UNIQUE_EMAIL_FOR_LOGIN, email);
+        }
+        return results.getFirst();
     }
 
     /** Perform unessential updates of claims such as name / phone / email. */
@@ -429,7 +455,13 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
 
     @Override
     public AuthIntermediateResult getByUserIdAndPassword(final Instant now, final String userId, final String password, final String newPassword) {
-        final UserEntity userEntity = getUserByUserIdIgnoringTenant(userId, false); // first find the user
+        final UserEntity userEntity;
+        if (userId.contains("@")) {
+            // attempt to find user by email address
+            userEntity = getUserByEmailIgnoringTenant(userId);
+        } else {
+            userEntity = getUserByUserIdIgnoringTenant(userId, false); // first find the user
+        }
         if (userEntity == null) {
             throw new T9tException(T9tException.USER_NOT_FOUND);
         }
@@ -471,7 +503,7 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
         if (userEntity.getRoleRef() != null)
             resp.getUser().setRoleRef(new RoleRef(userEntity.getRoleRef()));
 
-        final ByteArray hash = PasswordUtil.createPasswordHash(userId, password);
+        final ByteArray hash = PasswordUtil.createPasswordHash(userEntity.getUserId(), password);
         // password is correct & not expired OR password is correct, expired,
         // newPassword provided
         if (passwordEntity.getPasswordHash().equals(hash)) {

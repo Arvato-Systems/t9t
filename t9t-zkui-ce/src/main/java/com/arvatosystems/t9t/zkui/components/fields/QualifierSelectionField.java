@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.zkui.components.fields;
 import org.zkoss.zul.Combobox;
 
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.ui.UIFilter;
 import de.jpaw.bonaparte.pojos.ui.UIFilterType;
@@ -47,7 +47,7 @@ public class QualifierSelectionField extends AbstractField<Combobox> {
         Combobox cb = components.get(0);
         String v = cb.getValue();
         // text only
-        UnicodeFilter f = new UnicodeFilter();
+        StringFilter f = new StringFilter();
         f.setFieldName(getFieldName());
         if (cfg.getFilterType() != UIFilterType.EQUALITY) {
             f.setLikeValue(v);

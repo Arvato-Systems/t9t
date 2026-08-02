@@ -13,28 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.zkui.viewmodel.keyProvider;
+package com.arvatosystems.t9t.hs.search.be.converter;
 
 import jakarta.annotation.Nonnull;
 
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import org.hibernate.search.engine.search.predicate.SearchPredicate;
+import org.hibernate.search.engine.search.predicate.dsl.SearchPredicateFactory;
+
 import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
-import com.arvatosystems.t9t.auth.TenantDTO;
-import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.zkui.IKeyFromDataProvider;
-
 @Singleton
-@Named("tenant")
-public class TenantKeyFromDataProvider implements IKeyFromDataProvider<TenantDTO, FullTrackingWithVersion> {
+@Named(StringFilter.my$PQON)
+public class StringFilterToPredicate extends AbstractStringFilterToPredicate<StringFilter> {
 
+    @Nonnull
     @Override
-    public SearchFilter getFilterForKey(@Nonnull final DataWithTracking<TenantDTO, FullTrackingWithVersion> dwt) {
-        final StringFilter tenantFilter = SearchFilters.equalsFilter(TenantDTO.meta$$tenantId.getName(), dwt.getData().getTenantId());
-        return tenantFilter;
+    public SearchPredicate convert(@Nonnull final String entityName, @Nonnull final SearchPredicateFactory factory, @Nonnull final StringFilter stringFilter) {
+        return convertToPredicate(entityName, factory, stringFilter.getFieldName(), stringFilter.getValueList(), stringFilter.getEqualsValue(), stringFilter.getLikeValue());
     }
 }

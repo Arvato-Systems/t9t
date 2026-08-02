@@ -22,7 +22,7 @@ import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.AsciiFilter;
+import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
@@ -58,10 +58,7 @@ public class AiGetPromptRequestHandler extends AbstractReadOnlyRequestHandler<Ai
         }
 
         final AiPromptSearchRequest searchRequest = new AiPromptSearchRequest();
-        final AsciiFilter filter = new AsciiFilter();
-        filter.setFieldName(AiPromptDTO.meta$$promptId.getName());
-        filter.setEqualsValue(request.getName());
-        searchRequest.setSearchFilter(filter);
+        searchRequest.setSearchFilter(SearchFilters.equalsFilter(AiPromptDTO.meta$$promptId.getName(), request.getName()));
         final ReadAllResponse<AiPromptDTO, FullTrackingWithVersion> searchResponse = executor.executeSynchronousAndCheckResult(ctx, searchRequest, ReadAllResponse.class);
         if (searchResponse.getDataList().isEmpty()) {
             LOGGER.error("Prompt with name {} not found", request.getName());

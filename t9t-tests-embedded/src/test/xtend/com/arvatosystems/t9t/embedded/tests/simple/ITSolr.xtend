@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.embedded.tests.simple
 import com.arvatosystems.t9t.base.search.GenericTextSearchRequest
 import com.arvatosystems.t9t.base.search.GenericTextSearchResponse
 import com.arvatosystems.t9t.embedded.connect.Connection
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter
+import de.jpaw.bonaparte.api.SearchFilters
 import java.util.UUID
 import org.junit.jupiter.api.Test
 
@@ -30,10 +30,7 @@ class ITSolr {
         val dlg = new Connection(MOON_UUID)
 
         val resp = dlg.typeIO(new GenericTextSearchRequest => [
-            searchFilter    = new UnicodeFilter => [
-                fieldName   = "firstName"
-                equalsValue = "Gabi"
-            ]
+            searchFilter    = SearchFilters.equalsFilter("firstName", "Gabi")
             documentName    = "customers"
             resultFieldName = "customerRef"
         ], GenericTextSearchResponse)

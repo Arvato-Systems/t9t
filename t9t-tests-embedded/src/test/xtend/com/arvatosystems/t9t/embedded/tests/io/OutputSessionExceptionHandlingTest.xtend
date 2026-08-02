@@ -32,7 +32,7 @@ import com.arvatosystems.t9t.io.T9tIOException
 import com.arvatosystems.t9t.io.request.DataSinkSearchRequest
 import com.arvatosystems.t9t.io.request.SinkSearchRequest
 import com.arvatosystems.t9t.io.request.StoreSinkRequest
-import de.jpaw.bonaparte.pojos.api.AsciiFilter
+import de.jpaw.bonaparte.api.SearchFilters
 import de.jpaw.bonaparte.pojos.api.media.MediaType
 import de.jpaw.bonaparte.pojos.api.media.MediaXType
 import org.junit.jupiter.api.BeforeAll
@@ -106,19 +106,13 @@ class OutputSessionExceptionHandlingTest {
     def public void sinksRetrieveTest() {
         // search by name pattern
         val sinks = dlg.typeIO(new SinkSearchRequest => [
-            searchFilter = new AsciiFilter => [
-                fieldName   = "fileOrQueueName"
-                likeValue   = "Bison%"
-            ]
+            searchFilter = SearchFilters.likeFilter("fileOrQueueName", "Bison%")
         ], ReadAllResponse) as ReadAllResponse<SinkDTO, WriteTracking>
         println('''Sinks are «sinks.dataList.map[data.fileOrQueueName].join("\n")»''')
 
         // search by data sink (child entity ref)
         val sinks2 = dlg.typeIO(new SinkSearchRequest => [
-            searchFilter = new AsciiFilter => [
-                fieldName   = "dataSink.dataSinkId"
-                equalsValue = "BISONs"
-            ]
+            searchFilter = SearchFilters.equalsFilter("dataSink.dataSinkId", "BISONs")
         ], ReadAllResponse) as ReadAllResponse<SinkDTO, WriteTracking>
         println('''Sinks are «sinks2.dataList.map[data.fileOrQueueName].join("\n")»''')
     }

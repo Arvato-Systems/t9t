@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.msglog.jpa.request;
 import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.NoTracking;
 import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
 
@@ -47,7 +47,7 @@ public class MessageSearchRequestHandler extends AbstractMonitoringSearchRequest
             throw new T9tException(T9tException.NOT_AUTHORIZED, OperationType.CUSTOM.name() + " on " + request.ret$PQON());
         }
         if (!permissions.contains(OperationType.ADMIN)) {
-            final UnicodeFilter filterByUserId = SearchFilters.equalsFilter(MessageDTO.meta$$userId.getName(), ctx.userId);
+            final StringFilter filterByUserId = SearchFilters.equalsFilter(MessageDTO.meta$$userId.getName(), ctx.userId);
             request.setSearchFilter(SearchFilters.and(request.getSearchFilter(), filterByUserId));
         }
         mapper.processSearchPrefixForDB(request);

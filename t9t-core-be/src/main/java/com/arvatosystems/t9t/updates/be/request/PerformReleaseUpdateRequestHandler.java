@@ -25,8 +25,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
@@ -117,11 +117,8 @@ public class PerformReleaseUpdateRequestHandler extends AbstractRequestHandler<P
 
     private Map<String, UpdateStatusDTO> getIndexedTickets(final RequestContext ctx, final String prefix) {
         final UpdateStatusSearchRequest srq = new UpdateStatusSearchRequest();
-        final UnicodeFilter sequenceFilter = new UnicodeFilter("applySequenceId");
-        sequenceFilter.setLikeValue(prefix + "%");
-        srq.setSearchFilter(sequenceFilter);
-        final List<DataWithTrackingS<UpdateStatusDTO, FullTracking>> dwts
-          = executor.executeSynchronousAndCheckResult(ctx, srq, ReadAllResponse.class).getDataList();
+        srq.setSearchFilter(SearchFilters.likeFilter("applySequenceId", prefix + "%"));
+        final List<DataWithTrackingS<UpdateStatusDTO, FullTracking>> dwts = executor.executeSynchronousAndCheckResult(ctx, srq, ReadAllResponse.class).getDataList();
         if (dwts.isEmpty()) {
             return Collections.emptyMap();
         }

@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.zkui.components.fields;
 import org.zkoss.zul.Textbox;
 
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.ui.UIFilter;
 
@@ -46,9 +46,9 @@ public class TextField extends AbstractField<Textbox> {
         if (empty())
             return null;
         // depending on which values are set, create a lower, upper, equals or range filter
-        UnicodeFilter f = new UnicodeFilter();
-        f.setFieldName(getFieldName());
-        String v = components.get(0).getValue();
+        final StringFilter f = new StringFilter(getFieldName());
+        f.setCaseInsensitive(cfg.getCaseInsensitive());
+        final String v = components.get(0).getValue();
         switch (cfg.getFilterType()) {
         case EQUALITY:
             f.setEqualsValue(v);

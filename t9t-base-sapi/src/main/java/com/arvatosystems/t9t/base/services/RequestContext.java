@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.bonaparte.refsw.impl.AbstractRequestContext;
 import de.jpaw.util.ExceptionUtil;
 
@@ -210,9 +210,9 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
         response.setProcessRef(requestRef);
     }
 
-    /** Returns a LongFilter condition on the current tenant and possibly the default tenant, if that one is different. */
-    public UnicodeFilter tenantFilter(final String name) {
-        final UnicodeFilter filter = new UnicodeFilter(name);
+    /** Returns a StringFilter condition on the current tenant and possibly the default tenant, if that one is different. */
+    public StringFilter tenantFilter(final String name) {
+        final StringFilter filter = new StringFilter(name);
         if (T9tConstants.GLOBAL_TENANT_ID.equals(tenantId))
             filter.setEqualsValue(T9tConstants.GLOBAL_TENANT_ID);
         else

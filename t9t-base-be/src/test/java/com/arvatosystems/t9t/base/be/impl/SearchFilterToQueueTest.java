@@ -27,13 +27,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import de.jpaw.bonaparte.pojos.api.AndFilter;
-import de.jpaw.bonaparte.pojos.api.AsciiFilter;
 import de.jpaw.bonaparte.pojos.api.FieldFilter;
 import de.jpaw.bonaparte.pojos.api.IntFilter;
 import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.NotFilter;
 import de.jpaw.bonaparte.pojos.api.OrFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.services.ISearchTools;
@@ -44,10 +44,10 @@ public class SearchFilterToQueueTest {
 
     private SearchFilter createSearchFilter() {
         AndFilter searchFilter = new AndFilter();
-        searchFilter.setFilter1(new AsciiFilter("A"));
+        searchFilter.setFilter1(new StringFilter("A"));
         searchFilter.setFilter2(new OrFilter());
 
-        ((OrFilter)searchFilter.getFilter2()).setFilter1(new AsciiFilter("B"));
+        ((OrFilter)searchFilter.getFilter2()).setFilter1(new StringFilter("B"));
 
         NotFilter notFilter = new NotFilter();
         ((OrFilter)searchFilter.getFilter2()).setFilter2(notFilter);
@@ -64,10 +64,10 @@ public class SearchFilterToQueueTest {
         AndFilter andFilter = new AndFilter();
         notFilter.setFilter(andFilter);
 
-        andFilter.setFilter2(new AsciiFilter("A"));
+        andFilter.setFilter2(new StringFilter("A"));
         andFilter.setFilter1(new OrFilter());
 
-        ((OrFilter)andFilter.getFilter1()).setFilter1(new AsciiFilter("B"));
+        ((OrFilter)andFilter.getFilter1()).setFilter1(new StringFilter("B"));
         ((OrFilter)andFilter.getFilter1()).setFilter2(new LongFilter("C"));
 
 

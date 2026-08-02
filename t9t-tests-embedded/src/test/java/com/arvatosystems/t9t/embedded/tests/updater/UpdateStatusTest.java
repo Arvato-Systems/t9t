@@ -25,7 +25,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import de.jpaw.bonaparte.pojos.api.LongFilter;
+import de.jpaw.bonaparte.api.SearchFilters;
 
 import com.arvatosystems.t9t.base.ITestConnection;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -227,9 +227,7 @@ public class UpdateStatusTest {
 
     private void verifyUpdateStatusLogEntry(final Long ticketRef, final int expectedNumOfEntry) {
         final UpdateStatusLogSearchRequest searchRequest = new UpdateStatusLogSearchRequest();
-        final LongFilter filter = new LongFilter(UpdateStatusLogDTO.meta$$ticketRef.getName());
-        filter.setEqualsValue(ticketRef);
-        searchRequest.setSearchFilter(filter);
+        searchRequest.setSearchFilter(SearchFilters.equalsFilter(UpdateStatusLogDTO.meta$$ticketRef.getName(), ticketRef));
 
         final ReadAllResponse response = dlg.typeIO(searchRequest, ReadAllResponse.class);
         assertEquals(expectedNumOfEntry, response.getDataList().size());

@@ -15,11 +15,12 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel.keyProvider;
 
+import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.moduleCfg.ModuleConfigDTO;
@@ -29,8 +30,7 @@ public abstract class AbstractModuleCfgKeyFromDataProvider<T extends ModuleConfi
 
     @Override
     public SearchFilter getFilterForKey(DataWithTracking<T, TrackingBase> dwt) {
-        final UnicodeFilter tenantFilter = new UnicodeFilter(T9tConstants.TENANT_ID_FIELD_NAME);
-        tenantFilter.setEqualsValue(((DataWithTrackingS<T, TrackingBase>)dwt).getTenantId());
+        final StringFilter tenantFilter = SearchFilters.equalsFilter(T9tConstants.TENANT_ID_FIELD_NAME, ((DataWithTrackingS<T, TrackingBase>)dwt).getTenantId());
         return tenantFilter;
     }
 }

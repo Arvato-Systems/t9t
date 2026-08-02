@@ -27,12 +27,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import de.jpaw.bonaparte.pojos.api.AndFilter;
-import de.jpaw.bonaparte.pojos.api.AsciiFilter;
 import de.jpaw.bonaparte.pojos.api.DayFilter;
 import de.jpaw.bonaparte.pojos.api.DecimalFilter;
 import de.jpaw.bonaparte.pojos.api.NotFilter;
 import de.jpaw.bonaparte.pojos.api.NullFilter;
 import de.jpaw.bonaparte.pojos.api.OrFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.search.EnumFilter;
@@ -62,8 +62,8 @@ public class FilterToSolrConverterTest {
     }
 
     @Test
-    public void toSolrByAsciiFilterTest() throws Exception {
-        AsciiFilter filter = new AsciiFilter("textField");
+    public void toSolrByStringFilterTest() throws Exception {
+        StringFilter filter = new StringFilter("textField");
 
         List<String> valueList = new ArrayList<String>();
         valueList.add("A");
@@ -98,7 +98,7 @@ public class FilterToSolrConverterTest {
 
     @Test
     public void toSolrConditionTest() throws Exception {
-        AsciiFilter filter = new AsciiFilter("asciiField");
+        StringFilter filter = new StringFilter("asciiField");
 
         List<String> valueList = new ArrayList<String>();
         valueList.add("A");

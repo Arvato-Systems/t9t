@@ -19,10 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Combobox;
 
-import de.jpaw.bonaparte.pojos.api.IntFilter;
-import de.jpaw.bonaparte.pojos.api.LongFilter;
+import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.bonaparte.pojos.meta.DataCategory;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.ui.UIFilter;
@@ -70,19 +69,13 @@ public class DropdownField extends AbstractField<Combobox> {
                 // search by ref or integer
                 final String javaType = desc.getDataType().toLowerCase();
                 if (javaType.equals("int") || javaType.equals("integer")) {
-                    final IntFilter f = new IntFilter();
-                    f.setFieldName(getFieldName());
-                    f.setEqualsValue(Integer.valueOf(rec.getId()));
-                    return f;
+                    return SearchFilters.equalsFilter(getFieldName(), Integer.valueOf(rec.getId()));
                 } else {
-                    final LongFilter f = new LongFilter();
-                    f.setFieldName(getFieldName());
-                    f.setEqualsValue(rec.getObjectRef());
-                    return f;
+                    return SearchFilters.equalsFilter(getFieldName(), rec.getObjectRef());
                 }
             }
             // text only, but use displayId
-            final UnicodeFilter f = new UnicodeFilter();
+            final StringFilter f = new StringFilter();
             f.setFieldName(getFieldName());
             if (isMultiDropdown()) {
                 f.setLikeValue("%" + rec.getId() + "%");
@@ -92,7 +85,7 @@ public class DropdownField extends AbstractField<Combobox> {
             return f;
         }
         // text only
-        final UnicodeFilter f = new UnicodeFilter();
+        final StringFilter f = new StringFilter();
         f.setFieldName(getFieldName());
         if (cfg.getFilterType() != UIFilterType.EQUALITY || isMultiDropdown()) {
             f.setLikeValue("%" + v + "%");

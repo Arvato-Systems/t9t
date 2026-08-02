@@ -17,16 +17,19 @@ package com.arvatosystems.t9t.embedded.tests.user
 
 import com.arvatosystems.t9t.auth.UserDTO
 import com.arvatosystems.t9t.auth.UserKey
+import com.arvatosystems.t9t.auth.request.UserCountRequest
 import com.arvatosystems.t9t.auth.request.UserCrudRequest
 import com.arvatosystems.t9t.auth.request.UserSearchRequest
 import com.arvatosystems.t9t.auth.tests.setup.SetupUserTenantRole
 import com.arvatosystems.t9t.base.ITestConnection
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion
+import com.arvatosystems.t9t.base.search.CountResponse
 import com.arvatosystems.t9t.base.search.ReadAllResponse
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
-import de.jpaw.bonaparte.pojos.api.AsciiFilter
-import de.jpaw.bonaparte.pojos.api.OperationType
+import de.jpaw.annotations.AddLogger
+import de.jpaw.bonaparte.api.SearchFilters
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS
+import de.jpaw.bonaparte.pojos.api.OperationType
 import de.jpaw.util.ExceptionUtil
 import java.util.UUID
 import org.junit.jupiter.api.Assertions
@@ -34,9 +37,6 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.auth.extensions.AuthExtensions.*
-import de.jpaw.annotations.AddLogger
-import com.arvatosystems.t9t.auth.request.UserCountRequest
-import com.arvatosystems.t9t.base.search.CountResponse
 
 @AddLogger
 class UpdateUserOtherTenant {
@@ -62,10 +62,7 @@ class UpdateUserOtherTenant {
 
     def void readTenantOfUser() {
         val users = dlg.typeIO(new UserSearchRequest => [
-            searchFilter     = new AsciiFilter => [
-                fieldName    = "userId"
-                equalsValue  = TEST_USER_ID
-            ]
+            searchFilter     = SearchFilters.equalsFilter("userId", TEST_USER_ID)
         ], ReadAllResponse).dataList
         Assertions.assertEquals(1, users.size)
 

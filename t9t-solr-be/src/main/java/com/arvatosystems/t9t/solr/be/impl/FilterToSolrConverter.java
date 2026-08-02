@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.jpaw.bonaparte.pojos.api.AndFilter;
-import de.jpaw.bonaparte.pojos.api.AsciiFilter;
 import de.jpaw.bonaparte.pojos.api.BooleanFilter;
 import de.jpaw.bonaparte.pojos.api.DayFilter;
 import de.jpaw.bonaparte.pojos.api.DecimalFilter;
@@ -39,9 +38,9 @@ import de.jpaw.bonaparte.pojos.api.NotFilter;
 import de.jpaw.bonaparte.pojos.api.NullFilter;
 import de.jpaw.bonaparte.pojos.api.OrFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.bonaparte.pojos.api.TimeFilter;
 import de.jpaw.bonaparte.pojos.api.TimestampFilter;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 import de.jpaw.bonaparte.pojos.api.UuidFilter;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
@@ -88,15 +87,7 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
         return it.getEqualsValue().toString().replace("-", "\\-");
     }
 
-    protected String toSolr(final UnicodeFilter it) {
-        if (it.getValueList() != null) {
-            return buildOrForSolr(it.getValueList().stream(), (String s) -> s);
-        }
-
-        return forSolr(it.getEqualsValue() != null ? it.getEqualsValue() : it.getLikeValue());
-    }
-
-    protected String toSolr(final AsciiFilter it) {
+    protected String toSolr(final StringFilter it) {
         if (it.getValueList() != null) {
             return buildOrForSolr(it.getValueList().stream(), (String s) -> s);
         }
@@ -210,7 +201,7 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
 //        return switch(filter) {
 //        case EnumFilter      enumFilter    -> toSolr(enumFilter);
 //        case XenumFilter     xenumFilter   -> toSolr(xenumFilter);
-//        case AsciiFilter     asciiFilter   -> toSolr(asciiFilter);
+//        case StringFilter     asciiFilter   -> toSolr(asciiFilter);
 //        case UnicodeFilter   unicodeFilter -> toSolr(unicodeFilter);
 //        case LongFilter      longFilter    -> toSolr(longFilter);
 //        case IntFilter       intFilter     -> toSolr(intFilter);
@@ -228,7 +219,7 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
             return toSolr(f);
         } else if (filter instanceof XenumFilter f) {
             return toSolr(f);
-        } else if (filter instanceof AsciiFilter f) {
+        } else if (filter instanceof StringFilter f) {
             return toSolr(f);
         } else if (filter instanceof BooleanFilter f) {
             return toSolr(f);
@@ -249,8 +240,6 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
         } else if (filter instanceof TimeFilter f) {
             return toSolr(f);
         } else if (filter instanceof TimestampFilter f) {
-            return toSolr(f);
-        } else if (filter instanceof UnicodeFilter f) {
             return toSolr(f);
         } else {
             throw new IllegalArgumentException("Unhandled parameter types: " + filter.getClass().getSimpleName());

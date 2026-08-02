@@ -52,13 +52,11 @@ public abstract class AbstractSearchRestriction implements ISearchRestriction {
         if (allowedRefs.size() == 1) {
             final Long singleRef = allowedRefs.get(0);
             for (final String name : requiredFields) {
-                final LongFilter longFilter = new LongFilter(name);
-                longFilter.setEqualsValue(singleRef);
+                final LongFilter longFilter = SearchFilters.equalsFilter(name, singleRef);
                 srq.setSearchFilter(SearchFilters.and(srq.getSearchFilter(), longFilter));
             }
             for (final String name1 : optionalFields) {
-                final LongFilter longFilter = new LongFilter(name1);
-                longFilter.setEqualsValue(singleRef);
+                final LongFilter longFilter = SearchFilters.equalsFilter(name1, singleRef);
                 srq.setSearchFilter(SearchFilters.and(srq.getSearchFilter(), SearchFilters.or(new NullFilter(name1), longFilter)));
             }
         } else {

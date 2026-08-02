@@ -24,8 +24,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.ITestConnection;
@@ -81,8 +82,7 @@ public class UpdaterTest {
     @Test
     public void testPatchMultiple() throws Exception {
         serverLog("testPatchMultiple");
-        final UnicodeFilter filter = new UnicodeFilter("requestId");
-        filter.setLikeValue("ping1%");
+        final StringFilter filter = SearchFilters.likeFilter("requestId", "ping1%");
         final int numCandidates = patch(dlg, CannedRequestDTO.class, filter, dto -> {
             if (dto.getRequestId().equals(KEY2.getRequestId())) {
                 dto.setName("Super pong!");

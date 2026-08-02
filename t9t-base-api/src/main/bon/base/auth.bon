@@ -82,7 +82,7 @@ package (com.arvatosystems) t9t.base.auth {
     /** Provides authentication information via password or serves as a "change password" request. */
     final class PasswordAuthentication extends AuthenticationParameters {
         properties mask="password,newPassword";
-        required userId                                     userId;                     // every request will belong to the same user ID
+        required userIdOrEmail                              userId;                     // every request will belong to the same user ID or email
         required Unicode(32)                                password;                   // password
         optional Unicode(32)                                newPassword;                // if set, then this is a change password request
         optional tenantId                                   requestedTenantId;          // if set, then the login should use this tenant - if not possible the request fails

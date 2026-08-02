@@ -15,26 +15,27 @@
  */
 package com.arvatosystems.t9t.embedded.tests.simple
 
+import com.arvatosystems.t9t.base.entities.WriteTracking
+import com.arvatosystems.t9t.base.search.ReadAllResponse
 import com.arvatosystems.t9t.base.search.SinkCreatedResponse
 import com.arvatosystems.t9t.embedded.connect.Connection
 import com.arvatosystems.t9t.io.CommunicationTargetChannelType
+import com.arvatosystems.t9t.io.DataSinkCategoryType
+import com.arvatosystems.t9t.io.DataSinkCategoryXType
+import com.arvatosystems.t9t.io.DataSinkDTO
+import com.arvatosystems.t9t.io.DataSinkKey
 import com.arvatosystems.t9t.io.DataSinkRef
 import com.arvatosystems.t9t.io.SinkDTO
-import com.arvatosystems.t9t.io.request.StoreSinkRequest
-import org.junit.jupiter.api.Test
-import de.jpaw.bonaparte.pojos.api.media.MediaXType
-import de.jpaw.bonaparte.pojos.api.media.MediaType
-import de.jpaw.dp.Jdp
 import com.arvatosystems.t9t.io.be.camel.init.CamelContextProvider
 import com.arvatosystems.t9t.io.request.SinkSearchRequest
-import com.arvatosystems.t9t.base.search.ReadAllResponse
-import de.jpaw.bonaparte.pojos.api.AsciiFilter
-import com.arvatosystems.t9t.base.entities.WriteTracking
-import com.arvatosystems.t9t.io.DataSinkDTO
-import com.arvatosystems.t9t.io.DataSinkCategoryXType
-import com.arvatosystems.t9t.io.DataSinkCategoryType
+import com.arvatosystems.t9t.io.request.StoreSinkRequest
+import de.jpaw.bonaparte.api.SearchFilters
+import de.jpaw.bonaparte.pojos.api.media.MediaType
+import de.jpaw.bonaparte.pojos.api.media.MediaXType
+import de.jpaw.dp.Jdp
+import org.junit.jupiter.api.Test
+
 import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
-import com.arvatosystems.t9t.io.DataSinkKey
 
 /** I/O related tests. */
 class ITIO {
@@ -87,19 +88,13 @@ class ITIO {
         val dlg = new Connection
         // search by name pattern
         val sinks = dlg.typeIO(new SinkSearchRequest => [
-            searchFilter = new AsciiFilter => [
-                fieldName   = "fileOrQueueName"
-                likeValue   = "Bison%"
-            ]
+            searchFilter = SearchFilters.likeFilter("fileOrQueueName", "Bison%")
         ], ReadAllResponse) as ReadAllResponse<SinkDTO, WriteTracking>
         println('''Sinks are «sinks.dataList.map[data.fileOrQueueName].join("\n")»''')
 
         // search by data sink (child entity ref)
         val sinks2 = dlg.typeIO(new SinkSearchRequest => [
-            searchFilter = new AsciiFilter => [
-                fieldName   = "dataSink.dataSinkId"
-                equalsValue = "BISONs"
-            ]
+            searchFilter = SearchFilters.equalsFilter("dataSink.dataSinkId", "BISONs")
         ], ReadAllResponse) as ReadAllResponse<SinkDTO, WriteTracking>
         println('''Sinks are «sinks2.dataList.map[data.fileOrQueueName].join("\n")»''')
     }

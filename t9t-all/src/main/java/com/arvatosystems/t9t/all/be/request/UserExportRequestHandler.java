@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.all.request.UserExportRequest;
@@ -52,8 +52,7 @@ public class UserExportRequestHandler extends AbstractRequestHandler<UserExportR
     @Override
     public ServiceResponse execute(final RequestContext ctx, final UserExportRequest request) throws Exception {
         // create a search filter which contains the tenant
-        final UnicodeFilter tenantFilter = new UnicodeFilter(T9tConstants.TENANT_ID_FIELD_NAME);
-        tenantFilter.setEqualsValue(ctx.tenantId);
+        final StringFilter tenantFilter = SearchFilters.equalsFilter(T9tConstants.TENANT_ID_FIELD_NAME, ctx.tenantId);
         final SearchFilter myFilter = SearchFilters.and(tenantFilter, request.getSearchFilter());
 
         final UserSearchRequest queryParams = new UserSearchRequest();

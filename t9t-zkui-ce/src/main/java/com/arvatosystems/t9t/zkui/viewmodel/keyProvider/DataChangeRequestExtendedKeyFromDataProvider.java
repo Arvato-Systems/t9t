@@ -15,8 +15,8 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel.keyProvider;
 
+import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Named;
@@ -33,8 +33,6 @@ public class DataChangeRequestExtendedKeyFromDataProvider implements IKeyFromDat
     @Override
     public SearchFilter getFilterForKey(DataWithTracking<DataChangeRequestExtendedDTO, TrackingBase> dwt) {
         Long objectRef = dwt.getData().getChange().getObjectRef();
-        final LongFilter longFilter = new LongFilter(DataChangeRequestDTO.meta$$objectRef.getName());
-        longFilter.setEqualsValue(objectRef);
-        return longFilter;
+        return SearchFilters.equalsFilter(DataChangeRequestDTO.meta$$objectRef.getName(), objectRef);
     }
 }

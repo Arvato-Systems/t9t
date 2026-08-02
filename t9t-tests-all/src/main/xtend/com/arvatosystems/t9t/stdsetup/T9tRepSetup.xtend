@@ -33,23 +33,20 @@ import com.arvatosystems.t9t.rep.ReportIntervalType
 import com.arvatosystems.t9t.rep.ReportParamsDTO
 import com.arvatosystems.t9t.rep.request.ReportConfigSearchRequest
 import de.jpaw.annotations.AddLogger
+import de.jpaw.bonaparte.api.SearchFilters
 import de.jpaw.bonaparte.pojos.api.AndFilter
-import de.jpaw.bonaparte.pojos.api.AsciiFilter
-import de.jpaw.bonaparte.pojos.api.LongFilter
-import de.jpaw.bonaparte.pojos.api.NotFilter
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS
 import de.jpaw.bonaparte.pojos.api.OperationType
 import de.jpaw.bonaparte.pojos.api.media.MediaType
 import de.jpaw.bonaparte.pojos.api.media.MediaXType
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS
 import de.jpaw.util.ByteArray
+import java.time.LocalDateTime
 import java.util.HashMap
 import java.util.List
+import org.apache.commons.io.IOUtils
 import org.eclipse.xtend.lib.annotations.Data
-import java.time.LocalDateTime
 
 import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
-import org.apache.commons.io.IOUtils
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter
 
 /** Class which offers methods to create configurations for all reports.
  *
@@ -148,7 +145,7 @@ class T9tRepSetup {
 
     public def void createReportParamsForReportConfig(String reportConfigId) {
         val configSearchReq = new ReportConfigSearchRequest => [
-            searchFilter = new AsciiFilter("reportConfigId", reportConfigId, null, null, null, null)
+            searchFilter = SearchFilters.equalsFilter("reportConfigId", reportConfigId)
         ]
         val reportConfigs = ((dlg.doIO(configSearchReq) as ReadAllResponse<ReportConfigDTO, FullTrackingWithVersion>).dataList as List<DataWithTrackingS<ReportConfigDTO, FullTrackingWithVersion>>).map[data]
 
@@ -200,13 +197,13 @@ class T9tRepSetup {
         val dataSinkSearchReq = new DataSinkSearchRequest
         if (setupForGeneralTenant) {
             dataSinkSearchReq.searchFilter = new AndFilter => [
-                filter1 = new AsciiFilter("dataSinkId", data.dataSinkId, null, null, null, null)
-                filter2 = new UnicodeFilter("tenantId", T9tConstants.GLOBAL_TENANT_ID, null, null, null, null)
+                filter1 = SearchFilters.equalsFilter("dataSinkId", data.dataSinkId)
+                filter2 = SearchFilters.equalsFilter("tenantId", T9tConstants.GLOBAL_TENANT_ID)
             ]
         } else {
             dataSinkSearchReq.searchFilter = new AndFilter => [
-                filter1 = new AsciiFilter("dataSinkId", data.dataSinkId, null, null, null, null)
-                filter2 = new UnicodeFilter("tenantId", T9tConstants.GLOBAL_TENANT_ID, null, null, null, null)
+                filter1 = SearchFilters.equalsFilter("dataSinkId", data.dataSinkId)
+                filter2 = SearchFilters.equalsFilter("tenantId", T9tConstants.GLOBAL_TENANT_ID)  // FIXME!
             ]
         }
 

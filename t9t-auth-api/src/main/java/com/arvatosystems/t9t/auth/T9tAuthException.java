@@ -33,6 +33,7 @@ public class T9tAuthException extends T9tException {
     public static final int PASSWORD_FOUND_IN_BLACKLIST  = OFFSET_VALIDATION_ERROR + 33;
 
     public static final int PASSWORD_RESET_NOT_ALLOWED   = OFFSET_DECLINE + 41;
+    public static final int NON_UNIQUE_EMAIL_FOR_LOGIN   = OFFSET_DECLINE + 42;
 
     static {
         registerRange(CORE_OFFSET, false, T9tAuthException.class, ApplicationLevelType.FRAMEWORK, "t9t authentication module");
@@ -44,5 +45,6 @@ public class T9tAuthException extends T9tException {
         registerCode(INVALID_USER_ID, "The userId does not match the allowed pattern (only letters, digits, the underscore and at most one dot)");
         registerCode(PASSWORD_FOUND_IN_BLACKLIST, "Validation for the given password failed because it was found in the password blacklist");
         registerCode(PASSWORD_RESET_NOT_ALLOWED, "Password reset not supported for this server / user");
+        registerCode(NON_UNIQUE_EMAIL_FOR_LOGIN, "Non-unique email address found for login");
     }
 }

@@ -15,15 +15,14 @@
  */
 package com.arvatosystems.t9t.zkui.context.monitoring;
 
-import java.time.Instant;
 import java.util.List;
 
 import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.AsciiFilter;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 import de.jpaw.bonaparte.pojos.api.InstantFilter;
 import de.jpaw.bonaparte.pojos.api.IntFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
@@ -47,20 +46,10 @@ public class ShowOkRequestContextMenuHandler implements IGridContextMenu<Message
     public void selected(final Grid28 lb, final DataWithTracking<MessageStatisticsDTO, TrackingBase> dwt) {
         final MessageStatisticsDTO dto = dwt.getData();
 
-        final AsciiFilter userIdFilter = new AsciiFilter(MessageDTO.meta$$userId.getName());
-        userIdFilter.setEqualsValue(dto.getUserId());
-
-        final AsciiFilter pQONFilter = new AsciiFilter(MessageDTO.meta$$requestParameterPqon.getName());
-        pQONFilter.setEqualsValue(dto.getRequestParameterPqon());
-
-        final InstantFilter executionStartedAtFilter  = new InstantFilter(MessageDTO.meta$$executionStartedAt.getName());
-        final Instant fromInstant = dto.getSlotStart();
-        final Instant toInstant = dto.getSlotStart().plusSeconds(3600L);
-        executionStartedAtFilter.setLowerBound(fromInstant);
-        executionStartedAtFilter.setUpperBound(toInstant);
-
-        final IntFilter returnCodeFilter = new IntFilter(MessageDTO.meta$$returnCode.getName());
-        returnCodeFilter.setUpperBound(200000000);
+        final StringFilter userIdFilter = SearchFilters.equalsFilter(MessageDTO.meta$$userId.getName(), dto.getUserId());
+        final StringFilter pQONFilter = SearchFilters.equalsFilter(MessageDTO.meta$$requestParameterPqon.getName(), dto.getRequestParameterPqon());
+        final InstantFilter executionStartedAtFilter  = SearchFilters.rangeFilter(MessageDTO.meta$$executionStartedAt.getName(), dto.getSlotStart(), dto.getSlotStart().plusSeconds(3600L));
+        final IntFilter returnCodeFilter = SearchFilters.rangeFilter(MessageDTO.meta$$returnCode.getName(), null, 200000000);
 
         final SearchFilter filter = SearchFilters.and(List.of(userIdFilter, pQONFilter, executionStartedAtFilter, returnCodeFilter));
 

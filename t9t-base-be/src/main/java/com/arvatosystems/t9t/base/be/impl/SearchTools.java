@@ -25,13 +25,12 @@ import java.util.function.Function;
 
 import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.AndFilter;
-import de.jpaw.bonaparte.pojos.api.AsciiFilter;
 import de.jpaw.bonaparte.pojos.api.FieldFilter;
 import de.jpaw.bonaparte.pojos.api.NotFilter;
 import de.jpaw.bonaparte.pojos.api.OrFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.bonaparte.pojos.api.UuidFilter;
 import de.jpaw.dp.Singleton;
 
@@ -247,13 +246,9 @@ public class SearchTools implements ISearchTools {
     public void optimizeSearchFiltersString(final SearchCriteria searchCriteria, final String fieldName, final Function<String, SearchFilter> replacer) {
         if (searchCriteria.getSearchFilter() != null) {
             final Function<SearchFilter, String> checker = s -> {
-                if (s instanceof UnicodeFilter uf) {
+                if (s instanceof StringFilter uf) {
                     if (fieldName.equals(uf.getFieldName()) && uf.getEqualsValue() != null) {
                         return uf.getEqualsValue();
-                    }
-                } else if (s instanceof AsciiFilter af) {
-                    if (fieldName.equals(af.getFieldName()) && af.getEqualsValue() != null) {
-                        return af.getEqualsValue();
                     }
                 }
                 return null;

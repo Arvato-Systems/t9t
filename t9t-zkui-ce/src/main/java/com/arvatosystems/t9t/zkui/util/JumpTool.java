@@ -21,9 +21,10 @@ import java.util.UUID;
 
 import org.zkoss.bind.BindUtils;
 
+import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.bonaparte.pojos.api.UuidFilter;
 
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
@@ -43,21 +44,18 @@ public final class JumpTool {
     public static final String BACK_CACHE_SUFFIX = "backCacheSuffix";
 
     public static void jump(final String targetZul, final String fieldName, final String id, final String backNaviLink) {
-        final UnicodeFilter f = new UnicodeFilter(fieldName);
-        f.setEqualsValue(id);
-        jump (targetZul, f, backNaviLink);
+        final StringFilter f = SearchFilters.equalsFilter(fieldName, id);
+        jump(targetZul, f, backNaviLink);
     }
 
     public static void jump(final String targetZul, final String fieldName, final UUID ref, final String backNaviLink) {
-        final UuidFilter f = new UuidFilter(fieldName);
-        f.setEqualsValue(ref);
-        jump (targetZul, f, backNaviLink);
+        final UuidFilter f = SearchFilters.equalsFilter(fieldName, ref);
+        jump(targetZul, f, backNaviLink);
     }
 
     public static void jump(final String targetZul, final String fieldName, final Long ref, final String backNaviLink) {
-        final LongFilter f = new LongFilter(fieldName);
-        f.setEqualsValue(ref);
-        jump (targetZul, f, backNaviLink);
+        final LongFilter f = SearchFilters.equalsFilter(fieldName, ref);
+        jump(targetZul, f, backNaviLink);
     }
 
     public static void jump(final String targetZul, final SearchFilter f, final String backNaviLink) {

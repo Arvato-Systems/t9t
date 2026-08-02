@@ -23,14 +23,14 @@ import com.arvatosystems.t9t.io.CommunicationTargetChannelType
 import com.arvatosystems.t9t.io.DataSinkCategoryType
 import com.arvatosystems.t9t.io.DataSinkDTO
 import com.arvatosystems.t9t.io.request.DataSinkSearchRequest
+import de.jpaw.bonaparte.api.SearchFilters
 import de.jpaw.bonaparte.pojos.api.media.MediaType
 import java.util.UUID
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensionsCreate.*
-import org.junit.jupiter.api.Assertions
-import de.jpaw.bonaparte.pojos.api.AsciiFilter
 
 class OtherTenantCreateTest {
 
@@ -67,10 +67,7 @@ class OtherTenantCreateTest {
         createDataSink(myDataSinkId)
 
         val dataSinks = dlg.typeIO((new DataSinkSearchRequest => [
-                searchFilter = new AsciiFilter => [
-                fieldName    = "dataSinkId"
-                equalsValue  = myDataSinkId
-            ]
+            searchFilter = SearchFilters.equalsFilter("dataSinkId", myDataSinkId)
         ]), ReadAllResponse)
         Assertions.assertEquals(2, dataSinks.dataList.size)
     }

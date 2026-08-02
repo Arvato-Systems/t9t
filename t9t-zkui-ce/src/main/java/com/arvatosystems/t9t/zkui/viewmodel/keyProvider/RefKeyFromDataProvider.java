@@ -15,8 +15,8 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel.keyProvider;
 
+import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
@@ -35,8 +35,6 @@ public class RefKeyFromDataProvider implements IKeyFromDataProvider<Ref, Trackin
     @Override
     public SearchFilter getFilterForKey(DataWithTracking<Ref, TrackingBase> dwt) {
         Long objectRef = dwt.getData().getObjectRef();
-        final LongFilter byId = new LongFilter("objectRef");
-        byId.setEqualsValue(objectRef);
-        return byId;
+        return SearchFilters.equalsFilter("objectRef", objectRef);
     }
 }

@@ -52,10 +52,10 @@ import com.arvatosystems.t9t.zkui.viewmodel.support.SearchFilterRowVM;
 @Fallback
 public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCreator {
 
-    protected List<SearchFilterRowVM> rows            = null;
-    protected List<SearchFilterRowVM> selectedFilters = null;
-    protected final ApplicationSession      as              = ApplicationSession.get();
-    protected String                  viewModelId     = null;
+    protected List<SearchFilterRowVM>  rows            = null;
+    protected List<SearchFilterRowVM>  selectedFilters = null;
+    protected final ApplicationSession as              = ApplicationSession.get();
+    protected String                   viewModelId     = null;
 
     @Override
     public void createComponent(Div parent, UIGridPreferences uiGridPreferences, List<UIFilter> selectedUiFilters) {
@@ -97,6 +97,7 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
                 rows.add(row);
             }
             row.setFilterTypes(getAvailableFilterType(column));
+            row.setIsStringType(isStringType(column));
         }
 
         createListbox(parent, rows);
@@ -115,6 +116,7 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
             public void render(Listitem item, SearchFilterRowVM data, int index) throws Exception {
                 Combobox combobox = new Combobox();
                 Checkbox negateCb = new Checkbox();
+                Checkbox caseInsensitiveCb = new Checkbox();
                 Listcell cell1 = new Listcell();
                 cell1.setParent(item);
                 Checkbox cb = new Checkbox();
@@ -126,10 +128,14 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
                         selectedFilters.add(data);
                         combobox.setDisabled(false);
                         negateCb.setDisabled(false);
+                        if (data.getIsStringType()) {
+                            caseInsensitiveCb.setDisabled(false);
+                        }
                     } else {
                         selectedFilters.remove(data);
                         combobox.setDisabled(true);
                         negateCb.setDisabled(true);
+                        caseInsensitiveCb.setDisabled(true);
                     }
                 });
                 cb.setChecked(data.getSelected());
@@ -165,16 +171,30 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
                     data.setNegate(((Checkbox) e.getTarget()).isChecked());
                 });
                 negateCb.setDisabled(!data.getSelected());
+
+                Listcell cell5 = new Listcell();
+                cell5.setParent(item);
+                caseInsensitiveCb.setParent(cell5);
+                if (data.getIsStringType()) {
+                    caseInsensitiveCb.setVisible(true);
+                    caseInsensitiveCb.setChecked(data.getCaseInsensitive() == null ? false : data.getCaseInsensitive());
+                    caseInsensitiveCb.addEventListener(Events.ON_CHECK, (e) -> {
+                        data.setCaseInsensitive(((Checkbox) e.getTarget()).isChecked());
+                    });
+                    caseInsensitiveCb.setDisabled(!data.getSelected());
+                } else {
+                    caseInsensitiveCb.setVisible(false);
+                }
             }
         });
-
     }
 
     private void createHeader(Listhead head) {
         createListHeader(head, null, "40px");
         createListHeader(head, as.translate("editSearchFilters", "title"));
         createListHeader(head, as.translate("editSearchFilters", "filterType"));
-        createListHeader(head, as.translate("editSearchFilters", "filterNegate", "40px"));
+        createListHeader(head, as.translate("editSearchFilters", "filterNegate"), "40px");
+        createListHeader(head, as.translate("editSearchFilters", "filterCaseInsensitive"), "40px");
     }
 
     private void createListHeader(Listhead parent, String label) {
@@ -279,11 +299,10 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
      * @param column
      * @return
      */
-    private boolean isStringType(UIColumnConfiguration column) {
+    private boolean isStringType(final UIColumnConfiguration column) {
         final String dataType = column.getMeta().getDataType();
 
-        return dataType.equals("ascii") || dataType.equals("unicode") || dataType.equals("uppercase")
-                || dataType.equals("lowercase");
+        return dataType.equals("ascii") || dataType.equals("unicode") || dataType.equals("uppercase") || dataType.equals("lowercase");
     }
 
     /**

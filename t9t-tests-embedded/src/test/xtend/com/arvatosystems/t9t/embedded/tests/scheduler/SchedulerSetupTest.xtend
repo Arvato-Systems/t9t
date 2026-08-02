@@ -27,8 +27,8 @@ import com.arvatosystems.t9t.ssm.SchedulerSetupKey
 import com.arvatosystems.t9t.ssm.SchedulerSetupRecurrenceType
 import com.arvatosystems.t9t.ssm.request.SchedulerSetupCrudRequest
 import de.jpaw.annotations.AddLogger
+import de.jpaw.bonaparte.api.SearchFilters
 import de.jpaw.bonaparte.pojos.api.OperationType
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter
 import java.time.LocalTime
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Disabled
@@ -49,9 +49,7 @@ class SchedulerSetupTest {
 
     def void assertSingleApiKey() {
         val searchRq = new ApiKeySearchRequest => [
-            searchFilter = new UnicodeFilter("name") => [
-                equalsValue = 'automatically created by SSM for scheduled task'
-            ]
+            searchFilter = SearchFilters.equalsFilter("name", 'automatically created by SSM for scheduled task')
         ]
         val result = dlg.typeIO(searchRq, ReadAllResponse)
         // Assertions.assertEquals("Expected 1 ApiKey", 1, result.dataList.size)  // not working when running in CI environment

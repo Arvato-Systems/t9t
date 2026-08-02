@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.zkui.components;
 
-import de.jpaw.bonaparte.pojos.api.LongFilter;
+import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
@@ -24,10 +24,7 @@ public final class FilterGenerator {
     private FilterGenerator() { }
 
     private static SearchFilter createFilter(Ref data, String fieldName) {
-        final LongFilter l = new LongFilter();
-        l.setFieldName(fieldName);
-        l.setEqualsValue(data.getObjectRef());
-        return l;
+        return SearchFilters.equalsFilter(fieldName, data.getObjectRef());
     }
 
     public static IFilterGenerator filterForFieldname(final String fieldName) {

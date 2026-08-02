@@ -18,8 +18,8 @@ package com.arvatosystems.t9t.ai.tools.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
@@ -44,9 +44,7 @@ public class AiToolUserSearch implements IAiTool<AiToolUserList, AiToolUserListR
     public AiToolUserListResult performToolCall(final RequestContext ctx, final AiToolUserList request) {
         final UserSearchRequest searchRq = new UserSearchRequest();
         if (request.getName() != null) {
-            final UnicodeFilter filter = new UnicodeFilter("name");
-            filter.setLikeValue("%" + request.getName() + "%");
-            searchRq.setSearchFilter(filter);
+            searchRq.setSearchFilter(SearchFilters.likeFilter("name", "%" + request.getName() + "%"));
         }
         searchRq.setLimit(20);  // no more than 20 results for now
         final ReadAllResponse<UserDTO, FullTrackingWithVersion> response = executor.executeSynchronousAndCheckResult(ctx, searchRq, ReadAllResponse.class);

@@ -23,9 +23,9 @@ import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.AsciiFilter;
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.ai.AiPromptDTO;
@@ -58,7 +58,7 @@ public class AiGetPromptsRequestHandler extends AbstractReadOnlyRequestHandler<A
         }
         final List<String> allowedPromptIds = getAllowedPromptIds(ctx);
         if (!allowedPromptIds.isEmpty()) {
-            final AsciiFilter promptFilter = new AsciiFilter();
+            final StringFilter promptFilter = new StringFilter();
             promptFilter.setFieldName(AiPromptDTO.meta$$promptId.getName());
             promptFilter.setValueList(allowedPromptIds);
             searchRequest.setSearchFilter(promptFilter);

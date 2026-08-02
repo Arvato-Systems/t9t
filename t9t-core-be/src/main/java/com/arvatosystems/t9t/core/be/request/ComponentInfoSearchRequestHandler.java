@@ -26,7 +26,7 @@ import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.NoTracking;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.request.ComponentInfoDTO;
@@ -77,7 +77,7 @@ public class ComponentInfoSearchRequestHandler extends AbstractSearchRequestHand
     protected List<ComponentInfoDTO> applyFilters(final SearchFilter searchFilter, final List<ComponentInfoDTO> input) {
         if (searchFilter instanceof AndFilter andFilter) {
             return applyFilters(andFilter.getFilter1(), applyFilters(andFilter.getFilter2(), input));
-        } else if (searchFilter instanceof UnicodeFilter unicodeFilter) {
+        } else if (searchFilter instanceof StringFilter unicodeFilter) {
             if (unicodeFilter.getEqualsValue() != null) {
                 if (FIELD_NAME_GROUP_ID.equals(unicodeFilter.getFieldName())) {
                     final List<ComponentInfoDTO> filteredList = new ArrayList<>(input.size());

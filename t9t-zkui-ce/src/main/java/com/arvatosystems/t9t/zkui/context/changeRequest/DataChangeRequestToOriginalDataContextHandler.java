@@ -17,9 +17,9 @@ package com.arvatosystems.t9t.zkui.context.changeRequest;
 
 import jakarta.annotation.Nonnull;
 
+import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.NoTracking;
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
@@ -81,9 +81,7 @@ public class DataChangeRequestToOriginalDataContextHandler implements IGridConte
             IKeyFromDataProvider<BonaPortable, TrackingBase> keyFromDataProvider = Jdp.getRequired(IKeyFromDataProvider.class, viewModelId);
             return keyFromDataProvider.getFilterForKey(new DataWithTracking<>(data, DUMMY_TRACKING));
         } else if (dataChange.getKey() instanceof LongKey longKey) {
-            final LongFilter longFilter = new LongFilter("objectRef");
-            longFilter.setEqualsValue(longKey.getKey());
-            return longFilter;
+            return SearchFilters.equalsFilter("objectRef", longKey.getKey());
         } else {
             // extract key filter from the CRUD request
             IKeyFromCrudRequest<BonaPortable, TrackingBase, CrudAnyKeyRequest<BonaPortable, TrackingBase>> keyFromCrudRequest

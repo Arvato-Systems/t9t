@@ -29,8 +29,8 @@ import java.util.function.Consumer;
 
 import jakarta.annotation.Nonnull;
 
+import de.jpaw.bonaparte.core.ObjectValidationException;
 import de.jpaw.bonaparte.pojos.api.AndFilter;
-import de.jpaw.bonaparte.pojos.api.AsciiFilter;
 import de.jpaw.bonaparte.pojos.api.BooleanFilter;
 import de.jpaw.bonaparte.pojos.api.DecimalFilter;
 import de.jpaw.bonaparte.pojos.api.FieldFilter;
@@ -40,11 +40,12 @@ import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.NotFilter;
 import de.jpaw.bonaparte.pojos.api.OrFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.bonaparte.pojos.api.TimestampFilter;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 import de.jpaw.bonaparte.pojos.api.UuidFilter;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
+import de.jpaw.util.ApplicationException;
 import de.jpaw.util.CharTestsASCII;
 
 import com.arvatosystems.t9t.base.T9tException;
@@ -151,10 +152,8 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
             applyFieldFilter(sb, setters, nextIndex, timestampFilter);
         } else if (ff instanceof InstantFilter instantFilter) {
             applyFieldFilter(sb, setters, nextIndex, instantFilter);
-        } else if (ff instanceof AsciiFilter asciiFilter) {
-            applyFieldFilter(sb, setters, nextIndex, asciiFilter);
-        } else if (ff instanceof UnicodeFilter unicodeFilter) {
-            applyFieldFilter(sb, setters, nextIndex, unicodeFilter);
+        } else if (ff instanceof StringFilter stringFilter) {
+            applyFieldFilter(sb, setters, nextIndex, stringFilter);
         } else if (ff instanceof BooleanFilter booleanFilter) {
             applyFieldFilter(sb, setters, nextIndex, booleanFilter);
         } else if (ff instanceof UuidFilter uuidFilter) {
@@ -187,7 +186,7 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
             sb.append(" <= ?");
             setters.add(ps -> wrappedSetInt(ps, nextIndex, ff.getUpperBound()));
         } else {
-            throw new IllegalArgumentException("IntFilter must have at least one of equalsValue, lowerBound, upperBound");
+            throw new ApplicationException(ObjectValidationException.FILTER_WITHOUT_NONNULL_FIELDS, ff.getFieldName());
         }
     }
 
@@ -218,7 +217,7 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
             sb.append(" <= ?");
             setters.add(ps -> wrappedSetLong(ps, nextIndex, ff.getUpperBound()));
         } else {
-            throw new IllegalArgumentException("LongFilter must have at least one of equalsValue, lowerBound, upperBound");
+            throw new ApplicationException(ObjectValidationException.FILTER_WITHOUT_NONNULL_FIELDS, ff.getFieldName());
         }
     }
 
@@ -249,7 +248,7 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
             sb.append(" <= ?");
             setters.add(ps -> wrappedSetDecimal(ps, nextIndex, ff.getUpperBound()));
         } else {
-            throw new IllegalArgumentException("DecimalFilter must have at least one of equalsValue, lowerBound, upperBound");
+            throw new ApplicationException(ObjectValidationException.FILTER_WITHOUT_NONNULL_FIELDS, ff.getFieldName());
         }
     }
 
@@ -280,7 +279,7 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
             sb.append(" <= ?");
             setters.add(ps -> wrappedSetTimestamp(ps, nextIndex, ff.getUpperBound()));
         } else {
-            throw new IllegalArgumentException("TimestampFilter must have at least one of equalsValue, lowerBound, upperBound");
+            throw new ApplicationException(ObjectValidationException.FILTER_WITHOUT_NONNULL_FIELDS, ff.getFieldName());
         }
     }
 
@@ -313,7 +312,7 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
             sb.append(" <= ?");
             setters.add(ps -> wrappedSetInstant(ps, nextIndex, ff.getUpperBound()));
         } else {
-            throw new IllegalArgumentException("InstantFilter must have at least one of equalsValue, lowerBound, upperBound");
+            throw new ApplicationException(ObjectValidationException.FILTER_WITHOUT_NONNULL_FIELDS, ff.getFieldName());
         }
     }
 
@@ -326,7 +325,7 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
     }
 
     protected void applyFieldFilter(@Nonnull final StringBuilder sb, @Nonnull final List<Consumer<PreparedStatement>> setters, final int nextIndex,
-        @Nonnull final AsciiFilter ff) {
+        @Nonnull final StringFilter ff) {
         if (ff.getEqualsValue() != null) {
             sb.append(" = ?");
             setters.add(ps -> wrappedSetString(ps, nextIndex, ff.getEqualsValue()));
@@ -347,7 +346,7 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
             sb.append(" <= ?");
             setters.add(ps -> wrappedSetString(ps, nextIndex, ff.getUpperBound()));
         } else {
-            throw new IllegalArgumentException("AsciiFilter must have at least one of equalsValue, lowerBound, upperBound");
+            throw new ApplicationException(ObjectValidationException.FILTER_WITHOUT_NONNULL_FIELDS, ff.getFieldName());
         }
     }
 
@@ -368,32 +367,6 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
     }
 
     protected void applyFieldFilter(@Nonnull final StringBuilder sb, @Nonnull final List<Consumer<PreparedStatement>> setters, final int nextIndex,
-        @Nonnull final UnicodeFilter ff) {
-        if (ff.getEqualsValue() != null) {
-            sb.append(" = ?");
-            setters.add(ps -> wrappedSetString(ps, nextIndex, ff.getEqualsValue()));
-        } else if (ff.getLikeValue() != null) {
-            sb.append(" LIKE ?");
-            setters.add(ps -> wrappedSetString(ps, nextIndex, ff.getLikeValue()));
-        } else if (ff.getLowerBound() != null) {
-            setters.add(ps -> wrappedSetString(ps, nextIndex, ff.getLowerBound()));
-            if (ff.getUpperBound() != null) {
-                // range provided
-                sb.append(" BETWEEN ? AND ? ");
-                setters.add(ps -> wrappedSetString(ps, nextIndex + 1, ff.getUpperBound()));
-            } else {
-                // only lower bound provided
-                sb.append(" >= ?");
-            }
-        } else if (ff.getUpperBound() != null) {
-            sb.append(" <= ?");
-            setters.add(ps -> wrappedSetString(ps, nextIndex, ff.getUpperBound()));
-        } else {
-            throw new IllegalArgumentException("UnicodeFilter must have at least one of equalsValue, lowerBound, upperBound");
-        }
-    }
-
-    protected void applyFieldFilter(@Nonnull final StringBuilder sb, @Nonnull final List<Consumer<PreparedStatement>> setters, final int nextIndex,
         @Nonnull final BooleanFilter ff) {
         sb.append(ff.getBooleanValue() ? " = TRUE" : " = FALSE");
     }
@@ -404,7 +377,7 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
             sb.append(" = ?");
             setters.add(ps -> wrappedSetUUID(ps, nextIndex, ff.getEqualsValue()));
         } else {
-            throw new IllegalArgumentException("UnicodeFilter must have at least one of equalsValue, lowerBound, upperBound");
+            throw new ApplicationException(ObjectValidationException.FILTER_WITHOUT_NONNULL_FIELDS, ff.getFieldName());
         }
     }
 

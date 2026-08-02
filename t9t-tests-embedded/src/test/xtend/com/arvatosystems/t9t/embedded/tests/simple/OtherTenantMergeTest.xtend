@@ -23,7 +23,7 @@ import com.arvatosystems.t9t.io.CommunicationTargetChannelType
 import com.arvatosystems.t9t.io.DataSinkCategoryType
 import com.arvatosystems.t9t.io.DataSinkDTO
 import com.arvatosystems.t9t.io.request.DataSinkSearchRequest
-import de.jpaw.bonaparte.pojos.api.AsciiFilter
+import de.jpaw.bonaparte.api.SearchFilters
 import de.jpaw.bonaparte.pojos.api.media.MediaType
 import java.util.UUID
 import org.junit.jupiter.api.Assertions
@@ -67,10 +67,7 @@ class OtherTenantMergeTest {
         mergeDataSink(myDataSinkId)
 
         val dataSinks = dlg.typeIO((new DataSinkSearchRequest => [
-        searchFilter = new AsciiFilter => [
-        fieldName    = "dataSinkId"
-        equalsValue  = myDataSinkId
-        ]
+            searchFilter = SearchFilters.equalsFilter("dataSinkId", myDataSinkId)
         ] ), ReadAllResponse)
         println('''Results is «dataSinks.dataList.size»''')
         Assertions.assertEquals(2, dataSinks.dataList.size)

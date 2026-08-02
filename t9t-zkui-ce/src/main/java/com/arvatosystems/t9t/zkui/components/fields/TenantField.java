@@ -23,7 +23,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.ui.UIFilter;
 import de.jpaw.bonaparte.pojos.ui.UIFilterType;
@@ -54,7 +54,7 @@ public class TenantField extends AbstractField<Combobox> {
         Comboitem ci = cb.getSelectedItem();
         if (ci == null || empty())
             return null;
-        final UnicodeFilter f = new UnicodeFilter();
+        final StringFilter f = new StringFilter();
         f.setFieldName(getFieldName());
         f.setEqualsValue(ci.getValue());
         return f;

@@ -24,11 +24,11 @@ import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.AsciiFilter;
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.FieldFilter;
 import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
@@ -75,7 +75,7 @@ public class ReportSinkSearchFilterRestriction implements IReportSinkSearchFilte
                 currentCheckingResult = currentCheckingResult && doCommFormatTypeFilterChecking(searchFilter);
                 break;
             case FILE_OR_QUEUE_FIELD_NAME:
-                currentCheckingResult = currentCheckingResult && doFileOrQueueNameFilterChecking(searchFilter);
+                currentCheckingResult = currentCheckingResult && doFileOrQueueNameFilterChecking((StringFilter)searchFilter);
                 break;
         }
 
@@ -89,18 +89,18 @@ public class ReportSinkSearchFilterRestriction implements IReportSinkSearchFilte
      * @throws T9tException
      *              if the filter has more than one value available
      */
-    private boolean doFileOrQueueNameFilterChecking(final SearchFilter searchFilter) {
-        doAsciiFilterTypeChecking(searchFilter);
+    private boolean doFileOrQueueNameFilterChecking(final StringFilter searchFilter) {
+        doStringFilterTypeChecking(searchFilter);
 
-        if ((isAsciiFilterUsingEqualsValue((AsciiFilter)searchFilter) && isAsciiFilterUsingLikeValue((AsciiFilter)searchFilter))
-          || (isAsciiFilterUsingLikeValue((AsciiFilter)searchFilter) && isAsciiFilterUsingValueList((AsciiFilter)searchFilter))) {
+        if ((isStringFilterUsingEqualsValue(searchFilter) && isStringFilterUsingLikeValue(searchFilter))
+          || (isStringFilterUsingLikeValue(searchFilter) && isStringFilterUsingValueList(searchFilter))) {
             LOGGER.error("Filter value should be set in either equalValue or likeValue or valueList and not more than one");
             throw new T9tException(T9tException.UNEXPECTED_FILTER_VALUE);
         }
 
         // if we are using using likeValue, we might need to do some fileName conversion
-        if (isAsciiFilterUsingLikeValue((AsciiFilter)searchFilter)) {
-            ((AsciiFilter)searchFilter).setLikeValue(processPermittedFileName(((AsciiFilter)searchFilter).getLikeValue()));
+        if (isStringFilterUsingLikeValue(searchFilter)) {
+            searchFilter.setLikeValue(processPermittedFileName(searchFilter.getLikeValue()));
         }
         return true;
     }
@@ -113,12 +113,12 @@ public class ReportSinkSearchFilterRestriction implements IReportSinkSearchFilte
      * @param searchFilter
      *              the search filter we are validating
      * @throws T9tException
-     *              if the searchFilter is not of an AsciiFilter type
+     *              if the searchFilter is not of an StringFilter type
      *              if the searchFilter's value checking fails
      */
     private boolean doCommFormatTypeFilterChecking(final SearchFilter searchFilter) {
-        doAsciiFilterTypeChecking(searchFilter);
-        doAsciiFilterContentChecking((AsciiFilter)searchFilter, PERMITTED_COMMUNICATION_FORMAT);
+        doStringFilterTypeChecking(searchFilter);
+        doStringFilterContentChecking((StringFilter)searchFilter, PERMITTED_COMMUNICATION_FORMAT);
         return true;
     }
 
@@ -128,12 +128,12 @@ public class ReportSinkSearchFilterRestriction implements IReportSinkSearchFilte
      * @param searchFilter
      *              the searchFilter that we are processing
      * @throws T9tException
-     *              if the searchFilter is not of an AsciiFilter type
+     *              if the searchFilter is not of an StringFilter type
      *              if the searchFilter actually contains value that's outside from the permitted for report search
      */
     private boolean doDataSinkFilterChecking(final SearchFilter searchFilter) {
-        doAsciiFilterTypeChecking(searchFilter);
-        doAsciiFilterContentChecking((AsciiFilter)searchFilter, Arrays.asList(DataSinkCategoryType.REPORT.getToken()));
+        doStringFilterTypeChecking(searchFilter);
+        doStringFilterContentChecking((StringFilter)searchFilter, Arrays.asList(DataSinkCategoryType.REPORT.getToken()));
         return true;
     }
 
@@ -143,25 +143,25 @@ public class ReportSinkSearchFilterRestriction implements IReportSinkSearchFilte
      * @param searchFilter
      *              the search filter that we are checking
      * @throws T9tException
-     *              if the searchFilter is not of an AsciiFilter type
+     *              if the searchFilter is not of an StringFilter type
      *              if the searchFilter actually contains value that's outside from the permitted for report search
      */
     private boolean doCommTargetChannelTypeFilterChecking(final SearchFilter searchFilter) {
-        doAsciiFilterTypeChecking(searchFilter);
-        doAsciiFilterContentChecking((AsciiFilter)searchFilter, Arrays.asList(CommunicationTargetChannelType.FILE.getToken()));
+        doStringFilterTypeChecking(searchFilter);
+        doStringFilterContentChecking((StringFilter)searchFilter, Arrays.asList(CommunicationTargetChannelType.FILE.getToken()));
         return true;
     }
 
 
     /**
-     * check if the searchFilter is of an AsciiFilter type
+     * check if the searchFilter is of an StringFilter type
      * @param searchFilter
      *              the searchFilter we are checking
      * @throws T9tException
-     *              if the searchFilter is not of AsciiFilter type
+     *              if the searchFilter is not of StringFilter type
      */
-    protected void doAsciiFilterTypeChecking(final SearchFilter searchFilter) {
-        if (!(searchFilter instanceof AsciiFilter)) {
+    protected void doStringFilterTypeChecking(final SearchFilter searchFilter) {
+        if (!(searchFilter instanceof StringFilter)) {
             throw new T9tException(T9tException.SEARCH_FILTER_VALIDATION_ERROR);
         }
     }
@@ -194,21 +194,21 @@ public class ReportSinkSearchFilterRestriction implements IReportSinkSearchFilte
      *              if the filter has more than one value available
      *              if the value provided is outside of the permitted values
      */
-    protected void doAsciiFilterContentChecking(final AsciiFilter asciiFilter, final List<String> permittedContent) {
-        if ((isAsciiFilterUsingEqualsValue(asciiFilter) && isAsciiFilterUsingLikeValue(asciiFilter))
-          || (isAsciiFilterUsingLikeValue(asciiFilter) && isAsciiFilterUsingValueList(asciiFilter))
-          || (isAsciiFilterUsingEqualsValue(asciiFilter) && isAsciiFilterUsingValueList(asciiFilter))) {
+    protected void doStringFilterContentChecking(final StringFilter asciiFilter, final List<String> permittedContent) {
+        if ((isStringFilterUsingEqualsValue(asciiFilter) && isStringFilterUsingLikeValue(asciiFilter))
+          || (isStringFilterUsingLikeValue(asciiFilter) && isStringFilterUsingValueList(asciiFilter))
+          || (isStringFilterUsingEqualsValue(asciiFilter) && isStringFilterUsingValueList(asciiFilter))) {
             LOGGER.error("Filter value should be set in either equalValue or likeValue or valueList and not more than one");
             throw new T9tException(T9tException.UNEXPECTED_FILTER_VALUE);
-        } else if ((isAsciiFilterUsingEqualsValue(asciiFilter) || isAsciiFilterUsingLikeValue(asciiFilter)
-          || !isAsciiFilterUsingValueList(asciiFilter))) {
+        } else if ((isStringFilterUsingEqualsValue(asciiFilter) || isStringFilterUsingLikeValue(asciiFilter)
+          || !isStringFilterUsingValueList(asciiFilter))) {
             asciiFilter.setValueList(permittedContent);
 
         } else {
             // for any provided filter check if it's within the permitted communication format
-            if ((isAsciiFilterUsingEqualsValue(asciiFilter) && !permittedContent.contains((asciiFilter).getEqualsValue()))
-              || (isAsciiFilterUsingLikeValue(asciiFilter) && !permittedContent.contains((asciiFilter).getLikeValue()))
-              || (isAsciiFilterUsingValueList(asciiFilter) && !permittedContent.containsAll((asciiFilter).getValueList()))) {
+            if ((isStringFilterUsingEqualsValue(asciiFilter) && !permittedContent.contains((asciiFilter).getEqualsValue()))
+              || (isStringFilterUsingLikeValue(asciiFilter) && !permittedContent.contains((asciiFilter).getLikeValue()))
+              || (isStringFilterUsingValueList(asciiFilter) && !permittedContent.containsAll((asciiFilter).getValueList()))) {
                 throw new T9tException(T9tException.RESTRICTED_ACCESS);
             }
         }
@@ -342,28 +342,28 @@ public class ReportSinkSearchFilterRestriction implements IReportSinkSearchFilte
         return longFilter.getValueList() != null && !longFilter.getValueList().isEmpty();
     }
 
-    protected boolean isAsciiFilterUsingEqualsValue(final AsciiFilter asciiFilter) {
+    protected boolean isStringFilterUsingEqualsValue(final StringFilter asciiFilter) {
         return asciiFilter.getEqualsValue() != null && !asciiFilter.getEqualsValue().trim().isEmpty();
     }
 
-    protected boolean isAsciiFilterUsingLikeValue(final AsciiFilter asciiFilter) {
+    protected boolean isStringFilterUsingLikeValue(final StringFilter asciiFilter) {
         return asciiFilter.getLikeValue() != null && !asciiFilter.getLikeValue().trim().isEmpty();
     }
 
-    protected boolean isAsciiFilterUsingValueList(final AsciiFilter asciiFilter) {
+    protected boolean isStringFilterUsingValueList(final StringFilter asciiFilter) {
         return asciiFilter.getValueList() != null && !asciiFilter.getValueList().isEmpty();
     }
 
-    protected boolean isAsciiFilterEqualsValueSameTo(final AsciiFilter asciiFilter, final String content) {
+    protected boolean isStringFilterEqualsValueSameTo(final StringFilter asciiFilter, final String content) {
         return asciiFilter.getEqualsValue().equals(content);
     }
 
     //we only accept an exact equals (just like equalValue) because it may match something that it shouldn't if we accept wildcard
-    protected boolean isAsciiFilterLikeValueSameTo(final AsciiFilter asciiFilter, final String content) {
+    protected boolean isStringFilterLikeValueSameTo(final StringFilter asciiFilter, final String content) {
         return asciiFilter.getLikeValue().equals(content);
     }
 
-    protected boolean isAsciiFilterValueListIsIn(final AsciiFilter asciiFilter, final List<String> contents) {
+    protected boolean isStringFilterValueListIsIn(final StringFilter asciiFilter, final List<String> contents) {
         return contents.containsAll(asciiFilter.getValueList());
     }
 }

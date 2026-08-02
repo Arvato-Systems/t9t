@@ -26,14 +26,17 @@ public class SearchFilterRowVM {
     private String filterName;
     private String currentSelection;
     private Boolean negate;
+    private Boolean caseInsensitive;
     private String qualifier;
     private List<String> filterTypes;
+    private boolean isStringType;  // to determine if the filter is a string type (for case insensitive option)
 
     public SearchFilterRowVM(String name) {
         selected = false;
         filterName = name;
         currentSelection = "";
-        negate = false;
+        negate = Boolean.FALSE;
+        caseInsensitive = Boolean.FALSE;
         filterTypes = new ArrayList<>(UIFilterType.values().length);
     }
 
@@ -43,6 +46,7 @@ public class SearchFilterRowVM {
             currentSelection = filter.getFilterType().name();
         }
         negate = filter.getNegate();
+        caseInsensitive = filter.getCaseInsensitive();
         setQualifier(filter.getQualifier());
         selected = true;
     }
@@ -63,12 +67,28 @@ public class SearchFilterRowVM {
         this.filterName = filterName;
     }
 
+    public Boolean getCaseInsensitive() {
+        return caseInsensitive;
+    }
+
+    public void setCaseInsensitive(Boolean caseInsensitive) {
+        this.caseInsensitive = caseInsensitive;
+    }
+
     public Boolean getNegate() {
         return negate;
     }
 
     public void setNegate(Boolean negate) {
         this.negate = negate;
+    }
+
+    public boolean getIsStringType() {
+        return isStringType;
+    }
+
+    public void setIsStringType(boolean isStringType) {
+        this.isStringType = isStringType;
     }
 
     public String getCurrentSelection() {
@@ -119,4 +139,5 @@ public class SearchFilterRowVM {
             return false;
         return true;
     }
+
 }

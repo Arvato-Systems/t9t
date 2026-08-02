@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
@@ -44,11 +46,14 @@ import org.slf4j.LoggerFactory;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
-import de.jpaw.bonaparte.jpa.api.JpaCriteriaBuilder;
 import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.bonaparte.pojos.api.AggregateColumn;
 import de.jpaw.bonaparte.pojos.api.AggregateFunctionType;
+import de.jpaw.bonaparte.pojos.api.AndFilter;
 import de.jpaw.bonaparte.pojos.api.BooleanFilter;
+import de.jpaw.bonaparte.pojos.api.FieldFilter;
+import de.jpaw.bonaparte.pojos.api.NotFilter;
+import de.jpaw.bonaparte.pojos.api.OrFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
@@ -63,6 +68,7 @@ import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.jpa.IDataProcessor;
+import com.arvatosystems.t9t.base.jpa.IJpaFilter;
 import com.arvatosystems.t9t.base.jpa.IResolverAnyKey;
 import com.arvatosystems.t9t.base.search.DummySearchCriteria;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
@@ -78,6 +84,7 @@ public abstract class AbstractResolverAnyKey<
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractResolverAnyKey.class);
 
+    protected final IJpaFilter jpaFilter = Jdp.getRequired(IJpaFilter.class);
     protected final Provider<PersistenceProviderJPA> jpaContextProvider = Jdp.getProvider(PersistenceProviderJPA.class);
     protected final Provider<RequestContext> contextProvider = Jdp.getProvider(RequestContext.class);
 
@@ -412,16 +419,25 @@ public abstract class AbstractResolverAnyKey<
         return r;
     }
 
+    private Predicate buildPredicate(@Nonnull final CriteriaBuilder cb, @Nonnull final PathResolver pathResolver, @Nullable final SearchFilter filter) {
+        if (filter == null) {
+            return null;
+        }
+        return switch (filter) {
+            case FieldFilter f -> jpaFilter.applyFilter(cb, pathResolver.getPath(f.getFieldName()), f);
+            case AndFilter f -> cb.and(buildPredicate(cb, pathResolver, f.getFilter1()), buildPredicate(cb, pathResolver, f.getFilter2()));
+            case OrFilter f -> cb.or(buildPredicate(cb, pathResolver, f.getFilter1()), buildPredicate(cb, pathResolver, f.getFilter2()));
+            case NotFilter f -> buildPredicate(cb, pathResolver, f.getFilter()).not();
+            default -> throw new RuntimeException("Unrecognized filter type: " + filter.ret$PQON());
+        };
+    }
+
     /** Creates the WHERE conditions on the SELECT query. */
     private <R> void createWhereList(final SearchFilter filter, final CriteriaBuilder criteriaBuilder, final Root<ENTITY> from, final CriteriaQuery<R> select) {
         // Add filters, if supplied
         final PathResolver r = new PathResolver(getEntityClass(), from);
-        final JpaCriteriaBuilder bld = new JpaCriteriaBuilder(r, criteriaBuilder);
 
-        Predicate whereList = null;
-        if (filter != null) {
-            whereList = bld.buildPredicate(filter);
-        }
+        Predicate whereList = buildPredicate(criteriaBuilder, r, filter);
 
         // perform special filtering on tenant
         if (isTenantIsolated()) {

@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.rep.be.request.restriction.impl;
 import java.util.List;
 
 import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.AsciiFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
@@ -44,7 +44,7 @@ public class ReportConfigByUserPermissionRestriction implements IReportConfigByU
         if (permittedReportIds == null || permittedReportIds.isEmpty())
             return;
 
-        final AsciiFilter idFilter = new AsciiFilter("reportConfigId");
+        final StringFilter idFilter = new StringFilter("reportConfigId");
         if (permittedReportIds.size() == 1)
             idFilter.setEqualsValue(permittedReportIds.get(0));  // single entry => use equals
         else

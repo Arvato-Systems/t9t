@@ -26,11 +26,10 @@ import jakarta.persistence.criteria.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.jpa.api.JpaPathResolver;
-
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.jpa.IJpaPathResolver;
 
-public class PathResolver implements JpaPathResolver {
+public class PathResolver implements IJpaPathResolver {
     private static final Logger LOGGER = LoggerFactory.getLogger(PathResolver.class);
     private static final String COMPOUND_ATTRIBUTE_SPLIT_SEPARATOR = "\\.";
 

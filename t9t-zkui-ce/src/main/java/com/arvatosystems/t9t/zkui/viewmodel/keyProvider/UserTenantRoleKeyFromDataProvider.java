@@ -20,8 +20,8 @@ import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
@@ -35,14 +35,9 @@ public class UserTenantRoleKeyFromDataProvider implements IKeyFromDataProvider<U
 
     @Override
     public SearchFilter getFilterForKey(DataWithTracking<UserTenantRoleDTO, TrackingBase> dwt) {
-        final UnicodeFilter tenantFilter = new UnicodeFilter(T9tConstants.TENANT_ID_FIELD_NAME);
-        tenantFilter.setEqualsValue(((DataWithTrackingS<UserTenantRoleDTO, TrackingBase>)dwt).getTenantId());
-
-        final LongFilter roleFilter = new LongFilter("roleRef");
-        roleFilter.setEqualsValue(dwt.getData().getRoleRef().getObjectRef());
-
-        final LongFilter userFilter = new LongFilter("userRef");
-        userFilter.setEqualsValue(dwt.getData().getUserRef().getObjectRef());
+        final StringFilter tenantFilter = SearchFilters.equalsFilter(T9tConstants.TENANT_ID_FIELD_NAME, ((DataWithTrackingS<UserTenantRoleDTO, TrackingBase>)dwt).getTenantId());
+        final LongFilter roleFilter = SearchFilters.equalsFilter("roleRef", dwt.getData().getRoleRef().getObjectRef());
+        final LongFilter userFilter = SearchFilters.equalsFilter("userRef", dwt.getData().getUserRef().getObjectRef());
 
         return SearchFilters.and(tenantFilter, SearchFilters.and(roleFilter, userFilter));
     }

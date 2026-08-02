@@ -33,10 +33,10 @@ import com.arvatosystems.t9t.event.SubscriberConfigDTO
 import com.arvatosystems.t9t.event.SubscriberConfigKey
 import com.arvatosystems.t9t.event.request.SubscriberConfigCrudRequest
 import com.arvatosystems.t9t.remote.connect.Connection
+import de.jpaw.bonaparte.api.SearchFilters
 import de.jpaw.bonaparte.pojos.api.OperationType
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter
-import java.util.UUID
 import java.time.Instant
+import java.util.UUID
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -83,9 +83,7 @@ class ITCacheBenchmark {
         dlg.okIO(new LogStatisticsRequest(stat))
         // obtain its ID
         val sresp = dlg.typeIO(new StatisticsSearchRequest => [
-            searchFilter = new UnicodeFilter("info2") => [
-                equalsValue = randomData
-            ]
+            searchFilter = SearchFilters.equalsFilter("info2", randomData)
         ], ReadAllResponse) as ReadAllResponse<StatisticsDTO, WriteTracking>
 
         Assertions.assertTrue(sresp.dataList.size == 1)

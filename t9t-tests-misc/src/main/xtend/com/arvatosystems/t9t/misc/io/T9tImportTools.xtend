@@ -20,19 +20,19 @@ import com.arvatosystems.t9t.base.T9tException
 import com.arvatosystems.t9t.base.entities.FullTracking
 import com.arvatosystems.t9t.base.search.ReadAllResponse
 import com.arvatosystems.t9t.io.SinkDTO
+import com.arvatosystems.t9t.io.T9tIOException
 import com.arvatosystems.t9t.io.request.ImportFromString
 import com.arvatosystems.t9t.io.request.ImportInputSessionRequest
 import com.arvatosystems.t9t.io.request.SinkSearchRequest
 import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.api.media.MediaDataUtil
-import de.jpaw.bonaparte.pojos.api.SortColumn
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS
-import java.util.List
-import java.util.UUID
-import com.arvatosystems.t9t.io.T9tIOException
+import de.jpaw.bonaparte.pojos.api.SortColumn
+import de.jpaw.bonaparte.pojos.api.StringFilter
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
+import java.util.List
+import java.util.UUID
 
 @AddLogger
 class T9tImportTools {
@@ -86,7 +86,7 @@ class T9tImportTools {
     /** Retrieves the summary record of the most recent import and check for errors. Throws an exception if errors found, otherwise returns the number of records read. */
     def static Integer checkLastImport(ITestConnection connection, String dataSinkId, String filename) {
         val searchRq = new SinkSearchRequest => [
-            searchFilter  = new UnicodeFilter("dataSink.dataSinkId") => [ equalsValue = dataSinkId ]
+            searchFilter  = new StringFilter("dataSink.dataSinkId") => [ equalsValue = dataSinkId ]
             sortColumns   = #[ new SortColumn("objectRef", true) ]
         ]
         val resp = connection.typeIO(searchRq, ReadAllResponse).dataList as List<DataWithTrackingS<SinkDTO, FullTracking>>;

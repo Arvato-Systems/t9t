@@ -15,7 +15,8 @@
  */
 package com.arvatosystems.t9t.zkui.services.impl;
 
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.api.SearchFilters;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
 
@@ -28,8 +29,7 @@ public class TitleBarSearch implements ITitleBarSearch {
 
     @Override
     public void search(String searchText) {
-        UnicodeFilter f = new UnicodeFilter("name");
-        f.setLikeValue(searchText.replace('*', '%'));
+        StringFilter f = SearchFilters.likeFilter("name", searchText.replace('*', '%'));
         JumpTool.jump("screens/user_admin/user28.zul", f, null);
     }
 }

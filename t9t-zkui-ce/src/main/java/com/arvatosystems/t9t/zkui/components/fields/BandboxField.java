@@ -19,9 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Bandbox;
 
+import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
@@ -86,10 +86,7 @@ public class BandboxField extends AbstractField<Bandbox> implements ISelectRecei
         if (empty())
             return null;
         // depending on which values are set, create a lower, upper, equals or range filter
-        LongFilter f = new LongFilter();
-        f.setFieldName(getFieldName());
-        f.setEqualsValue(value);
-        return f;
+        return SearchFilters.equalsFilter(getFieldName(), value);
     }
 
     public BandboxField(String fieldname, UIFilter cfg, FieldDefinition desc, String gridId, ApplicationSession session, String bandboxGridId) {

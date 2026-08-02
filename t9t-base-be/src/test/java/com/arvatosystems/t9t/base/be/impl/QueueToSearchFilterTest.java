@@ -24,10 +24,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import de.jpaw.bonaparte.pojos.api.AndFilter;
-import de.jpaw.bonaparte.pojos.api.AsciiFilter;
 import de.jpaw.bonaparte.pojos.api.NotFilter;
 import de.jpaw.bonaparte.pojos.api.OrFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.services.ISearchTools;
@@ -46,14 +46,14 @@ public class QueueToSearchFilterTest {
 
         Queue<SearchFilter> filterQueue = new LinkedList<>();
         filterQueue.add(new AndFilter());
-        filterQueue.add(new AsciiFilter("A"));
+        filterQueue.add(new StringFilter("A"));
         filterQueue.add(new NotFilter());
-        filterQueue.add(new AsciiFilter("C"));
+        filterQueue.add(new StringFilter("C"));
 
 
         SearchFilter filter = util.generateSearchFilterFromQueue(filterQueue, null);
         Assertions.assertTrue(filter instanceof AndFilter);
-        Assertions.assertTrue(((AndFilter)filter).getFilter1() instanceof AsciiFilter);
+        Assertions.assertTrue(((AndFilter)filter).getFilter1() instanceof StringFilter);
         Assertions.assertTrue(((AndFilter)filter).getFilter2() instanceof NotFilter);
     }
 
@@ -65,9 +65,9 @@ public class QueueToSearchFilterTest {
         filterQueue.add(new NotFilter());
         filterQueue.add(new AndFilter());
         filterQueue.add(new OrFilter());
-        filterQueue.add(new AsciiFilter("A"));
-        filterQueue.add(new AsciiFilter("B"));
-        filterQueue.add(new AsciiFilter("C"));
+        filterQueue.add(new StringFilter("A"));
+        filterQueue.add(new StringFilter("B"));
+        filterQueue.add(new StringFilter("C"));
 
 
         SearchFilter filter = util.generateSearchFilterFromQueue(filterQueue, null);
@@ -76,7 +76,7 @@ public class QueueToSearchFilterTest {
 
         AndFilter andFilter = (AndFilter)((NotFilter)filter).getFilter();
         Assertions.assertTrue(andFilter.getFilter1() instanceof OrFilter);
-        Assertions.assertTrue(andFilter.getFilter2() instanceof AsciiFilter);
-        Assertions.assertEquals("C", ((AsciiFilter)andFilter.getFilter2()).getFieldName());
+        Assertions.assertTrue(andFilter.getFilter2() instanceof StringFilter);
+        Assertions.assertEquals("C", ((StringFilter)andFilter.getFilter2()).getFieldName());
     }
 }

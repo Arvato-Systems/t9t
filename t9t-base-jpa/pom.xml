@@ -50,10 +50,6 @@
             <artifactId>persistence-refs</artifactId>
         </dependency>
         <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>persistence-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
         </dependency>

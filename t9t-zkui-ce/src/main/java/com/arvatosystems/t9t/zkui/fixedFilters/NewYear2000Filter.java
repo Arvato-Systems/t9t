@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.zkui.fixedFilters;
 
 import java.time.LocalDate;
 
+import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.DayFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.dp.Named;
@@ -25,9 +26,8 @@ import de.jpaw.dp.Singleton;
 @Singleton
 @Named("newYear2000")
 public class NewYear2000Filter implements IFixedFilter {
-    private static final DayFilter FILTER = new DayFilter("day");
+    private static final DayFilter FILTER = SearchFilters.equalsFilter("day", LocalDate.of(2000, 1, 1));
     static {
-        FILTER.setEqualsValue(LocalDate.of(2000, 1, 1));
         FILTER.freeze();
     }
 

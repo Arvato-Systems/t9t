@@ -15,8 +15,9 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel.keyProvider;
 
+import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
@@ -31,8 +32,7 @@ public class TenantKeyFromCrudRequest implements IKeyFromCrudRequest<TenantDTO, 
 
     @Override
     public SearchFilter getFilterForKey(final TenantCrudRequest crudRequest) {
-        final UnicodeFilter tenantFilter = new UnicodeFilter(TenantDTO.meta$$tenantId.getName());
-        tenantFilter.setEqualsValue(crudRequest.getKey());
+        final StringFilter tenantFilter = SearchFilters.equalsFilter(TenantDTO.meta$$tenantId.getName(), crudRequest.getKey());
         return tenantFilter;
     }
 }

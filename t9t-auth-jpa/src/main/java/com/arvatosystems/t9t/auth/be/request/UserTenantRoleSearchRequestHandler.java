@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.auth.be.request;
 
 import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.auth.UserTenantRoleDTO;
@@ -41,8 +41,8 @@ public class UserTenantRoleSearchRequestHandler extends AbstractSearchRequestHan
       execute(final RequestContext ctx, final UserTenantRoleSearchRequest request) throws Exception {
         mapper.processSearchPrefixForDB(request); // convert the field with searchPrefix
 
-        final UnicodeFilter userFilter = ctx.tenantFilter("user.tenantId");
-        final UnicodeFilter roleFilter = ctx.tenantFilter("role.tenantId");
+        final StringFilter userFilter = ctx.tenantFilter("user.tenantId");
+        final StringFilter roleFilter = ctx.tenantFilter("role.tenantId");
         request.setSearchFilter(SearchFilters.and(request.getSearchFilter(), SearchFilters.and(userFilter, roleFilter)));
         return mapper.createReadAllResponse(resolver.search(request, null), request.getSearchOutputTarget());
     }

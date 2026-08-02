@@ -101,6 +101,7 @@ public class EditSearchFiltersViewModel {
                     filter.setFilterType(UIFilterType.valueOf(row.getCurrentSelection()));
                     filter.setNegate(row.getNegate());
                     filter.setQualifier(row.getQualifier());
+                    filter.setCaseInsensitive(row.getCaseInsensitive());
                     filters.add(filter);
                 }
             }
