@@ -53,7 +53,8 @@ class AuthResolvers {
     @AllCanAccessGlobalTenant   // if I'm a global user but logged on using a specific tenant, I must see my data as well
     def UserEntity              getUserEntity(UserRef ref) { return null; }
     def UserEntity              findByUserId(boolean onlyActive, String userId) { return null; }
-
+    def List<UserEntity>        findByEmailAddress(boolean onlyActive, String emailAddress) { return null; }
+    def List<UserEntity>        findByEmailAddressAndIsTechnical(boolean onlyActive, String emailAddress, boolean isTechnical) { return null; }
 
     @GlobalTenantCanAccessAll   // for Tenants, the admin can manage all
     @AllCanAccessGlobalTenant

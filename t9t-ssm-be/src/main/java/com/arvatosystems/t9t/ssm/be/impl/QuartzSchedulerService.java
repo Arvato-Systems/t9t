@@ -335,7 +335,7 @@ public class QuartzSchedulerService implements ISchedulerService {
             }
 
             final String hourly = String.format("0 %s %s ? * *", min, hour.toString());
-            LOGGER.debug("Determined cron expression='{}' for type=HOURLY, passed hour={}, interval={}", hourly, hour.toString(), setup.getIntervalOffset());
+            LOGGER.debug("Determined cron expression='{}' for type=HOURLY, passed hour={}, interval={}", hourly, hour, setup.getIntervalOffset());
             return hourly;
 
         case DAILY:

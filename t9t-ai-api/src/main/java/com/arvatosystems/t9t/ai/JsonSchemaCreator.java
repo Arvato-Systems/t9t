@@ -89,6 +89,7 @@ public final class JsonSchemaCreator {
         }
         object.setProperties(properties);
         object.setRequired(buildRequiredFromFields(metaData.getFields(), addPqon));
+        object.setAddProps(Boolean.FALSE);
         return object;
     }
 
@@ -104,7 +105,7 @@ public final class JsonSchemaCreator {
         case MAP:
             return buildJsonSchemaObject(null, comment, addPqon); // maps are represented as objects in JSON schema
         case SET:
-            return new JsonSchemaSet("array", comment, true, buildFieldNoArray(metaData, null, addPqon));
+            return new JsonSchemaSet("array", comment, Boolean.TRUE, buildFieldNoArray(metaData, null, addPqon));
         default:
             throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, "Multiplicity: " + metaData.getMultiplicity());
         }
@@ -142,7 +143,7 @@ public final class JsonSchemaCreator {
         case ENUMSETALPHA:
         case XENUMSET:
             // return as array of strings
-            return new JsonSchemaSet("array", comment, true, new JsonSchemaString("string", comment, null, MAX_ENUM_NAME_LENGTH, null, null));
+            return new JsonSchemaSet("array", comment, Boolean.TRUE, new JsonSchemaString("string", comment, null, MAX_ENUM_NAME_LENGTH, null, null));
         case OBJECT: {
             final ObjectReference objectReference = (ObjectReference) metaData;
             return buildJsonSchemaObject(objectReference.getLowerBound(), comment, addPqon);

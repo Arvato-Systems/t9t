@@ -119,7 +119,7 @@ public class OutputSession implements IOutputSession {
     public Long open(final OutputSessionParameters osParams) {
         validateState(State.CLOSED);
 
-        LOGGER.debug("OutputSession.open({})", osParams.toString());
+        LOGGER.debug("OutputSession.open({})", osParams);
 
         // use a default asOf date, if non supplied
         if (osParams.getAsOf() == null) {

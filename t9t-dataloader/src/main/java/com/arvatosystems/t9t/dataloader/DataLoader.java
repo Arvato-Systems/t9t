@@ -309,7 +309,7 @@ public class DataLoader {
 
                 // csv columns
                 for (int i = 0; i < values.length; i++) {
-                    logger.debug("Process column {} ", columnNames[i].toString());
+                    logger.debug("Process column {} ", columnNames[i]);
                     Integer sqlType = sqlTypes.get(columnNames[i]);
                     String pattern = this.patternColumns.getProperty(columnNames[i]);
                     if ("null".equals(values[i])) { // remap to null

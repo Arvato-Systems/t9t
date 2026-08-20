@@ -164,6 +164,8 @@ package (com.arvatosystems) t9t.auth {
         optional defaultExternalId                  userIdExt;                              // external user ID - only required to be unique within tenant and orgUnit
         optional Ascii(80)                          identityProvider;                       // for MS OpenID Connect / Azure AD: if present, requires that the user belongs to this tenant
         optional Boolean                            onlyExternalAuth;                       // set to true to disable internal authentication
+        optional languageTag                        language;                               // user's language
+        optional shortText                          firstName;                              // first name of the user
     }
 
     final class UserDescription extends UserRef {

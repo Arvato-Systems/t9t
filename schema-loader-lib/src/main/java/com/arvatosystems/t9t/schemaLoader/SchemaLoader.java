@@ -67,7 +67,7 @@ public class SchemaLoader {
         LOGGER.info("==============================================================================================");
 
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace(configuration.toString());
+            LOGGER.trace("{}", configuration);
         }
     }
 

@@ -342,7 +342,7 @@ public class OpenAIChatService implements IAiChatService {
                     } catch (final Exception e) {
                         final String errorMessage = "Can't deserialize the response DTO from OpenAI: " + e.getMessage();
                         result.setErrorMessage(errorMessage);
-                        LOGGER.error("Can't deserialize the response DTO from OpenAI with error: {}, response={}", e.getMessage(), parsedResponse.toString());
+                        LOGGER.error("Can't deserialize the response DTO from OpenAI with error: {}, response={}", e.getMessage(), parsedResponse);
                         return result;
                     }
                 }

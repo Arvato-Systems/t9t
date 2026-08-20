@@ -152,7 +152,7 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
                     for (final Integer shard : shards) {
                         sb.append(' ').append(shard);
                     }
-                    LOGGER.debug("getTasksDue(): only {} of {} partitions assigned to this node, namely {}", numPartitions, shards.size(), sb.toString());
+                    LOGGER.debug("getTasksDue(): only {} of {} partitions assigned to this node, namely {}", numPartitions, shards.size(), sb);
                 }
             } else {
                 LOGGER.debug("getTasksDue(): all partitions are assigned to this node");

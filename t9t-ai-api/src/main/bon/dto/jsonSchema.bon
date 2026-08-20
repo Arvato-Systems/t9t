@@ -22,17 +22,30 @@ package (com.arvatosystems) t9t.ai.jsonSchema {
     default private unsigned trim noControlChars;
     properties jsonName is com.fasterxml.jackson.annotation.JsonProperty();
 
-    /** Information to describe a single field of any type (common superclass). */
+    /**
+     * Information to describe a single field of any type (common superclass).
+     * While title and description can both be used in object definitions and references (refs and defs), we use the following convention here:
+     * - title is only used for objects, and is unique to the class
+     * - description is used for fields referencing the object (or other fields), and is the instance comment
+     */
     abstract class AbstractJsonSchemaField {
-        required Element                                    ^type;              // usually string or, with OpenAI workaround: [ (type), "null" ]
-        optional Unicode(255)                               description;        // missing on top level element, because part of header
+        optional Element                                    ^type;              // usually string or, with OpenAI workaround: [ (type), "null" ]. Optional, because for refs it is not used.
+        optional Unicode(65535)                             description;        // describes the use of the referenced field (field comment)
     }
 
-    /** Information to describe an object. */
+    /**
+     * Information to describe an object.
+     * This can be a specific type, or a ref, or anyOf.
+     * Exactly one of the fields will be populated - ref or anyOf or (type, title, properties, required, addProps).
+     */
     final class JsonSchemaObject extends AbstractJsonSchemaField {
+        optional Unicode(65535)                             title;              // describes the object (class comment)
         required (AbstractJsonSchemaField...) Map<String>   ^properties;
         required defaultExternalId List<>                   ^required;
-        required boolean                                    additionalProperties properties jsonName="additionalProperties"; // no snake case here!
+        optional Boolean                                    addProps    properties jsonName="additionalProperties"; // no snake case here!
+        required (JsonSchemaObject) Map<String>             defs        properties jsonName="$defs";        // all object definitions
+        optional Unicode(255)                               ref         properties jsonName="$ref";
+        required Element List<>                             anyOf       properties jsonName="anyOf";        // elements can be of type JsonSchemaObject or String (for "null")
     }
 
     /** Information to describe a string field (this includes temporal types). */
@@ -65,7 +78,7 @@ package (com.arvatosystems) t9t.ai.jsonSchema {
 
     /** Information to describe a set field. */
     final class JsonSchemaSet extends AbstractJsonSchemaField {
-        required boolean                                    uniqueItems properties jsonName="uniqueItems";  // must be true!
+        optional Boolean                                    uniqueItems properties jsonName="uniqueItems";  // must be true! But not supported by OpenAI!
         optional (AbstractJsonSchemaField...)               items;              // type of the items
     }
 }

@@ -56,7 +56,7 @@ public class EnumsetAlphaTextboxDataField<E extends Enum<E>, T extends GenericEn
         c.setHflex("1");
         c.setConstraint(sb.toString());
         c.setMaxlength(ed.getTokens().size());
-        LOGGER.debug("Created XEnumset data field for {} with max length {} chars, constraint is {}", getFieldName(), ed.getTokens().size(), sb.toString());
+        LOGGER.debug("Created XEnumset data field for {} with max length {} chars, constraint is {}", getFieldName(), ed.getTokens().size(), sb);
     }
 
     @Override

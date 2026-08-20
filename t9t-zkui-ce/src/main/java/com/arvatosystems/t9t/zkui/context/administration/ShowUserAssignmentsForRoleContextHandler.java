@@ -32,6 +32,6 @@ public class ShowUserAssignmentsForRoleContextHandler implements IGridContextMen
     @Override
     public void selected(final Grid28 lb, final DataWithTracking<RoleDTO, TrackingBase> dwt) {
         final RoleDTO dto = dwt.getData();
-        JumpTool.jump("screens/user_admin/user28.zul", "roleRef", dto.getObjectRef(), "screens/user_admin/role28.zul");
+        JumpTool.jump("screens/user_admin/userTenantRole28.zul", "roleRef", dto.getObjectRef(), "screens/user_admin/role28.zul");
     }
 }

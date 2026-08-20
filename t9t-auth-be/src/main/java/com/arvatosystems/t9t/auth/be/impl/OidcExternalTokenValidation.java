@@ -66,7 +66,7 @@ public class OidcExternalTokenValidation implements IExternalTokenValidation {
 
     // a customizable (possibly filtered) debug output of claims we intend to use
     protected void listClaims(final JWTClaimsSet claimsSet) {
-        LOGGER.debug("Full set of provided claims is {}", claimsSet.toString());
+        LOGGER.debug("Full set of provided claims is {}", claimsSet);
     }
 
     @Override

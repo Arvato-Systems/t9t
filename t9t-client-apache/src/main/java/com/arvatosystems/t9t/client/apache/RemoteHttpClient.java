@@ -133,7 +133,7 @@ class RemoteHttpClient {
     protected void requestLogger(final String pqon, final ByteArray serializedRequest) {
         LOGGER.trace("{} serialized as {} bytes for MIME type {}", pqon, serializedRequest.length(), MimeTypes.MIME_TYPE_COMPACT_BONAPARTE);
         if (logText)
-            LOGGER.debug("Request is <{}>", serializedRequest.toString());
+            LOGGER.debug("Request is <{}>", serializedRequest);
         if (logHex)
             LOGGER.debug(serializedRequest.hexdump(0, 0));
     }
@@ -141,7 +141,7 @@ class RemoteHttpClient {
     protected void responseLogger(final ByteBuilder serializedResponse) {
         LOGGER.trace("retrieved {} bytes response", serializedResponse.length());
         if (logText)
-            LOGGER.debug("Response is <{}>", serializedResponse.toString());
+            LOGGER.debug("Response is <{}>", serializedResponse);
         if (logHex)
             LOGGER.debug(serializedResponse.hexdump(0, 0));
     }

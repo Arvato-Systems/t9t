@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.rep.be.request;
 
 import java.io.File;
+import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -169,7 +170,11 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
             case MONTH_BEGIN:
                 // following statement seems to be unsupported: java.time.temporal.UnsupportedTemporalTypeException: Unit is too large to be used for truncation
                 // fromDate = toDate.truncatedTo(ChronoUnit.MONTHS);
-                fromDate = LocalDateTime.of(toDate.toLocalDate().withDayOfMonth(1), LocalTime.MIDNIGHT);
+                if (toDate.getDayOfMonth() == 1) {
+                    fromDate = LocalDateTime.of(toDate.toLocalDate().withDayOfMonth(1).minusMonths(1), LocalTime.MIDNIGHT);
+                } else {
+                    fromDate = LocalDateTime.of(toDate.toLocalDate().withDayOfMonth(1), LocalTime.MIDNIGHT);
+                }
                 if (factor > 0) {
                     fromDate = fromDate.minusMonths(factor);
                 }
@@ -178,7 +183,8 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
                 // unsupported
                 // fromDate = toDate.truncatedTo(ChronoUnit.WEEKS);
                 LocalDate day = toDate.toLocalDate();
-                fromDate = LocalDateTime.of(day.minusDays(day.getDayOfWeek().ordinal()), LocalTime.MIDNIGHT);
+                final int minusDays = DayOfWeek.MONDAY == day.getDayOfWeek() ? 7 : day.getDayOfWeek().ordinal();
+                fromDate = LocalDateTime.of(day.minusDays(minusDays), LocalTime.MIDNIGHT);
                 if (factor > 0) {
                     fromDate = fromDate.minusDays(factor * 7);
                 }
@@ -190,7 +196,7 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
         default:
             throw new T9tException(T9tRepException.BAD_INTERVAL_CLASS, interval.getIntervalCategory().toString());
         }
-        LOGGER.debug("Report run for period from {} to {}", fromDate.toString(), toDate.toString());
+        LOGGER.debug("Report run for period from {} to {}. Execution date {}", fromDate, toDate, relevantDate);
         parameters.put(DATE_FROM, fromDate);
         parameters.put(DATE_TO, toDate);
         outputSessionAdditionalParametersList.put("reportDateFrom", fromDate.format(DAY_FORMATTER));
@@ -263,12 +269,12 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
             }
 
             if (reportParamsDTO.getIntervalCategory() != null) {
-                resolveInterval(parameters, LocalDateTime.now(), reportParamsDTO, outputSessionAdditionalParametersList);
+                resolveInterval(parameters, LocalDateTime.now().withNano(0), reportParamsDTO, outputSessionAdditionalParametersList);
             }
 
             if (LOGGER.isInfoEnabled()) {
                 // avoid extensive object creation unless INFO is active
-                LOGGER.info("Basic JASPER parameters are: {}", filterBasic(parameters).toString());
+                LOGGER.info("Basic JASPER parameters are: {}", filterBasic(parameters));
             }
             outputSessionParameters.setAdditionalParameters(outputSessionAdditionalParametersList);
             outputSessionParameters.setOriginatorRef(reportParamsDTO.getObjectRef());

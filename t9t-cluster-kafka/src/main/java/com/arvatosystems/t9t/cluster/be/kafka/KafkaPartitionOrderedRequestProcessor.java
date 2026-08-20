@@ -354,7 +354,7 @@ final class KafkaPartitionOrderedRequestProcessor implements KafkaProcessor {
                 for (final PartitionMonitor monitor : partitionStatusTable.values()) {
                     info.append(monitor.toString()).append(" ");
                 }
-                LOGGER.debug(info.toString());
+                LOGGER.debug("{}", info);
                 lastMonitorTime = thisMonitorTime;
             }
         }

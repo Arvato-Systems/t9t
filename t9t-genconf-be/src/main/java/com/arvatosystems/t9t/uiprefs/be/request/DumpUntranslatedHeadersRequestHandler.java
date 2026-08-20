@@ -33,7 +33,7 @@ public class DumpUntranslatedHeadersRequestHandler extends AbstractRequestHandle
             buff.append(s);
             buff.append("=\n");
         }
-        LOGGER.info("Untranslated headers are:\n{}", buff.toString());
+        LOGGER.info("Untranslated headers are:\n{}", buff);
         return ok();
     }
 }
