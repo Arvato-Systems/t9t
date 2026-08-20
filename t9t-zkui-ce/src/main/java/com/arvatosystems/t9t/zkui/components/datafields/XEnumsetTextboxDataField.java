@@ -57,7 +57,7 @@ public class XEnumsetTextboxDataField<E extends AbstractXEnumBase<E>, S extends 
         sb.append("]*/");
         setConstraints(c, sb.toString());
         c.setMaxlength(instances.size());
-        LOGGER.debug("Created XEnumset data field for {} with max length {} chars, constraint is {}", getFieldName(), instances.size(), sb.toString());
+        LOGGER.debug("Created XEnumset data field for {} with max length {} chars, constraint is {}", getFieldName(), instances.size(), sb);
     }
 
     @Override

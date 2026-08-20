@@ -44,11 +44,9 @@ public class ReportConfigByUserPermissionRestriction implements IReportConfigByU
         if (permittedReportIds == null || permittedReportIds.isEmpty())
             return;
 
-        final StringFilter idFilter = new StringFilter("reportConfigId");
-        if (permittedReportIds.size() == 1)
-            idFilter.setEqualsValue(permittedReportIds.get(0));  // single entry => use equals
-        else
-            idFilter.setValueList(permittedReportIds);           // multiple entry => use IN
+        final StringFilter idFilter = permittedReportIds.size() == 1
+                ? SearchFilters.equalsFilter("reportConfigId", permittedReportIds.get(0))  // single entry => use equals
+                : SearchFilters.stringFilter("reportConfigId", permittedReportIds);         // multiple entry => use IN
         searchRequest.setSearchFilter(SearchFilters.and(searchRequest.getSearchFilter(), idFilter));
     }
 }

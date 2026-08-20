@@ -75,7 +75,7 @@ public class IndexMaintenance {
                             indexingPlan.execute();
                         }
                     } catch (final Exception e) {
-                        LOGGER.error("Index {} for related entity {} (objectRef: {}) failed!", operationType.toString(), relatedEntityName, objectRef, e);
+                        LOGGER.error("Index {} for related entity {} (objectRef: {}) failed!", operationType, relatedEntityName, objectRef, e);
                     }
                 }
             }

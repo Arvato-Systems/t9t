@@ -103,7 +103,7 @@ public class JarUnzipper extends SimpleFileVisitor<Path> {
     @Override
     public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
         if (jarFilter.accept(path.toFile())) {
-            logger.info("Unzipping jar: {}", path.getFileName().toString());
+            logger.info("Unzipping jar: {}", path.getFileName());
             Path destPath = unzip(path);
             logger.debug("Checking for jars recursively within {}", destPath);
             Files.walkFileTree(destPath, new JarUnzipper(destPath));

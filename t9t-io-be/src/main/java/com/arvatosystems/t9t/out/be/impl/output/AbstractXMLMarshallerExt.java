@@ -78,7 +78,7 @@ public abstract class AbstractXMLMarshallerExt<R> implements IMarshallerExt<R> {
             final Unmarshaller unmarshaller = unmarshalContext.createUnmarshaller();
             return (BonaPortable)unmarshaller.unmarshal(buffer.asByteArrayInputStream());
         } catch (final Exception e) {
-            LOGGER.error("Could not unmarshal message due to {}. Message was <{}>", ExceptionUtil.causeChain(e), buffer.toString());
+            LOGGER.error("Could not unmarshal message due to {}. Message was <{}>", ExceptionUtil.causeChain(e), buffer);
             throw e;
         }
     }

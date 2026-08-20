@@ -90,7 +90,7 @@ public class MigrationElements {
                                  "Description",
                                  "Checksum",
                                  "Script");
-                LOGGER.info(formatter.toString());
+                LOGGER.info("{}", formatter);
             }
             for (MigrationInfo migration : migrations) {
                 try (final Formatter formatter = new Formatter()) {
@@ -104,7 +104,7 @@ public class MigrationElements {
                                      migration.getDescription(),
                                      migration.getChecksum(),
                                      migration.getScript());
-                    LOGGER.info(formatter.toString());
+                    LOGGER.info("{}", formatter);
                 }
             }
         }

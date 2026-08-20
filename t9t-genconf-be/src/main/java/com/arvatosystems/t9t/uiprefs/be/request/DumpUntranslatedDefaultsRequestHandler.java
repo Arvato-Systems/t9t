@@ -33,7 +33,7 @@ public class DumpUntranslatedDefaultsRequestHandler extends AbstractRequestHandl
             buff.append(s);
             buff.append("=\n");
         }
-        LOGGER.info("Untranslated defaults are:\n{}", buff.toString());
+        LOGGER.info("Untranslated defaults are:\n{}", buff);
         return ok();
     }
 }

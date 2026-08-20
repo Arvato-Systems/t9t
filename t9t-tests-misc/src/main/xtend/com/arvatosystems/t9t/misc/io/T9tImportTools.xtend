@@ -25,10 +25,10 @@ import com.arvatosystems.t9t.io.request.ImportFromString
 import com.arvatosystems.t9t.io.request.ImportInputSessionRequest
 import com.arvatosystems.t9t.io.request.SinkSearchRequest
 import de.jpaw.annotations.AddLogger
+import de.jpaw.bonaparte.api.SearchFilters
 import de.jpaw.bonaparte.api.media.MediaDataUtil
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS
 import de.jpaw.bonaparte.pojos.api.SortColumn
-import de.jpaw.bonaparte.pojos.api.StringFilter
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.util.List
@@ -86,7 +86,7 @@ class T9tImportTools {
     /** Retrieves the summary record of the most recent import and check for errors. Throws an exception if errors found, otherwise returns the number of records read. */
     def static Integer checkLastImport(ITestConnection connection, String dataSinkId, String filename) {
         val searchRq = new SinkSearchRequest => [
-            searchFilter  = new StringFilter("dataSink.dataSinkId") => [ equalsValue = dataSinkId ]
+            searchFilter  = SearchFilters.equalsFilter("dataSink.dataSinkId", dataSinkId)
             sortColumns   = #[ new SortColumn("objectRef", true) ]
         ]
         val resp = connection.typeIO(searchRq, ReadAllResponse).dataList as List<DataWithTrackingS<SinkDTO, FullTracking>>;

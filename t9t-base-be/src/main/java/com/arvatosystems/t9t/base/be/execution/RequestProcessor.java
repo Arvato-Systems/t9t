@@ -411,7 +411,7 @@ public class RequestProcessor implements IRequestProcessor {
                     // log the offending request, plus the process ref (for better DB research later), and the validation error message more info
                     LOGGER.error("Response validation problem for tenantId {} and response object {}: error {}: {}", ctx.tenantId, resp.ret$PQON(),
                             e.getErrorCode(), e.getErrorDetails());
-                    LOGGER.error("Full response is " + resp.toString());
+                    LOGGER.error("Full response is {}", resp);
                     resp = MessagingUtil.createServiceResponse(T9tException.RESPONSE_VALIDATION_ERROR,
                             rq.ret$PQON() + "(" + ctx.internalHeaderParameters.getProcessRef() + "): " + e.getErrorDetails());
                 }

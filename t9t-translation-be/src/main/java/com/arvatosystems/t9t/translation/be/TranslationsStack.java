@@ -114,7 +114,7 @@ public final class TranslationsStack {
                 b.append(e);
                 b.append('\n');
             }
-            LOGGER.debug(b.toString());
+            LOGGER.debug("{}", b);
         }
     }
 

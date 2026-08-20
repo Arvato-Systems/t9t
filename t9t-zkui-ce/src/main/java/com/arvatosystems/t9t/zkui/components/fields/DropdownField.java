@@ -21,7 +21,6 @@ import org.zkoss.zul.Combobox;
 
 import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.bonaparte.pojos.meta.DataCategory;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.ui.UIFilter;
@@ -75,24 +74,18 @@ public class DropdownField extends AbstractField<Combobox> {
                 }
             }
             // text only, but use displayId
-            final StringFilter f = new StringFilter();
-            f.setFieldName(getFieldName());
             if (isMultiDropdown()) {
-                f.setLikeValue("%" + rec.getId() + "%");
+                return SearchFilters.likeFilter(getFieldName(), "%" + rec.getId() + "%");
             } else {
-                f.setEqualsValue(rec.getId());
+                return SearchFilters.equalsFilter(getFieldName(), rec.getId());
             }
-            return f;
         }
         // text only
-        final StringFilter f = new StringFilter();
-        f.setFieldName(getFieldName());
         if (cfg.getFilterType() != UIFilterType.EQUALITY || isMultiDropdown()) {
-            f.setLikeValue("%" + v + "%");
+            return SearchFilters.likeFilter(getFieldName(), "%" + v + "%");
         } else {
-            f.setEqualsValue(v);
+            return SearchFilters.equalsFilter(getFieldName(), v);
         }
-        return f;
     }
 
     public DropdownField(final String fieldname, final UIFilter cfg, final FieldDefinition desc, final String gridId, final ApplicationSession session, final String dropdownType) {

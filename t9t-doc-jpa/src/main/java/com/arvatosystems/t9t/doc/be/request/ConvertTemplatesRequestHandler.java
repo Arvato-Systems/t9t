@@ -57,9 +57,8 @@ public class ConvertTemplatesRequestHandler extends AbstractRequestHandler<Conve
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ConvertTemplatesRequest request) throws Exception {
-        final StringFilter tenantFilter = new StringFilter(T9tConstants.TENANT_ID_FIELD_NAME);
+        final StringFilter tenantFilter = SearchFilters.equalsFilter(T9tConstants.TENANT_ID_FIELD_NAME, ctx.tenantId);
         final SearchCriteria tenantCriteria = new DummySearchCriteria();
-        tenantFilter.setEqualsValue(ctx.tenantId);
         tenantFilter.freeze();
         tenantCriteria.setSearchFilter(tenantFilter);
         tenantCriteria.freeze();
@@ -71,8 +70,7 @@ public class ConvertTemplatesRequestHandler extends AbstractRequestHandler<Conve
             // and writing these back would fail.
             criteriaToApply = tenantCriteria;
         } else {
-            final StringFilter templateFilter = new StringFilter("documentId");
-            templateFilter.setEqualsValue(request.getDocumentId());
+            final StringFilter templateFilter = SearchFilters.equalsFilter("documentId", request.getDocumentId());
             criteriaToApply = new DummySearchCriteria();
             criteriaToApply.setSearchFilter(SearchFilters.and(tenantFilter, templateFilter));
             criteriaToApply.freeze(); // freeze to be secure, as it's used 3 times
