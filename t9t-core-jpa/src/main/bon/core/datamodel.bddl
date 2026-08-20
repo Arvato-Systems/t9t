@@ -129,7 +129,7 @@ package t9t.setups owner app42base prefix p28 {
 
     // data for optimistic locking - only bucket entry entity
     category datb {
-        trackinggroup BucketTracking
+        trackinggroup BucketTracking entityListener BucketTrackingEntityListener
         tablenamepattern "(prefix)_dat_(entity)" dropSuffix "_entity" tablespacepattern "rts42dat0(DI)"
         requiresPK
         beanVal

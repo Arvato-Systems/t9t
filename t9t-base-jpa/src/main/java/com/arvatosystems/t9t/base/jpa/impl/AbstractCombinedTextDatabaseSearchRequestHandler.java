@@ -131,19 +131,24 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
 
     @Override
     public ReadAllResponse<DTO, TRACKING> execute(final RequestContext ctx, final REQ rq) throws Exception {
+        // determine type of sort
+        SearchFilterTypeEnum sortType = null;
+        if (rq.getSortColumns() != null && !rq.getSortColumns().isEmpty()) {
+            sortType = filterTypeForField(rq.getSortColumns().getFirst().getFieldName());
+        }
+
         // if the search is done by SOLR expression, it can do SOLR only - no other
         // analysis required
         if (rq.getExpression() != null && !rq.getExpression().isEmpty()) {
-            return executeSOLRSearch(ctx, rq);
+            if (sortType == SearchFilterTypeEnum.DB_ONLY) {
+                return executeSOLRSearchWithDbSort(ctx, rq);
+            } else {
+                return executeSOLRSearch(ctx, rq);
+            }
         }
         final SearchFilterTypes filterTypes = new SearchFilterTypes();
         if (rq.getSearchFilter() != null) {
             decideFilterAssociation(rq.getSearchFilter(), filterTypes);
-        }
-        // determine type of sort as well
-        SearchFilterTypeEnum sortType = null;
-        if (rq.getSortColumns() != null && !rq.getSortColumns().isEmpty()) {
-            sortType = filterTypeForField(rq.getSortColumns().get(0).getFieldName());
         }
         LOGGER.debug("Filters indicate search types {} and sort type {} for expression {}", filterTypes, sortType, rq.getSearchFilter());
 
@@ -237,8 +242,9 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
 
         // end here if there are no results - DB query would return an error
         if (refs.isEmpty()) {
-            final ReadAllResponse<DTO, TRACKING> response = new ReadAllResponse<>();
-            response.setDataList(Collections.emptyList());
+            final ReadAllResponse<DTO, TRACKING> response = mapper.createReadAllResponse(Collections.emptyList(), rq.getSearchOutputTarget());
+            response.setStrategy(SearchFilterTypeEnum.SOLR_ONLY);
+            return response;
         }
 
         // obtain DTOs for the refs
@@ -263,8 +269,9 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
 
         // end here if there are no results - DB query would return an error
         if (refs.isEmpty()) {
-            final ReadAllResponse<DTO, TRACKING> response = new ReadAllResponse<>();
-            response.setDataList(Collections.emptyList());
+            final ReadAllResponse<DTO, TRACKING> response = mapper.createReadAllResponse(Collections.emptyList(), rq.getSearchOutputTarget());
+            response.setStrategy(SearchFilterTypeEnum.BOTH);
+            return response;
         }
         // obtain DTOs for the refs
         final SearchRequest<DTO, TRACKING> newSearchRq = this.bclass.newInstance();

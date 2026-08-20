@@ -26,6 +26,8 @@ import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.media.XML;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.util.ByteArray;
 
@@ -33,6 +35,8 @@ import com.arvatosystems.t9t.rest.utils.RestUtils;
 
 
 public final class JsonSchemaOpenApiUtil {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JsonSchemaOpenApiUtil.class);
+
     private static final String SCHEMA_NAME = "Json";
     private static final String SCHEMA_REF = "#/components/schemas/" + SCHEMA_NAME;
     private static final String XML_PREFIX_BON = "bon";
@@ -51,6 +55,7 @@ public final class JsonSchemaOpenApiUtil {
     private static final String Z_FIELD = "z";
 
     private static final boolean USE_JSON = RestUtils.CONFIG_READER.getProperty("t9t.restapi.jsonXml", null) != null;
+    private static final String Z_MODE = USE_JSON ? "JSON" : "XML";
 
     private JsonSchemaOpenApiUtil() { }
 
@@ -59,9 +64,11 @@ public final class JsonSchemaOpenApiUtil {
      * @param oas
      */
     public static void addJsonSchema(final OpenAPI oas) {
-        final Schema jsonSchema = new ObjectSchema();
+        final Schema<?> jsonSchema = new ObjectSchema();
         jsonSchema.nullable(true);
         oas.schema(SCHEMA_NAME, jsonSchema);
+
+        LOGGER.info("Initializing JSON schema for OpenApi specification with z fields in {} mode", Z_MODE);
 
         if (USE_JSON) {
             // z param as JSON
@@ -84,50 +91,50 @@ public final class JsonSchemaOpenApiUtil {
             // z param as XML
             final XML propertyXml = new XML().prefix(XML_PREFIX_BON);
 
-            final Schema additionalProperties = new ObjectSchema().xml(new XML().prefix(XML_PREFIX_BON).name(XML_NAME_KVP));
+            final Schema<?> additionalProperties = new ObjectSchema().xml(new XML().prefix(XML_PREFIX_BON).name(XML_NAME_KVP));
 
-            final Schema keyProperty = new StringSchema().xml(propertyXml)
+            final Schema<?> keyProperty = new StringSchema().xml(propertyXml)
                     .example("Key is mandatory and pair with one of the following value type.")
                     .description("Key is mandatory and pair with one of the following value type.");
-            additionalProperties.addProperties(PROPERTY_KEY, keyProperty);
+            additionalProperties.addProperty(PROPERTY_KEY, keyProperty);
 
-            final Schema numProperty = new NumberSchema().xml(propertyXml).nullable(true);
-            additionalProperties.addProperties(PROPERTY_NUM, numProperty);
+            final Schema<?> numProperty = new NumberSchema().xml(propertyXml).nullable(true);
+            additionalProperties.addProperty(PROPERTY_NUM, numProperty);
 
-            final Schema numsProperty = new ArraySchema().items(new NumberSchema()).xml(propertyXml).nullable(true);
-            additionalProperties.addProperties(PROPERTY_NUMS, numsProperty);
+            final Schema<?> numsProperty = new ArraySchema().items(new NumberSchema()).xml(propertyXml).nullable(true);
+            additionalProperties.addProperty(PROPERTY_NUMS, numsProperty);
 
-            final Schema valueProperty = new StringSchema().xml(propertyXml).nullable(true);
-            additionalProperties.addProperties(PROPERTY_VALUE, valueProperty);
+            final Schema<?> valueProperty = new StringSchema().xml(propertyXml).nullable(true);
+            additionalProperties.addProperty(PROPERTY_VALUE, valueProperty);
 
-            final Schema valuesProperty = new ArraySchema().items(new StringSchema()).xml(propertyXml).nullable(true);
-            additionalProperties.addProperties(PROPERTY_VALUES, valuesProperty);
+            final Schema<?> valuesProperty = new ArraySchema().items(new StringSchema()).xml(propertyXml).nullable(true);
+            additionalProperties.addProperty(PROPERTY_VALUES, valuesProperty);
 
-            final Schema boolProperty = new BooleanSchema().xml(propertyXml).nullable(true);
-            additionalProperties.addProperties(PROPERTY_BOOL, boolProperty);
+            final Schema<?> boolProperty = new BooleanSchema().xml(propertyXml).nullable(true);
+            additionalProperties.addProperty(PROPERTY_BOOL, boolProperty);
 
-            final Schema boolsProperty = new ArraySchema().items(new BooleanSchema()).xml(propertyXml).type("boolean")
+            final Schema<?> boolsProperty = new ArraySchema().items(new BooleanSchema()).xml(propertyXml).type("boolean")
                     .nullable(true);
-            additionalProperties.addProperties(PROPERTY_BOOLS, boolsProperty);
+            additionalProperties.addProperty(PROPERTY_BOOLS, boolsProperty);
 
             // There is an issue in displaying the example if $ref is set.
             // There is also an issue to display schema in a circular loop.
-            final Schema objProperty = new StringSchema().xml(propertyXml).nullable(true).example("Json object.").description("Json object.");
+            final Schema<?> objProperty = new StringSchema().xml(propertyXml).nullable(true).example("Json object.").description("Json object.");
     //        objProperty.set$ref(SCHEMA_NAME);
-            additionalProperties.addProperties(PROPERTY_OBJ, objProperty);
+            additionalProperties.addProperty(PROPERTY_OBJ, objProperty);
 
-            final Schema objsProperty = new ArraySchema().items(objProperty)
+            final Schema<?> objsProperty = new ArraySchema().items(objProperty)
                     .xml(propertyXml).nullable(true).example(new String[] { "Array of Json object." })
                     .description("Array of Json object.");
-            additionalProperties.addProperties(PROPERTY_OBJS, objsProperty);
+            additionalProperties.addProperty(PROPERTY_OBJS, objsProperty);
 
-            final Schema anyProperty = new StringSchema().xml(propertyXml).nullable(true).example("Any type.")
+            final Schema<?> anyProperty = new StringSchema().xml(propertyXml).nullable(true).example("Any type.")
                     .description("Any type.");
-            additionalProperties.addProperties(PROPERTY_ANY, anyProperty);
+            additionalProperties.addProperty(PROPERTY_ANY, anyProperty);
 
-            final Schema anysProperty = new ArraySchema().items(new StringSchema()).xml(propertyXml).nullable(true)
+            final Schema<?> anysProperty = new ArraySchema().items(new StringSchema()).xml(propertyXml).nullable(true)
                     .example(new String[] { "Array of any type." }).description("Array of any type.");
-            additionalProperties.addProperties(PROPERTY_ANYS, anysProperty);
+            additionalProperties.addProperty(PROPERTY_ANYS, anysProperty);
 
             jsonSchema.setAdditionalProperties(additionalProperties);
             jsonSchema.description("z field");
