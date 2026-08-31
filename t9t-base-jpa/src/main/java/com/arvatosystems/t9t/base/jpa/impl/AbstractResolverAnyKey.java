@@ -611,32 +611,33 @@ public abstract class AbstractResolverAnyKey<
         if (entityRef == null) {
             return null;        // play null-safe
         }
-        return getEntityDataByGenericKey(entityRef, getEntityClass(), (t, cb) -> t);
+        return getEntityDataByGenericKey(entityRef, getEntityClass(), (t, cb) -> t, false);
     }
 
     protected <ZZ> ZZ getEntityDataByGenericKey(BonaPortable entityRef, final Class<ZZ> clz,
-            final BiFunction<Root<ENTITY>, CriteriaBuilder, Selection<ZZ>> cvter) {
+            final BiFunction<Root<ENTITY>, CriteriaBuilder, Selection<ZZ>> cvter, final boolean allowNull) {
         if (LOGGER.isTraceEnabled())
             LOGGER.trace("read by generic key({}) requested for resolver class {}", entityRef, getClass().getSimpleName());
 
         // no primary key reference available, build a query by alternate key
         // use all fields of the instance of entityRef (which must be not null, else we throw an exception)
-        // We want only the ...Key classes here. As a plausibility check, we required the ref class to be final.
-        final int refClassModifiers = entityRef.getClass().getModifiers();
-        if (!Modifier.isFinal(refClassModifiers) || Modifier.isInterface(refClassModifiers)) {
-            // in some cases, a Ref might be passed... Work around and create a Ref which does not contain other fields
-            if (entityRef instanceof Ref eRef && eRef.getObjectRef() != null) {
-                final Long pk = eRef.getObjectRef();
-                LOGGER.debug("getEntityDataByGenericKey called where primary key was available: {}({})", entityRef.ret$PQON(), pk);
-                entityRef = new Ref(pk);
-            } else {
-                LOGGER.error("Bad class {} passed to key resolver", entityRef.getClass().getCanonicalName());
+        // However, first check for the special case where we have the objectRef field available, which is the primary key. In that case, we can use the find() method instead of a query.
+        if (entityRef instanceof Ref eRef && eRef.getObjectRef() != null) {
+            // if it is already a Ref, keep it, otherwise throw away any other fields and create a new Ref with only the objectRef field set.
+            if (entityRef.getClass() != Ref.class) {
+                entityRef = new Ref(eRef.getObjectRef());
+            }
+        } else {
+            // plausi check: validate that the provided key class is final
+            if (!entityRef.ret$MetaData().getIsFinal()) {
+                LOGGER.error("Bad class {} passed to key resolver: Need a final class here", entityRef.getClass().getCanonicalName());
                 LOGGER.debug("Class contents is {}", entityRef);
                 final T9tException e = new T9tException(T9tException.RESOLVE_BAD_CLASS, entityRef.getClass().getCanonicalName());
                 LOGGER.error("Stack trace is ", e);
                 throw e;
             }
         }
+
         // further checks here...
         final Class<ENTITY> entityClass = getEntityClass();
         final CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
@@ -719,7 +720,10 @@ public abstract class AbstractResolverAnyKey<
         final TypedQuery<ZZ> query = getEntityManager().createQuery(select);
         final List<ZZ> resultList = query.getResultList();
         if (resultList.isEmpty()) {
-            // this can be a regular business case and is not necessarily an error
+            // this can be a regular business case and is not necessarily an error: It is used in CRUD requests / MERGE operation
+            if (allowNull) {
+                return null;
+            }
             LOGGER.debug("No result for fetching entity data for tenantId {}, entityClass {}, key {}", tenantId, entityClass, entRef);
             throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, entityNameAndKey(entRef));
         }

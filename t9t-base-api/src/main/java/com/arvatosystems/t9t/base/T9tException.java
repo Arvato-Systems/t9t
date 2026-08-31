@@ -136,7 +136,7 @@ public class T9tException extends ApplicationException {
     // Codes specific to key resolver
     public static final int RESOLVE_ACCESS = OFFSET + 120;
     public static final int RESOLVE_PARAMETER = OFFSET + 121;
-    public static final int RESOLVE_BAD_CLASS = OFFSET + 122;
+    public static final int RESOLVE_BAD_CLASS = OFFSET_LOGIC_ERROR + 122;
     public static final int ERROR_FILLING_RESTRICTION_CACHE = OFFSET + 123;
     public static final int ILE_UNREACHABLE_CODE = OFFSET_LOGIC_ERROR + 124;
 
@@ -534,7 +534,7 @@ public class T9tException extends ApplicationException {
 
         registerCode(RESOLVE_ACCESS, "key resolver access problem - key columns must be public");
         registerCode(RESOLVE_PARAMETER, "illegal parameter in key resolver");
-        registerCode(RESOLVE_BAD_CLASS, "Bad class passed to key resolver (candidates must be final and not an interface)");
+        registerCode(RESOLVE_BAD_CLASS, "Bad class passed to key resolver (must be final)");
         registerCode(ERROR_FILLING_RESTRICTION_CACHE, "Exception while filling the restriction cache");
         registerCode(ILE_UNREACHABLE_CODE, "Executing unreachable code (should not happen!)");
 

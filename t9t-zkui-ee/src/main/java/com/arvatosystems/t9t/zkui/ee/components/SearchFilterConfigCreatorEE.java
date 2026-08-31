@@ -46,6 +46,7 @@ import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 import com.arvatosystems.t9t.zkui.components.dropdown28.SimpleListModelFullList;
 import com.arvatosystems.t9t.zkui.services.impl.DefaultSearchFilterConfigCreator;
 import com.arvatosystems.t9t.zkui.util.Constants;
+import com.arvatosystems.t9t.zkui.util.GridConfigUtil;
 import com.arvatosystems.t9t.zkui.viewmodel.support.SearchFilterRowVM;
 
 @Dependent
@@ -80,11 +81,11 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
             selectedFilters.add(row);
         }
 
-        List<String> excludedUiColumns = new ArrayList<>();
+        final List<String> excludedUiColumns = new ArrayList<>();
         for (final UIColumnConfiguration uiColumn : uiColumns) {
 
             final String fullPath = uiColumn.getFieldName();
-            if (hasExcludedProperties(uiColumn) || excludedUiColumns.contains(getParentPath(fullPath))) {
+            if ((uiColumn.getMeta() != null && GridConfigUtil.isVirtualField(uiColumn.getMeta().getFieldProperties())) || excludedUiColumns.contains(getParentPath(fullPath))) {
                 excludedUiColumns.add(fullPath);
                 continue;
             }

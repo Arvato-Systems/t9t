@@ -69,7 +69,7 @@ public abstract class AbstractResolverSurrogateKey<
             // shortcut: the required information is available already! (ignores onlyActive because we resolved already before)
             return entityRef.getObjectRef();
         }
-        return getEntityDataByGenericKey(resolveNestedRefs(entityRef), Long.class, (t, cb) -> t.<Long>get("objectRef"));
+        return getEntityDataByGenericKey(resolveNestedRefs(entityRef), Long.class, (t, cb) -> t.<Long>get("objectRef"), false);
     }
 
     @Override
@@ -77,13 +77,13 @@ public abstract class AbstractResolverSurrogateKey<
         if (entityRef == null) {
             return null;        // play null-safe
         }
-        return getEntityDataByGenericKey(resolveNestedRefs(entityRef), cls, (t, cb) -> t.get(fieldName));
+        return getEntityDataByGenericKey(resolveNestedRefs(entityRef), cls, (t, cb) -> t.get(fieldName), false);
     }
 
     @Override
     public TwoRefs getRefs(final REF entityRef, final String fieldName) {
         return getEntityDataByGenericKey(resolveNestedRefs(entityRef), TwoRefs.class,
-            (t, cb) -> cb.construct(TwoRefs.class, t.get("objectRef"), t.get(fieldName)));
+            (t, cb) -> cb.construct(TwoRefs.class, t.get("objectRef"), t.get(fieldName)), false);
     }
 
     @Override
@@ -98,6 +98,15 @@ public abstract class AbstractResolverSurrogateKey<
         }
         // preprocess the reference
         return getEntityDataByGenericKey(resolveNestedRefs(entityRef));
+    }
+
+    @Override
+    public ENTITY getEntityDataOrNull(final REF entityRef) {
+        final Long r = entityRef.getObjectRef();
+        if (r != null) {
+            return find(r);
+        }
+        return getEntityDataByGenericKey(resolveNestedRefs(entityRef), getEntityClass(), (t, cb) -> t, true);
     }
 
     @Override

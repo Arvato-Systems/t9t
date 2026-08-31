@@ -59,6 +59,7 @@ import com.arvatosystems.t9t.zkui.components.basic.Filter28;
 import com.arvatosystems.t9t.zkui.components.basic.Grid28;
 import com.arvatosystems.t9t.zkui.components.basic.TwoSections28;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.GridConfigUtil;
 import com.arvatosystems.t9t.zkui.util.T9tConfigConstants;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
 
@@ -118,14 +119,14 @@ public class ListHeadRenderer28 {
         final int nFields = gridPreferences.getFields().size();
         for (int i = 0; i < nFields; ++i) {
             final String fieldname = gridPreferences.getFields().get(i);
-            boolean isUnsortable = gridPreferences.getUnsortableFields() != null && gridPreferences.getUnsortableFields().contains(fieldname);
+            boolean isSortable = gridPreferences.getUnsortableFields() == null || !gridPreferences.getUnsortableFields().contains(fieldname);
             boolean isDynGridColumn = false;
             try {
                 final FieldDefinition meta = FieldGetter.getFieldDefinitionForPathname(bclass.getMetaData(), fieldname);
+                final Map<String, String> properties = meta.getProperties();
                 // check if this is a special dynamic width column
                 isDynGridColumn = ListItemRenderer28.isDynField(meta);
-                final String fieldNoDdl = fieldname.concat(".noDDL");
-                isUnsortable = (isUnsortable || bclass.getPropertyMap().containsKey(fieldNoDdl) || DataCategory.OBJECT == meta.getDataCategory());
+                isSortable = isSortable && !GridConfigUtil.isVirtualField(properties) && DataCategory.OBJECT != meta.getDataCategory();
             } catch (final ApplicationException ue) {
                 LOGGER.warn("Could not determine field definition for {}", fieldname);
             }
@@ -140,7 +141,7 @@ public class ListHeadRenderer28 {
                         gridConfigResolver.getVisibleColumns().get(i),  // always the same
                         null,                                           // no sorting
                         false,
-                        true);
+                        false);
                 }
             } else {
                 // regular column
@@ -152,7 +153,7 @@ public class ListHeadRenderer28 {
                         gridConfigResolver.getVisibleColumns().get(i),
                         gridPreferences.getSortColumn(),
                         gridPreferences.getSortDescending(),
-                        isUnsortable);
+                        isSortable);
             }
         }
     }
@@ -165,7 +166,9 @@ public class ListHeadRenderer28 {
             final String columnTranslation,
             final Integer width,
             final FieldDefinition columnDescriptor,
-            final String defaultSortFieldName, final Boolean isDescending, final boolean isUnsortable) {
+            final String defaultSortFieldName,
+            final Boolean isDescending,
+            final boolean isSortable) {
         // AUTO_SORT     <listheader label="columnTranslation" sort="auto(fieldName)"/>
         // BACKEND_SORT  <listheader label="columnTranslation" sort="auto" onSort="@command('sortBackend', col='fieldName')"  />
 
@@ -184,7 +187,7 @@ public class ListHeadRenderer28 {
             listheader.setWidth(width + "px");
         }
         // this criteria is a bit too pessimistic, but want to be on the safe side initially.
-        if (!isDotted && !isIndexed && !isUnsortable && Multiplicity.LIST != columnDescriptor.getMultiplicity())
+        if (!isDotted && !isIndexed && isSortable && Multiplicity.LIST != columnDescriptor.getMultiplicity())
             listheader.setSort("auto");
         else
             listheader.setSort("none");
@@ -200,7 +203,9 @@ public class ListHeadRenderer28 {
 
         // listeners
         listheader.addEventListener(Events.ON_DROP, (final DropEvent event) -> onDropListheader(event));
-        listheader.addEventListener(Events.ON_SORT, (final SortEvent event) -> onSortEvent(event));
+        if (isSortable) {
+            listheader.addEventListener(Events.ON_SORT, (final SortEvent event) -> onSortEvent(event));
+        }
         listheader.addEventListener("onColCheck", e -> {
             onColumnVisibilityChange(e);
         });

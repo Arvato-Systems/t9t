@@ -17,7 +17,10 @@ package com.arvatosystems.t9t.zkui.util;
 
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+
+import jakarta.annotation.Nullable;
 
 import org.reflections.Reflections;
 import org.slf4j.Logger;
@@ -56,5 +59,16 @@ public final class GridConfigUtil {
             }
         }
         return trackingFields;
+    }
+
+    /** Returns true if one of the 4 properties NO_JAVA, NO_DDL, NO_AUTO_MAP or VIRTUAL is set for the given column, indicating a virtual field. */
+    public static boolean isVirtualField(@Nullable final Map<String, String> fieldProperties) {
+        if (fieldProperties == null) {
+            return false;
+        }
+        return fieldProperties.containsKey(Constants.UiFieldProperties.NO_JAVA)
+            || fieldProperties.containsKey(Constants.UiFieldProperties.NO_DDL)
+            || fieldProperties.containsKey(Constants.UiFieldProperties.NO_AUTO_MAP)
+            || fieldProperties.containsKey(Constants.UiFieldProperties.VIRTUAL);
     }
 }

@@ -45,7 +45,7 @@ import com.arvatosystems.t9t.base.uiprefs.UILeanGridPreferences;
 import com.arvatosystems.t9t.zkui.components.grid.ILeanGridConfigResolver;
 import com.arvatosystems.t9t.zkui.components.grid.LeanGridConfigResolver;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-import com.arvatosystems.t9t.zkui.util.Constants;
+import com.arvatosystems.t9t.zkui.util.GridConfigUtil;
 
 public class ColumnAggregationsViewModel {
 
@@ -170,10 +170,7 @@ public class ColumnAggregationsViewModel {
         if (!ALLOWED_DATA_CATEGORIES.contains(meta.getDataCategory())) {
             return false;
         }
-        if (meta.getFieldProperties() != null
-            && (meta.getFieldProperties().containsKey(Constants.UiFieldProperties.NO_JAVA)
-            || meta.getFieldProperties().containsKey(Constants.UiFieldProperties.NO_DDL)
-            || meta.getFieldProperties().containsKey(Constants.UiFieldProperties.NO_AUTO_MAP))) {
+        if (GridConfigUtil.isVirtualField(meta.getFieldProperties())) {
             return false;
         }
         return true;
