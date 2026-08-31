@@ -46,6 +46,7 @@ import com.arvatosystems.t9t.zkui.components.dropdown28.SimpleListModelExt;
 import com.arvatosystems.t9t.zkui.services.ISearchFilterConfigCreator;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.Constants;
+import com.arvatosystems.t9t.zkui.util.GridConfigUtil;
 import com.arvatosystems.t9t.zkui.viewmodel.support.SearchFilterRowVM;
 
 @Dependent
@@ -58,8 +59,8 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
     protected String                  viewModelId     = null;
 
     @Override
-    public void createComponent(Div parent, UIGridPreferences uiGridPreferences, List<UIFilter> selectedUiFilters) {
-        List<UIColumnConfiguration> uiColumns = uiGridPreferences.getColumns();
+    public void createComponent(final Div parent, final UIGridPreferences uiGridPreferences, final List<UIFilter> selectedUiFilters) {
+        final List<UIColumnConfiguration> uiColumns = uiGridPreferences.getColumns();
         viewModelId = uiGridPreferences.getViewModel();
         rows = new ArrayList<>(uiColumns.size());
         selectedFilters = new ArrayList<>(selectedUiFilters.size() * 2);
@@ -72,16 +73,16 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
             rows.add(row);
         }
 
-        List<String> excludedUiColumns = new ArrayList<>();
-        for (UIColumnConfiguration column : uiColumns) {
+        final List<String> excludedUiColumns = new ArrayList<>();
+        for (final UIColumnConfiguration column : uiColumns) {
             // only allow root level fields of main dto && binary: not allowed at all
             if ((!isFieldWithinLevelOfMainDTO(column, 0) && activeUIFilterMap.get(column.getFieldName()) == null)
                     || column.getMeta() == null || column.getMeta().getDataType().equals("binary")
-                    || column.getMeta().getDataCategory().equals("OBJECT") && !isDropdownOrBandbox(column)) {
+                    || column.getMeta().getDataCategory().equals("OBJECT") && !hasProperties(column, Constants.UiFieldProperties.DROPDOWN, Constants.UiFieldProperties.BANDBOX)) {
                 continue;
             }
 
-            if (hasExcludedProperties(column) || excludedUiColumns.contains(getParentPath(column.getFieldName()))) {
+            if ((column.getMeta() != null && GridConfigUtil.isVirtualField(column.getMeta().getFieldProperties())) || excludedUiColumns.contains(getParentPath(column.getFieldName()))) {
                 excludedUiColumns.add(column.getFieldName());
                 continue;
             }
@@ -205,7 +206,7 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
         }
 
         // LIKE is only allowed for multi dropdown
-        if (hasProperty(column, Constants.UiFieldProperties.MULTI_DROPDOWN)) {
+        if (hasProperties(column, Constants.UiFieldProperties.MULTI_DROPDOWN, Constants.UiFieldProperties.MULTI_DROPDOWN)) {
             allowedTypes.add(UIFilterType.LIKE.name());
             return allowedTypes;
         }
@@ -222,14 +223,7 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
         return allowedTypes;
     }
 
-    /**
-     * Define a list of properties to be excluded in the search filter configuration.
-     */
-    protected boolean hasExcludedProperties(UIColumnConfiguration column) {
-        return hasProperty(column, Constants.UiFieldProperties.NO_JAVA)
-                || hasProperty(column, Constants.UiFieldProperties.NO_DDL)
-                || hasProperty(column, Constants.UiFieldProperties.NO_AUTO_MAP);
-    }
+
 
     /**
      * Get parent of the given path delimited by '.'
@@ -256,20 +250,22 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
         final String dataType = column.getMeta().getDataType();
 
         return dataType.equals("boolean") || dataType.equals("enum") || dataType.equals("xenum") || dataType.equals("uuid")
-                || hasProperty(column, Constants.UiFieldProperties.DROPDOWN) || hasProperty(column, Constants.UiFieldProperties.BANDBOX)
+                || hasProperties(column, Constants.UiFieldProperties.DROPDOWN, Constants.UiFieldProperties.BANDBOX)
                 || column.getFieldName().equals("tenantId");
     }
 
     /**
-     * Check if the field has the given property name
+     * Check if the field has one of the given property names.
+     * If a check for a single property is needed, the same property name can be passed twice, this is faster than adding additional checks.
      *
-     * @param column
-     * @param property
-     * @return
+     * @param column    the column configuration
+     * @param property1 the name of the first property to check
+     * @param property2 the name of the second property to check
+     * @return          true if the field has one of the given properties, false otherwise
      */
-    private boolean hasProperty(UIColumnConfiguration column, String property) {
+    private boolean hasProperties(UIColumnConfiguration column, String property1, String property2) {
         final UIMeta m = column.getMeta();
-        return m != null && m.getFieldProperties() != null && m.getFieldProperties().get(property) != null;
+        return m != null && m.getFieldProperties() != null && (m.getFieldProperties().containsKey(property1) || m.getFieldProperties().containsKey(property2));
     }
 
     /**
@@ -309,16 +305,6 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
         }
 
         return true;
-    }
-
-    /**
-     * Check if the field has any attribute like dropdown or bandbox
-     *
-     * @param column
-     * @return
-     */
-    private boolean isDropdownOrBandbox(UIColumnConfiguration column) {
-        return hasProperty(column, Constants.UiFieldProperties.DROPDOWN) || hasProperty(column, Constants.UiFieldProperties.BANDBOX);
     }
 
     @Override

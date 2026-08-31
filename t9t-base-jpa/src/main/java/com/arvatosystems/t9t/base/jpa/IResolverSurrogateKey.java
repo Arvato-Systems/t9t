@@ -69,6 +69,17 @@ public interface IResolverSurrogateKey<
     ENTITY getEntityData(@Nullable REF entityRef);
 
     /**
+     * Returns the full JPA entity for any given relevant key.
+     * Returns null if the entity specified by the ref does not exist.
+     *
+     * @param entityRef The input DTO, which inherits a suitable reference to the object.
+     * @return ENTITY
+     * @throws T9tException
+     */
+    @Nullable
+    ENTITY getEntityDataOrNull(@Nonnull REF entityRef);
+
+    /**
      * Returns the full entity, with a chance to use a preloaded child entity.
      *
      * @param entityRef  the objectRef of the desired entity (can be null)

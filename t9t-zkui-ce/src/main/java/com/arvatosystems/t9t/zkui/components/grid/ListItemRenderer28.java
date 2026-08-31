@@ -46,6 +46,7 @@ import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.zkui.converters.grid.IItemConverter;
 import com.arvatosystems.t9t.zkui.converters.grid.ItemConverterRegistry;
 import com.arvatosystems.t9t.zkui.filters.IResultTextFilter;
+import com.arvatosystems.t9t.zkui.util.Constants;
 
 public class ListItemRenderer28<T extends BonaPortable> implements ListitemRenderer<T> {
     public static final int LIMIT = 20;
@@ -209,7 +210,7 @@ public class ListItemRenderer28<T extends BonaPortable> implements ListitemRende
 
     public static boolean isDynField(@Nonnull final FieldDefinition meta) {
         final Map<String, String> props = meta.getProperties();
-        return props != null && props.get("dynGrid") != null;
+        return props != null && props.containsKey(Constants.UiFieldProperties.DYN_GRID);
     }
 
     public void setTextFilter(final IResultTextFilter<T> filterService, final Supplier<String> textSource) {

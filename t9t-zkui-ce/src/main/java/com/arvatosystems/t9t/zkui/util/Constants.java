@@ -111,11 +111,13 @@ public final class Constants {
         public static final String ENUMSET          = "enumset";                // display as list of enum instances in the result overview grid
         public static final String XENUMSET         = "xenumset";               // display as list of xenum instances in the result overview grid
         public static final String SHOW_TODAY       = "showToday";              // show an additional "today" button in the date picker
-        public static final String NO_JAVA          = "noJava";
-        public static final String NO_DDL           = "noDDL";
-        public static final String NO_AUTO_MAP      = "noAutoMap";
+        public static final String NO_JAVA          = "noJava";                 // indicates that the field has no associated Java code in the entity (see noDDL for SQL)
+        public static final String NO_DDL           = "noDDL";                  // indicates the field is not a database table field but a virtual field (e.g. a calculated field) => will be forbidden as filter or sort field
+        public static final String NO_AUTO_MAP      = "noAutoMap";              // indicates that the entity mapper does not map it into a DTO
+        public static final String VIRTUAL          = "virtual";                // indicates that the field is some virtual field due to other reasons (redefined DTO etc) and also not suitable as filter or sort field
         public static final String MULTI_DROPDOWN   = "multidropdown";          // dropdown with multiple selection
         public static final String DECIMALS         = "decimals";               // specifies the number of decimals to show for fixed point fields
+        public static final String DYN_GRID         = "dynGrid";                // specifies that the field is repeated dynamically into multiple columns
         public static final String ICON             = "icon";                   // display field value as icon from specified path
         public static final String ICON_EMPTY       = "iconEmpty";              // icon to use for empty values (if the property value is an empty string, then EMPTY is used)
         public static final String ICON_CORE_PATH   = "icon/core/";             // resource path prefix for core icons

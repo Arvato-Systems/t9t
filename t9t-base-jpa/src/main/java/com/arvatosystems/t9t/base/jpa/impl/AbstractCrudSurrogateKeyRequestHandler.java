@@ -50,6 +50,10 @@ public abstract class AbstractCrudSurrogateKeyRequestHandler<
 
     protected final IRefGenerator genericRefGenerator = Jdp.getRequired(IRefGenerator.class);
 
+    protected void preprocessUpdate(@Nonnull final RequestContext ctx, @Nonnull final REQUEST crudRequest, @Nonnull final ENTITY current) {
+        // default implementation does nothing
+    }
+
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
     public CrudSurrogateKeyResponse<DTO, TRACKING> execute(final RequestContext ctx, final IEntityMapper<Long, DTO, TRACKING, ENTITY> mapper,
@@ -76,8 +80,8 @@ public abstract class AbstractCrudSurrogateKeyRequestHandler<
 
         // step 1: possible resolution of the natural key
         if (crudRequest.getNaturalKey() != null) {
-            try {
-                final ENTITY entityFoundByNaturalKeyQuery = resolver.getEntityData(crudRequest.getNaturalKey());
+            final ENTITY entityFoundByNaturalKeyQuery = resolver.getEntityDataOrNull(crudRequest.getNaturalKey());
+            if (entityFoundByNaturalKeyQuery != null) {
                 final boolean entityFoundByNaturalKeyQueryIsOfOtherTenant = resolver.isTenantIsolated()
                   && !resolver.getSharedTenantId().equals(resolver.getTenantId(entityFoundByNaturalKeyQuery));
                 final Long refFromCompositeKey = entityFoundByNaturalKeyQuery.ret$Key();
@@ -99,12 +103,11 @@ public abstract class AbstractCrudSurrogateKeyRequestHandler<
                     rs.setKey(null);
                     crudRequest.setKey(null);
                     crudRequest.setCrud(OperationType.CREATE);
+                } else if (crudRequest.getData() != null && (crudRequest.getCrud() == OperationType.MERGE || crudRequest.getCrud() == OperationType.UPDATE)) {
+                    // invoke hook to preprocess intended data
+                    preprocessUpdate(ctx, crudRequest, entityFoundByNaturalKeyQuery);
                 }
-            } catch (final T9tException e) {
-                if (e.getErrorCode() != T9tException.RECORD_DOES_NOT_EXIST) {
-                    throw e; // we are not interested int his one
-                    // deal with non-existing records. In some cases, this is acceptable
-                }
+            } else {
                 // natural key has been specified, but record does not exist.
                 // we throw an exception as well, unless it is LOOKUP (in which case we return null) or MERGE (in which case we perform a CREATE)
                 switch (crudRequest.getCrud()) {
@@ -118,7 +121,7 @@ public abstract class AbstractCrudSurrogateKeyRequestHandler<
                     break;
                 default:
                     // any other case is a problem
-                    throw e;
+                    throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, resolver.entityNameAndKey(crudRequest.getNaturalKey()));
                 }
             }
         }
