@@ -37,7 +37,7 @@ import com.arvatosystems.t9t.out.services.IAsyncSender;
 @Dependent
 @Named("jdk11cbon")
 public class PostSenderJdk11Cbon extends AbstractPostSenderJdk11Cbon implements IAsyncSender {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPostSenderJdk11Json.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PostSenderJdk11Cbon.class);
 
     @Override
     protected void parseResponse(final AsyncHttpResponse myResponse, final HttpResponse<byte[]> resp) {

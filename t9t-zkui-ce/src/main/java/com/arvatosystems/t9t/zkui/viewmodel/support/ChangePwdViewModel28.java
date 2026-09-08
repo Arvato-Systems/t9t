@@ -27,6 +27,7 @@ import org.zkoss.zul.Messagebox;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.auth.request.GetPasswordChangeRequirementsResponse;
 import com.arvatosystems.t9t.base.auth.ChangePasswordUI;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
@@ -108,7 +109,14 @@ public class ChangePwdViewModel28 extends AbstractViewOnlyVM<ChangePasswordUI, T
             session.setPasswordExpired(false);
             session.storePermissions(userDAO.getPermissions());
         } catch (ReturnCodeException rce) {
-            showLoginFailError();
+            if (rce.getReturnCode() == T9tAuthException.PASSWORD_SYNC_FAILED) {
+                postProcessSyncWarning(rce.getReturnMessage());
+                session.setPasswordExpires(null);
+                session.setPasswordExpired(false);
+                session.storePermissions(userDAO.getPermissions());
+            } else {
+                showLoginFailError();
+            }
         }
     }
 
@@ -127,6 +135,11 @@ public class ChangePwdViewModel28 extends AbstractViewOnlyVM<ChangePasswordUI, T
 
     public void postProcessHook() {
         Messagebox.show(session.translate("changePwd", "success"));
+        reset();
+    }
+
+    private void postProcessSyncWarning(final String message) {
+        Messagebox.show(message, session.translate("com", "info"), Messagebox.OK, Messagebox.EXCLAMATION);
         reset();
     }
 

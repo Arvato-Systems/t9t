@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 public class DbUtils {
 
-    static final Logger logger = LoggerFactory.getLogger(DbUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DbUtils.class);
 
     private static final String JDBC_URL_COMPONENT_POSTGRES = "jdbc:postgresql";
     private static final String JDBC_URL_COMPONENT_ORACLE = "jdbc:oracle";
@@ -49,7 +49,7 @@ public class DbUtils {
         for (Enumeration<?> en = defaultColumns.propertyNames(); en.hasMoreElements();) {
             String key = (String) en.nextElement();
             if (!realColumns.contains(key)) {
-                logger.warn("Config: Configured column {} not found in DB table", key);
+                LOGGER.warn("Config: Configured column {} not found in DB table", key);
                 continue;
             }
 
@@ -71,7 +71,7 @@ public class DbUtils {
                 query.append(column).append(",");
                 values.append("?,");
             } else {
-                logger.error("Config: Configured column {} not found in DB table", column);
+                LOGGER.error("Config: Configured column {} not found in DB table", column);
                 throw new Exception("Config: Configured column not found in DB table");
             }
         }
@@ -127,15 +127,15 @@ public class DbUtils {
         if (where != null)
             sql.append(" WHERE ").append(where);
 
-        logger.debug("DELETE: Using statement: {}", sql);
+        LOGGER.debug("DELETE: Using statement: {}", sql);
 
         try (Statement statement = dbConnection.getOpenConnection().createStatement()) {
             int updateQuery = statement.executeUpdate(sql.toString());
 
             if (updateQuery != 0) {
-                logger.debug("DELETE: " + updateQuery + " rows are deleted.");
+                LOGGER.debug("DELETE: " + updateQuery + " rows are deleted.");
             } else {
-                logger.debug("DELETE: NO rows are deleted.");
+                LOGGER.debug("DELETE: NO rows are deleted.");
             }
         }
     }
@@ -145,7 +145,7 @@ public class DbUtils {
             preparedStatement.addBatch();
             preparedStatement.executeBatch();
         } catch (SQLException e) {
-            logger.error("SQLException.getNextException: {}", e.getNextException() != null ? e.getNextException().getMessage() : null);
+            LOGGER.error("SQLException.getNextException: {}", e.getNextException() != null ? e.getNextException().getMessage() : null);
             throw e;
         }
         if (!dbConnection.isAutoCommit() /* && (r % ncommit.intValue() == 0) */) {

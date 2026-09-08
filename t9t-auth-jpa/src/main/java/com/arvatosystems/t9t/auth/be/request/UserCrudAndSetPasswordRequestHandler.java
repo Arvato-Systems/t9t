@@ -18,13 +18,16 @@ package com.arvatosystems.t9t.auth.be.request;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 
+import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.UserRef;
 import com.arvatosystems.t9t.auth.jpa.IPasswordSettingService;
+import com.arvatosystems.t9t.auth.jpa.PasswordSettingResult;
 import com.arvatosystems.t9t.auth.jpa.entities.UserEntity;
 import com.arvatosystems.t9t.auth.jpa.mapping.IUserDTOMapper;
 import com.arvatosystems.t9t.auth.jpa.persistence.IUserEntityResolver;
 import com.arvatosystems.t9t.auth.request.UserCrudAndSetPasswordRequest;
+import com.arvatosystems.t9t.auth.services.PasswordSyncStatus;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
@@ -54,7 +57,11 @@ public class UserCrudAndSetPasswordRequestHandler extends AbstractCrudSurrogateK
         if (resp.getReturnCode() == 0) {
             // perform the setting or update of the password
             final UserEntity userEntity = resolver.getEntityManager().find(UserEntity.class, resp.getKey());
-            passwordSettingService.setPasswordForUser(ctx, userEntity, request.getPassword());
+            final PasswordSettingResult settingResult = passwordSettingService.setPasswordForUser(ctx, userEntity, request.getPassword());
+            if (settingResult.syncStatus() == PasswordSyncStatus.ERROR) {
+                resp.setReturnCode(T9tAuthException.PASSWORD_SYNC_FAILED);
+                resp.setErrorDetails("Password was set but synchronization to external secrets store failed for user: " + userEntity.getUserId());
+            }
         }
         return resp;
     }

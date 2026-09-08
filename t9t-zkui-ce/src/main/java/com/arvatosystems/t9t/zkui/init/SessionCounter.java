@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * Counting the Session/user.
  */
 public class SessionCounter implements HttpSessionListener {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SessionListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SessionCounter.class);
     private static final AtomicInteger SESSION_COUNTER = new AtomicInteger(0);
 
     public SessionCounter() {

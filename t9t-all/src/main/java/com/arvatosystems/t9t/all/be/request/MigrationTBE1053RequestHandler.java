@@ -31,7 +31,7 @@ import com.arvatosystems.t9t.io.jpa.entities.DataSinkEntity;
 import com.arvatosystems.t9t.io.jpa.persistence.IDataSinkEntityResolver;
 
 public class MigrationTBE1053RequestHandler extends AbstractMigrationRequestHandler<MigrationTBE1053Request> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExportAndEmailResultRequestHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MigrationTBE1053RequestHandler.class);
     private static final String TICKET_ID = "TBE-1053";
     private static final String SEQUENCE_ID = "V6.5_2023-07-05";
 

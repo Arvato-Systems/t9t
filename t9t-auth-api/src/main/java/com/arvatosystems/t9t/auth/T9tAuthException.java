@@ -24,6 +24,7 @@ public class T9tAuthException extends T9tException {
     private static final int CORE_OFFSET = T9tConstants.EXCEPTION_OFFSET_AUTH;
     private static final int OFFSET_VALIDATION_ERROR     = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_VALIDATION_ERROR;
     private static final int OFFSET_DECLINE              = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_DENIED;
+    private static final int OFFSET_INTERNAL_ERROR       = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_INTERNAL_LOGIC_ERROR;
 
     public static final int PASSWORD_VALIDATION_FAILED   = OFFSET_VALIDATION_ERROR + 1;
     public static final int PERMISSION_VALIDATION_FAILED = OFFSET_VALIDATION_ERROR + 20;
@@ -33,6 +34,9 @@ public class T9tAuthException extends T9tException {
     public static final int PASSWORD_FOUND_IN_BLACKLIST  = OFFSET_VALIDATION_ERROR + 33;
 
     public static final int PASSWORD_RESET_NOT_ALLOWED   = OFFSET_DECLINE + 41;
+    public static final int NON_UNIQUE_EMAIL_FOR_LOGIN   = OFFSET_DECLINE + 42;
+
+    public static final int PASSWORD_SYNC_FAILED         = OFFSET_DECLINE + 70;
 
     static {
         registerRange(CORE_OFFSET, false, T9tAuthException.class, ApplicationLevelType.FRAMEWORK, "t9t authentication module");
@@ -44,5 +48,7 @@ public class T9tAuthException extends T9tException {
         registerCode(INVALID_USER_ID, "The userId does not match the allowed pattern (only letters, digits, the underscore and at most one dot)");
         registerCode(PASSWORD_FOUND_IN_BLACKLIST, "Validation for the given password failed because it was found in the password blacklist");
         registerCode(PASSWORD_RESET_NOT_ALLOWED, "Password reset not supported for this server / user");
+        registerCode(NON_UNIQUE_EMAIL_FOR_LOGIN, "Non-unique email address found for login");
+        registerCode(PASSWORD_SYNC_FAILED, "Password was changed successfully, but synchronization to the external secrets store failed. Please check server logs.");
     }
 }

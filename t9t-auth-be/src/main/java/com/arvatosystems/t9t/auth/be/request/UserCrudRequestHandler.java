@@ -31,7 +31,9 @@ import com.arvatosystems.t9t.auth.UserKey;
 import com.arvatosystems.t9t.auth.UserRef;
 import com.arvatosystems.t9t.auth.request.UserCrudRequest;
 import com.arvatosystems.t9t.auth.services.IAuthModuleCfgDtoResolver;
+import com.arvatosystems.t9t.auth.services.IPasswordSyncService;
 import com.arvatosystems.t9t.auth.services.IUserResolver;
+import com.arvatosystems.t9t.auth.services.PasswordSyncStatus;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.auth.HighRiskNotificationType;
 import com.arvatosystems.t9t.base.be.impl.AbstractCrudSurrogateKeyBERequestHandler;
@@ -52,6 +54,7 @@ public class UserCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHan
     private final IAuthModuleCfgDtoResolver moduleCfgResolver = Jdp.getRequired(IAuthModuleCfgDtoResolver.class);
     private final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
     private final IAuthSessionService authSessionService = Jdp.getRequired(IAuthSessionService.class);
+    private final IPasswordSyncService passwordSyncService = Jdp.getRequired(IPasswordSyncService.class);
 
     @Override
     public CrudSurrogateKeyResponse<UserDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final UserCrudRequest crudRequest) {
@@ -66,6 +69,12 @@ public class UserCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHan
             T9tAuthTools.maskPermissions(userDto.getPermissions(), jwt.getPermissionsMax());
         }
 
+        UserDTO removeDTO = null;
+        if (OperationType.DELETE == crudRequest.getCrud()) {
+            final Long removeKey = crudRequest.getKey() != null ? crudRequest.getKey() : resolver.getRef(crudRequest.getNaturalKey());
+            removeDTO = resolver.getDTO(removeKey);
+        }
+
         final CrudSurrogateKeyResponse<UserDTO, FullTrackingWithVersion> result = execute(ctx, crudRequest, resolver);
         if (crudRequest.getCrud() != OperationType.READ) {
             final String userId = userDto != null ? userDto.getUserId() : null;
@@ -75,6 +84,16 @@ public class UserCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHan
             authSessionService.userSessionInvalidation(ctx, result.getData().getUserId(), true);
         } else if (OperationType.INACTIVATE == crudRequest.getCrud()) {
             authSessionService.userSessionInvalidation(ctx, result.getData().getUserId(), false);
+        } else if (OperationType.DELETE == crudRequest.getCrud() && result.getReturnCode() == 0 && result.getChangeRequestRef() == null) {
+            // on hard DELETE, remove the password from the external secrets store if configured
+            if (Boolean.TRUE.equals(removeDTO != null ? removeDTO.getSyncPasswordToKeyStore() : null)) {
+                final PasswordSyncStatus syncStatus = passwordSyncService.deletePassword(removeDTO.getUserId(), ctx.tenantId);
+                if (syncStatus == PasswordSyncStatus.ERROR) {
+                    LOGGER.error("Failed to delete external secrets store entry for deleted user {}/{}", ctx.tenantId, removeDTO.getUserId());
+                    result.setReturnCode(T9tAuthException.PASSWORD_SYNC_FAILED);
+                    result.setErrorDetails("External secrets store entry could not be removed for user: " + removeDTO.getUserId());
+                }
+            }
         }
         return result;
     }
@@ -103,7 +122,7 @@ public class UserCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHan
             final AuthModuleCfgDTO moduleCfg = moduleCfgResolver.getModuleConfiguration();
             if (Boolean.TRUE.equals(moduleCfg.getNotifyEmailChange())) {
                 hrSituationNotificationService.notifyChange(ctxProvider.get(), HighRiskNotificationType.EMAIL_ADDRESS_CHANGE.name(), current.getUserId(), current.getName(),
-                        current.getEmailAddress(), intended.getEmailAddress());
+                    current.getEmailAddress(), intended.getEmailAddress());
             }
         }
     }

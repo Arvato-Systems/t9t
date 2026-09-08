@@ -113,6 +113,8 @@ public class ZkUiJettyServer {
         final WebAppContext webAppContext = new WebAppContext();
         webAppContext.clearAliasChecks();
         webAppContext.setContextPath(contextPath);
+        // Required for Boot-repackaged jars so ZK can resolve DSP/theme resources from nested BOOT-INF/lib jars.
+        webAppContext.setClassLoader(ZkUiJettyServer.class.getClassLoader());
         final URL webAppDir = ZkUiJettyServer.class.getClassLoader().getResource("/webapp");
         final String descriptor = webAppDir + "/WEB-INF/web.xml";
         LOGGER.info("webapp location: {}, descriptor location: {}, stopTimeout: {}", webAppDir, descriptor, stopTimeout);

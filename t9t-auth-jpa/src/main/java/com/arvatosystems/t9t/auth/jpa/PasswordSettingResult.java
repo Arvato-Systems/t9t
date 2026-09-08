@@ -15,15 +15,13 @@
  */
 package com.arvatosystems.t9t.auth.jpa;
 
-import java.time.Instant;
+import com.arvatosystems.t9t.auth.jpa.entities.PasswordEntity;
+import com.arvatosystems.t9t.auth.services.PasswordSyncStatus;
 
-import com.arvatosystems.t9t.auth.jpa.entities.UserEntity;
-import com.arvatosystems.t9t.base.services.RequestContext;
-
-public interface IPasswordSettingService {
-    /** This method is invoked if an administrator changes a password for another user. Returns sync status result. */
-    PasswordSettingResult setPasswordForUser(RequestContext ctx, UserEntity user, String newPassword);
-
-    /** This method is invoked when user reset the password. Returns the newly created PasswordEntity with sync status. */
-    PasswordSettingResult setPasswordForUser(Instant now, UserEntity user, String newPassword, Long passwordSetByUserRef);
+/**
+ * Result carrier for {@link IPasswordSettingService} operations.
+ * Combines the newly created {@link PasswordEntity} with the outcome of the
+ * optional password synchronization to an external secrets store.
+ */
+public record PasswordSettingResult(PasswordEntity passwordEntity, PasswordSyncStatus syncStatus) {
 }

@@ -20,6 +20,8 @@ import de.jpaw.dp.Jdp;
 import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
+import com.arvatosystems.t9t.auth.services.PasswordResetResult;
+import com.arvatosystems.t9t.auth.services.PasswordSyncStatus;
 import com.arvatosystems.t9t.authc.api.ResetPasswordRequest;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -40,10 +42,15 @@ public class ResetPasswordRequestHandler extends AbstractRequestHandler<ResetPas
         if (!passwordResetNotificationService.isPasswordResetAllowed(ctx, request.getUserId())) {
             throw new T9tException(T9tAuthException.PASSWORD_RESET_NOT_ALLOWED);
         }
-        final String newPassword = authPersistenceAccess.assignNewPasswordIfEmailMatches(ctx, request.getUserId(), request.getEmailAddress());
+        final PasswordResetResult passwordResetResult = authPersistenceAccess.assignNewPasswordIfEmailMatches(ctx, request.getUserId(),
+                request.getEmailAddress());
         cacheInvalidator.invalidateAuthCache(ctx, UserDTO.class.getSimpleName(), null, request.getUserId());
 
-        passwordResetNotificationService.notifyUser(ctx, request.getEmailAddress(), newPassword);
-        return ok();
+        passwordResetNotificationService.notifyUser(ctx, request.getEmailAddress(), passwordResetResult.password());
+        final ServiceResponse response = ok();
+        if (passwordResetResult.syncStatus() == PasswordSyncStatus.ERROR) {
+            response.setReturnCode(T9tAuthException.PASSWORD_SYNC_FAILED);
+        }
+        return response;
     }
 }

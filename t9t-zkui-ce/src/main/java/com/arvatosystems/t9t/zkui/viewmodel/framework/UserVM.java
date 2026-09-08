@@ -22,6 +22,7 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
@@ -30,6 +31,7 @@ import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.auth.PermissionsDTO;
+import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.UserRef;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
@@ -76,8 +78,16 @@ public class UserVM extends CrudSurrogateKeyVM<UserRef, UserDTO, FullTrackingWit
 
     @Command
     public void resetPassword() throws ReturnCodeException {
-        if (data.getUserId() != null && data.getEmailAddress() != null)
-            userDAO.resetPassword(data.getUserId(), data.getEmailAddress());
+        if (data.getUserId() != null && data.getEmailAddress() != null) {
+            try {
+                userDAO.resetPassword(data.getUserId(), data.getEmailAddress());
+            } catch (ReturnCodeException e) {
+                if (e.getReturnCode() != T9tAuthException.PASSWORD_SYNC_FAILED) {
+                    throw e;
+                }
+                Messagebox.show(e.getReturnMessage(), session.translate("com", "info"), Messagebox.OK, Messagebox.EXCLAMATION);
+            }
+        }
     }
 
     @Command

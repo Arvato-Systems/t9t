@@ -53,9 +53,11 @@ import com.arvatosystems.t9t.auth.OidClaims;
 import com.arvatosystems.t9t.auth.PasswordUtil;
 import com.arvatosystems.t9t.auth.RoleRef;
 import com.arvatosystems.t9t.auth.SessionDTO;
+import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.jpa.IPasswordChangeService;
 import com.arvatosystems.t9t.auth.jpa.IPasswordSettingService;
+import com.arvatosystems.t9t.auth.jpa.PasswordSettingResult;
 import com.arvatosystems.t9t.auth.jpa.PermissionEntryInt;
 import com.arvatosystems.t9t.auth.jpa.entities.ApiKeyEntity;
 import com.arvatosystems.t9t.auth.jpa.entities.PasswordBlacklistEntity;
@@ -71,6 +73,8 @@ import com.arvatosystems.t9t.auth.services.AuthIntermediateResult;
 import com.arvatosystems.t9t.auth.services.IAuthModuleCfgDtoResolver;
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
 import com.arvatosystems.t9t.auth.services.IExternalTokenValidation;
+import com.arvatosystems.t9t.auth.services.PasswordResetResult;
+import com.arvatosystems.t9t.auth.services.PasswordSyncStatus;
 import com.arvatosystems.t9t.authc.api.TenantDescription;
 import com.arvatosystems.t9t.authc.api.UserData;
 import com.arvatosystems.t9t.base.MessagingUtil;
@@ -468,8 +472,9 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
         final AuthIntermediateResult resp = new AuthIntermediateResult();
         resp.setUser(userEntity.ret$Data());
         resp.setTenantId(userEntity.getTenantId());
-        if (userEntity.getRoleRef() != null)
+        if (userEntity.getRoleRef() != null) {
             resp.getUser().setRoleRef(new RoleRef(userEntity.getRoleRef()));
+        }
 
         final ByteArray hash = PasswordUtil.createPasswordHash(userId, password);
         // password is correct & not expired OR password is correct, expired,
@@ -484,7 +489,9 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
                 if (gotANewPasswordNow) {
                     // we want to change our password: reject if the new one does not satisfy
                     // checking criteria, otherwise accept
-                    passwordChangeService.changePassword(newPassword, userEntity, userStatus);
+                    if (passwordChangeService.changePassword(newPassword, userEntity, userStatus) == PasswordSyncStatus.ERROR) {
+                        resp.setReturnCode(T9tAuthException.PASSWORD_SYNC_FAILED);
+                    }
                 }
                 // login success
             } else {
@@ -500,10 +507,14 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
             return resp;
         } else if (isResetPasswordMatch(passwordEntity, hash, now)) {
             // Password match with the reset password. Set it as a new password.
-            final PasswordEntity newPasswordEntity = passwordSettingService.setPasswordForUser(now, userEntity, password,
+            final PasswordSettingResult passwordSettingResult = passwordSettingService.setPasswordForUser(now, userEntity, password,
                     userEntity.getObjectRef());
+            final PasswordEntity newPasswordEntity = passwordSettingResult.passwordEntity();
             if (!newPasswordEntity.getPasswordExpiry().isAfter(now)) {
                 resp.setReturnCode(T9tException.PASSWORD_EXPIRED); // reset password is expired
+            }
+            if (passwordSettingResult.syncStatus() == PasswordSyncStatus.ERROR) {
+                resp.setReturnCode(T9tAuthException.PASSWORD_SYNC_FAILED);
             }
             updateUserStatusEntityForSuccessPasswordLogin(userStatus, now);
             resp.setUserStatus(userStatus.ret$Data());
@@ -512,8 +523,9 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
         } else {
             // incorrect auth: increment attemptCounter
             userStatus.setNumberOfIncorrectAttempts(userStatus.getNumberOfIncorrectAttempts() + 1);
-            if (userStatus.getNumberOfIncorrectAttempts() >= 5) // TODO: configurable
+            if (userStatus.getNumberOfIncorrectAttempts() >= 5) { // TODO: configurable
                 userStatus.setAccountThrottledUntil(now.plusSeconds(5 * 60)); // 5 minutes
+            }
             resp.setReturnCode(T9tException.WRONG_PASSWORD);
             resp.setUserStatus(userStatus.ret$Data());
             return resp;
@@ -541,8 +553,9 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
     public List<TenantDescription> getAllTenantsForUser(RequestContext ctx, Long userRef) {
         final EntityManager em = jpaContextProvider.get().getEntityManager();
         final UserEntity userEntity = em.find(UserEntity.class, userRef);
-        if (userEntity == null)
+        if (userEntity == null) {
             return ImmutableList.of();
+        }
         if (!userEntity.getTenantId().equals(T9tConstants.GLOBAL_TENANT_ID)) {
             // single tenant, defined by user
             final TenantEntity tenantEntity = em.find(TenantEntity.class, userEntity.getTenantId());
@@ -657,7 +670,7 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
     }
 
     @Override
-    public String assignNewPasswordIfEmailMatches(final RequestContext ctx, final String userId, final String emailAddress) {
+    public PasswordResetResult assignNewPasswordIfEmailMatches(final RequestContext ctx, final String userId, final String emailAddress) {
         final UserEntity userEntity = getUserByUserIdIgnoringTenant(userId, false);
         if (userEntity == null) {
             throw new T9tException(T9tException.NOT_AUTHENTICATED); // user does not exist
@@ -690,14 +703,16 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
         // creates a new password for that user.
         final String newPassword = PasswordUtil.generateRandomPassword(T9tConstants.DEFAULT_RANDOM_PASS_LENGTH);
 
+        final PasswordSyncStatus syncStatus;
         if (passwordEntity != null) {
             passwordEntity.setResetPasswordHash(PasswordUtil.createPasswordHash(userEntity.getUserId(), newPassword));
             passwordEntity.setWhenLastPasswordReset(ctx.executionStart);
             getAuthSessionService().userSessionInvalidation(ctx, userEntity.getUserId(), false);
+            syncStatus = PasswordSyncStatus.DISABLED;
         } else {
-            passwordSettingService.setPasswordForUser(ctx, userEntity, newPassword);
+            syncStatus = passwordSettingService.setPasswordForUser(ctx, userEntity, newPassword).syncStatus();
         }
-        return newPassword;
+        return new PasswordResetResult(newPassword, syncStatus);
     }
 
     private PasswordEntity getCurrentPasswordEntity(final Long userRef) {

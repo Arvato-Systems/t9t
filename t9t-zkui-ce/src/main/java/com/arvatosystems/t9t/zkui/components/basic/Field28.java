@@ -81,9 +81,23 @@ public class Field28 extends Cell {
 
     @Listen("onCreate")
     public void onCreate() {
+        if (idf != null) {
+            // already initialized before (for example a component reused from a navigation cache which got a duplicate / stale
+            // onCreate event): nothing to do, avoid recreating the field and avoid re-walking the (possibly not yet fully
+            // reattached) ancestor chain.
+            return;
+        }
+
         String myId = getId();
 
-        vmOwner = GridIdTools.getAnchestorOfType(this, IViewModelOwner.class);
+        vmOwner = GridIdTools.findAnchestorOfType(this, IViewModelOwner.class);
+        if (vmOwner == null) {
+            // this can happen for a component which is in the process of being (re-)attached, e.g. when it belongs to a
+            // navigation entry which is currently being reloaded from a cache. Simply ignore this (stale / premature) event;
+            // a subsequent onCreate (once the component is properly attached) will perform the real initialization.
+            LOGGER.warn("Field28 {} has no ancestor of type IViewModelOwner (yet), skipping initialization", getId());
+            return;
+        }
         viewModelId = GridIdTools.enforceViewModelId(vmOwner);
         crudViewModel = vmOwner.getCrudViewModel();
         as = vmOwner.getSession();

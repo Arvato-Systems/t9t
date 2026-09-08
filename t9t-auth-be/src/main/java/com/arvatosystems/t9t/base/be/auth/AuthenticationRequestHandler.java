@@ -29,6 +29,7 @@ import de.jpaw.util.ApplicationException;
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.AuthenticationIssuerType;
+import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.auth.TenantDTO;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.hooks.IJwtEnrichment;
@@ -79,13 +80,14 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
         final JwtInfo tempJwt = ctx.internalHeaderParameters.getJwtInfo();
         final AuthenticationParameters ap = otherAuthentication.preprocess(ctx, rq.getSessionParameters(), rq.getAuthenticationParameters());
         final String locale = (rq.getSessionParameters() == null ? null : rq.getSessionParameters().getLocale()) == null
-                ? tempJwt.getLocale() : rq.getSessionParameters().getLocale();
+            ? tempJwt.getLocale() : rq.getSessionParameters().getLocale();
         final String zoneinfo = (rq.getSessionParameters() == null ? null : rq.getSessionParameters().getZoneinfo()) == null
-                ? tempJwt.getZoneinfo() : rq.getSessionParameters().getZoneinfo();
+            ? tempJwt.getZoneinfo() : rq.getSessionParameters().getZoneinfo();
         final AuthenticationResponse resp = auth(ctx, ap, locale, zoneinfo); // dispatch and perform authentication
         if (resp == null
-          || (!ApplicationException.isOk(resp.getReturnCode()) && resp.getReturnCode() != T9tException.PASSWORD_EXPIRED)
-          || resp.getJwtInfo() == null) {
+            || (!ApplicationException.isOk(resp.getReturnCode()) && resp.getReturnCode() != T9tException.PASSWORD_EXPIRED
+            && resp.getReturnCode() != T9tAuthException.PASSWORD_SYNC_FAILED)
+            || resp.getJwtInfo() == null) {
             throw new ApplicationException(T9tException.T9T_ACCESS_DENIED);
         }
         final JwtInfo jwtInfo = resp.getJwtInfo();
@@ -98,10 +100,10 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
         resp.setNumberOfIncorrectAttempts(resp.getNumberOfIncorrectAttempts());
         resp.setTenantNotUnique(resp.getJwtInfo().getTenantId().equals(T9tConstants.GLOBAL_TENANT_ID)); // only then the user has access to additional ones
         LOGGER.debug("User {} successfully logged in for tenant {} via {}", resp.getJwtInfo().getUserId(), resp.getJwtInfo().getTenantId(),
-          resp.getApiKeyRef() != null ? "API key" : "user/PW");
+            resp.getApiKeyRef() != null ? "API key" : "user/PW");
 
         // on password change invalidate all other sessions on uplink server with internal services
-        if (ap instanceof PasswordAuthentication pwdAuth && T9tUtil.isNotBlank(pwdAuth.getPassword()) && T9tUtil.isNotBlank(pwdAuth.getNewPassword())) {
+        if (ap instanceof final PasswordAuthentication pwdAuth && T9tUtil.isNotBlank(pwdAuth.getPassword()) && T9tUtil.isNotBlank(pwdAuth.getNewPassword())) {
             authSessionService.userSessionInvalidationOnUplinkServer(pwdAuth.getUserId(), false, resp.getEncodedJwt());
         }
 
@@ -110,7 +112,7 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
 
     /** Authenticates a user via userId / password. Relevant information for the JWT is taken from the UserDTO, then the TenantDTO. */
     protected AuthenticationResponse authPasswordAuthentication(final RequestContext ctx,
-            final PasswordAuthentication pw, final String locale, final String zoneinfo) {
+        final PasswordAuthentication pw, final String locale, final String zoneinfo) {
         // check for external authentication first
         final LdapConfiguration ldapConfiguration = ConfigProvider.getConfiguration().getLdapConfiguration();
         AuthIntermediateResult authResult = null;
@@ -133,13 +135,16 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
                 authResult = persistenceAccess.getByUserIdAndPassword(ctx.executionStart, pw.getUserId(), pw.getPassword(), pw.getNewPassword());
             }
         }
-        if (authResult == null || (!ApplicationException.isOk(authResult.getReturnCode()) && authResult.getReturnCode() != T9tException.PASSWORD_EXPIRED)) {
+        if (authResult == null || (!ApplicationException.isOk(authResult.getReturnCode())
+            && authResult.getReturnCode() != T9tException.PASSWORD_EXPIRED
+            && authResult.getReturnCode() != T9tAuthException.PASSWORD_SYNC_FAILED)) {
             LOGGER.debug("Incorrect authentication for userId {}", pw.getUserId());
             return null;
         }
         final UserDTO userDto = authResult.getUser();
-        if (!authResponseUtil.isUserAllowedToLogOn(ctx, userDto))
+        if (!authResponseUtil.isUserAllowedToLogOn(ctx, userDto)) {
             return null;
+        }
 
         // only for password change case
         if (T9tUtil.isNotBlank(pw.getPassword()) && T9tUtil.isNotBlank(pw.getNewPassword())) {
@@ -170,15 +175,16 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
 
     /** Authenticates a user via API key. Relevant information for the JWT is taken from the ApiKeyDTO, then the UserDTO, finally the TenantDTO. */
     protected AuthenticationResponse authApiKeyAuthentication(final RequestContext ctx, final ApiKeyAuthentication ap,
-            final String locale, final String zoneinfo) {
+        final String locale, final String zoneinfo) {
         final AuthIntermediateResult authResult = persistenceAccess.getByApiKey(ctx.executionStart, ap.getApiKey());
         if (authResult == null || (!ApplicationException.isOk(authResult.getReturnCode()) && authResult.getReturnCode() != T9tException.PASSWORD_EXPIRED)) {
             LOGGER.debug("Incorrect authentication for API key {}", ap.getApiKey());
             return null;
         }
         final TenantDTO tenantDto = tenantResolver.getDTO(authResult.getTenantId());
-        if (tenantDto == null)
+        if (tenantDto == null) {
             return null;
+        }
 
         final ApiKeyDTO apiKeyDto = authResult.getApiKey();
         if (!authResponseUtil.isApiKeyAllowed(ctx, apiKeyDto)) {
@@ -209,7 +215,7 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
 
     /** Authenticates a user via external access token. Relevant information for the JWT is taken from the UserDTO, finally the TenantDTO. */
     protected AuthenticationResponse authExternalTokenAuthentication(final RequestContext ctx, final ExternalTokenAuthenticationParam authParam,
-            final String locale, final String zoneinfo) {
+        final String locale, final String zoneinfo) {
         final AuthIntermediateResult authResult = persistenceAccess.getByExternalToken(ctx.executionStart, authParam);
         if (authResult == null || !ApplicationException.isOk(authResult.getReturnCode())) {
             LOGGER.debug("Incorrect authentication with external token");
@@ -240,8 +246,8 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
     private AuthenticationResponse authJwtAuthentication(final RequestContext ctx, final JwtAuthentication jwtAp, final String locale, final String zoneinfo) {
         final AuthenticationResponse resp = new AuthenticationResponse();
 
-        String jwtToken = jwtAp.getEncodedJwt();
-        JwtInfo jwtInfo = jwt.decode(jwtToken);
+        final String jwtToken = jwtAp.getEncodedJwt();
+        final JwtInfo jwtInfo = jwt.decode(jwtToken);
         final TenantDTO tenantDto = tenantResolver.getDTO(jwtInfo.getTenantId());
 
         // jwtInfo is frozen - but setter are working on it in following methods
@@ -258,13 +264,13 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
     }
 
     protected AuthenticationResponse auth(final RequestContext ctx, final AuthenticationParameters ap, final String locale, final String zoneinfo) {
-        if (ap instanceof ApiKeyAuthentication akAp) {
+        if (ap instanceof final ApiKeyAuthentication akAp) {
             return authApiKeyAuthentication(ctx, akAp, locale, zoneinfo);
-        } else if (ap instanceof PasswordAuthentication pwAp) {
+        } else if (ap instanceof final PasswordAuthentication pwAp) {
             return authPasswordAuthentication(ctx, pwAp, locale, zoneinfo);
-        } else if (ap instanceof JwtAuthentication jwtAp) {
+        } else if (ap instanceof final JwtAuthentication jwtAp) {
             return authJwtAuthentication(ctx, jwtAp, locale, zoneinfo);
-        } else if (ap instanceof ExternalTokenAuthenticationParam extTokenAp) {
+        } else if (ap instanceof final ExternalTokenAuthenticationParam extTokenAp) {
             return authExternalTokenAuthentication(ctx, extTokenAp, locale, zoneinfo);
         } else if (ap != null) {
             return authDefault(ctx, ap, locale, zoneinfo);

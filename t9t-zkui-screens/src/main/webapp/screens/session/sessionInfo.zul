@@ -22,6 +22,14 @@
                           id2="uiJvmVersion"                 value2="@load(vm.uiSystemParams.vmVersion)"
                           id3="uiJvmName"                    value3="@load(vm.uiSystemParams.vmName)" readonly1 = "true" readonly2 = "true" readonly3 = "true"/>        
                 <row>
+                    <cell>
+                        <label value="${l:translate('info','zkRelease')}" />
+                    </cell>
+                    <cell>
+                        <label id="uiZkVersion" />
+                    </cell>
+                </row>
+                <row>
                     <cell colspan="3" height="20px"/>
                 </row>
     
@@ -47,4 +55,9 @@
             </rows>
         </form28>
     </groupbox28>
+    <script><![CDATA[
+        zk.afterMount(function() {
+            zk.Widget.$('$uiZkVersion').setValue(zk.version);
+        });
+    ]]></script>
 </window28>

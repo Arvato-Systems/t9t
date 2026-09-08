@@ -38,6 +38,8 @@ import com.arvatosystems.t9t.auth.jpa.entities.UserEntity;
 import com.arvatosystems.t9t.auth.jpa.entities.UserStatusEntity;
 import com.arvatosystems.t9t.auth.jpa.persistence.IPasswordEntityResolver;
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
+import com.arvatosystems.t9t.auth.services.IPasswordSyncService;
+import com.arvatosystems.t9t.auth.services.PasswordSyncStatus;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.IAuthSessionService;
@@ -49,12 +51,13 @@ public class PasswordChangeService extends AbstractPasswordService implements IP
 
     protected final IPasswordEntityResolver passwordResolver = Jdp.getRequired(IPasswordEntityResolver.class);
     protected final Provider<RequestContext> contextProvider = Jdp.getProvider(RequestContext.class);
+    protected final IPasswordSyncService passwordSyncService = Jdp.getRequired(IPasswordSyncService.class);
 
     @IsLogicallyFinal
     protected IAuthSessionService authSessionService;
 
     @Override
-    public void changePassword(String newPassword, UserEntity userEntity, UserStatusEntity userStatusEntity) {
+    public PasswordSyncStatus changePassword(String newPassword, UserEntity userEntity, UserStatusEntity userStatusEntity) {
         AuthModuleCfgDTO authModuleCfg = authModuleCfgResolver.getModuleConfiguration() == null ? IAuthPersistenceAccess.DEFAULT_MODULE_CFG
                 : authModuleCfgResolver.getModuleConfiguration();
         // minimum check length
@@ -85,9 +88,20 @@ public class PasswordChangeService extends AbstractPasswordService implements IP
                 .plusSeconds(T9tConstants.ONE_DAY_IN_S * T9tConstants.DEFAULT_MAXIUM_NUMBER_OF_DAYS_IN_BETWEEN_USER_ACTIVITIES));
         newPasswordEntity.setPasswordSerialNumber(userStatusEntity.getCurrentPasswordSerialNumber());
         passwordResolver.save(newPasswordEntity);
-        getAuthSessionService().userSessionInvalidationOnCurrentServer(contextProvider.get(), userEntity.getUserId(), false);
+        final RequestContext ctx = contextProvider.get();
+        getAuthSessionService().userSessionInvalidationOnCurrentServer(ctx, userEntity.getUserId(), false);
 
         LOGGER.debug("User {} password has successfully been changed", userEntity.getUserId());
+
+        // synchronize password to external secrets store if configured for this user
+        if (Boolean.TRUE.equals(userEntity.getSyncPasswordToKeyStore())) {
+            final PasswordSyncStatus syncStatus = passwordSyncService.storePassword(userEntity.getUserId(), ctx.tenantId, newPassword);
+            if (syncStatus == PasswordSyncStatus.ERROR) {
+                LOGGER.error("Failed to sync password for user {}/{} to external secrets store after password change", ctx.tenantId, userEntity.getUserId());
+            }
+            return syncStatus;
+        }
+        return PasswordSyncStatus.DISABLED;
     }
 
     private void validatePasswordLength(Integer passwordMinimumLength, String newPassword) {

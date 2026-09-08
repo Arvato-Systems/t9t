@@ -37,7 +37,7 @@ import com.arvatosystems.t9t.bpmn.services.IBpmTechnicalService;
 
 public class GetProcessDiagramRequestHandler extends AbstractRequestHandler<GetProcessDiagramRequest> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DeployProcessRequestHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GetProcessDiagramRequestHandler.class);
     private final IBpmTechnicalService bpmService = Jdp.getOptional(IBpmTechnicalService.class);
 
     @Override
