@@ -54,7 +54,6 @@ public class SqlMigrationExecutor implements StartupOnly {
 
         final FluentConfiguration config = Flyway.configure();
         config.cleanDisabled(true);
-        config.cleanOnValidationError(false);
         config.outOfOrder(true);
         config.encoding(ENCODING);
         config.table(migrationTable);

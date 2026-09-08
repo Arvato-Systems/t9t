@@ -41,7 +41,8 @@
             <properties>
                 <!-- ZK libraries, Community edition -->
                 <zk.version>10.3.0.1-jakarta</zk.version>
-                <zk-themes.version>10.0.0</zk-themes.version>
+                <zk-newtheme.version>10.3.0.1</zk-newtheme.version>
+                <zk-themes.version>10.0.0</zk-themes.version>   <!-- only silvertail -->
             </properties>
         </profile>
         <profile>
@@ -52,7 +53,8 @@
             <properties>
                 <!-- ZK libraries, COMMERCIAL !!! -->
                 <zk.version>10.3.1-jakarta</zk.version>
-                <zk-themes.version>10.0.0</zk-themes.version>
+                <zk-newtheme.version>10.3.1</zk-newtheme.version>
+                <zk-themes.version>10.0.0</zk-themes.version>   <!-- only silvertail -->
             </properties>
         </profile>
     </profiles>
@@ -134,8 +136,13 @@
             </dependency>
             <dependency>
                 <groupId>org.zkoss.theme</groupId>
+                <artifactId>iceblue_c</artifactId>
+                <version>${zk-newtheme.version}</version>   <!-- uses same version as zk itself, but without -jakarta suffix -->
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.theme</groupId>
                 <artifactId>silvertail</artifactId>
-                <version>${zk-themes.version}</version>
+                <version>${zk-themes.version}</version> <!-- uses separate version (and is now deprecated) -->
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zkforge</groupId>

@@ -1,10 +1,13 @@
 package com.arvatosystems.t9t.ai.be.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
@@ -68,12 +71,29 @@ public class OpenAiSchemaGeneratorTests {
         MessagingUtil.initializeBonaparteParsers();
         final ClassDefinition classDef = AdditionalHistoryTableColumns.BClass.INSTANCE.getMetaData();
         final JsonSchemaData schemaData = ClassWalker.getSchemaData(classDef.getName());
-        final JsonSchemaObject obj = JsonSchemaCreatorWithOpenAiWorkaround.buildJsonSchemaObject(classDef, "no PQON", true, true);
-        obj.setDefs(JsonSchemaCreatorWithOpenAiWorkaround.createDefs(schemaData, Map.of()));
+        final var schemaCreator = new JsonSchemaCreatorWithOpenAiWorkaround(true);
+        final JsonSchemaObject obj = schemaCreator.buildJsonSchemaObject(classDef, "no PQON", true, true);
+        obj.setDefs(schemaCreator.createDefs(schemaData, Map.of()));
         final String jsonSchema = JacksonTools.prettyPrint(objectMapper, obj);
         System.out.println(jsonSchema);
         System.out.println(EXPECTED_RESULT_NO_PQON);
 
         assertEquals(EXPECTED_RESULT_NO_PQON.replace("\n", ""), jsonSchema.replace("\n", ""), "JSON schema without PQON differs.");
+    }
+
+    @Test
+    public void testSchemaGenerationWithoutWorkaroundUsesPlainRefForOptionalObjectField() throws JsonProcessingException {
+        MessagingUtil.initializeBonaparteParsers();
+        final String pqon = "t9t.ai.mcp.AiToolSpecification";
+        final JsonSchemaData schemaData = ClassWalker.getSchemaData(pqon);
+        final var schemaCreator = new JsonSchemaCreatorWithOpenAiWorkaround(false);
+        final JsonSchemaObject obj = schemaCreator.buildJsonSchemaObject(schemaData.classDefinition(), null, true, true);
+        obj.setDefs(schemaCreator.createDefs(schemaData, Map.of()));
+
+        final JsonNode outputSchemaNode = objectMapper.readTree(objectMapper.writeValueAsString(obj))
+                .get("$defs").get(pqon).get("properties").get("outputSchema");
+
+        assertTrue(outputSchemaNode.has("$ref"), "Optional object fields should use a plain $ref without the workaround.");
+        assertFalse(outputSchemaNode.has("anyOf"), "Optional object fields should not use anyOf without the workaround.");
     }
 }

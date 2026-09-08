@@ -145,10 +145,11 @@ package (com.arvatosystems) t9t.ai.request {
         optional (!T...)                                    dto;                // the result object, provided in case chatStatus is DONE
     }
 
-    /** Creates OpenAI compatible schema data for the given PQON. */
+    /** Creates schema data for the given PQON (optionally OpenAI compatible via workarounds). */
     class CreateJsonSchemaRequest extends RequestParameters return CreateJsonSchemaResponse {
         required pqon                                       pqon;               // partially qualified object name of the desired object
         optional pqon Map<String>                           mappings;           // any mapping from source to replacement PQON
+        optional Boolean                                    openAiWorkaround;   // use hacks to allow OpenAI to understand it
     }
     class CreateJsonSchemaResponse extends ServiceResponse {
         required (JsonSchemaObject)                         jsonSchema;         // the JSON schema, including the wrapper object (root schema with $defs for the requested PQON)

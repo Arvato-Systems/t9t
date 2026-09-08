@@ -40,6 +40,7 @@ import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
 
+import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.UserKey;
 import com.arvatosystems.t9t.auth.request.GetPasswordChangeRequirementsRequest;
@@ -191,6 +192,11 @@ public class UserDAO implements IUserDAO {
             changePasswordRequest.setSessionParameters(makeSessionParameters(userId));
 
             t9tRemoteUtils.executeAndHandle(changePasswordRequest, ServiceResponse.class);
+        } catch (ReturnCodeException e) {
+            if (e.getReturnCode() == T9tAuthException.PASSWORD_SYNC_FAILED) {
+                throw e;
+            }
+            t9tRemoteUtils.returnCodeExceptionHandler("security.bon#ChangePasswordRequest", e);
         } catch (Exception e) {
             t9tRemoteUtils.returnCodeExceptionHandler("security.bon#ChangePasswordRequest", e);
         }
@@ -204,6 +210,11 @@ public class UserDAO implements IUserDAO {
             resetPasswordRequest.setEmailAddress(emailAddress);
             resetPasswordRequest.setUserId(userId);
             t9tRemoteUtils.executeAndHandle(resetPasswordRequest, ServiceResponse.class);
+        } catch (ReturnCodeException e) {
+            if (e.getReturnCode() == T9tAuthException.PASSWORD_SYNC_FAILED) {
+                throw e;
+            }
+            t9tRemoteUtils.returnCodeExceptionHandler("security.bon#ResetPasswordRequest", e);
         } catch (Exception e) {
             t9tRemoteUtils.returnCodeExceptionHandler("security.bon#ResetPasswordRequest", e);
         }
@@ -263,6 +274,11 @@ public class UserDAO implements IUserDAO {
             UserKey userKey = new UserKey(user.getUserId());
             request.setNaturalKey(userKey);
             response = t9tRemoteUtils.executeAndHandle(request, CrudSurrogateKeyResponse.class);
+        } catch (ReturnCodeException e) {
+            if (e.getReturnCode() == T9tAuthException.PASSWORD_SYNC_FAILED) {
+                throw e;
+            }
+            t9tRemoteUtils.returnCodeExceptionHandler("security.bon#UserCrudAndSetPasswordRequest", e);
         } catch (Exception e) {
             t9tRemoteUtils.returnCodeExceptionHandler("security.bon#UserCrudAndSetPasswordRequest", e);
         }

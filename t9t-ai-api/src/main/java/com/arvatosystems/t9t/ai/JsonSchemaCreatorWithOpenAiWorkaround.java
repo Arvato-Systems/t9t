@@ -31,6 +31,7 @@ import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.Multiplicity;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 
 import com.arvatosystems.t9t.ai.jsonSchema.AbstractJsonSchemaField;
@@ -44,8 +45,12 @@ import com.arvatosystems.t9t.ai.jsonSchema.JsonSchemaString;
 import com.arvatosystems.t9t.base.T9tException;
 
 /** Generator for JSON schema, with workaround to allow using the strict setting with OpenAI (they are not able to work with optional fields). */
-public final class JsonSchemaCreatorWithOpenAiWorkaround {
-    private JsonSchemaCreatorWithOpenAiWorkaround() { }
+public class JsonSchemaCreatorWithOpenAiWorkaround {
+    private final boolean openAiWorkaround;
+
+    public JsonSchemaCreatorWithOpenAiWorkaround(final boolean openAiWorkaround) {
+        this.openAiWorkaround = openAiWorkaround;
+    }
 
     private static final int MAX_ENUM_NAME_LENGTH = 80;
 
@@ -53,7 +58,7 @@ public final class JsonSchemaCreatorWithOpenAiWorkaround {
         schemaObject.setDefs(defs);
     }
 
-    public static Map<String, JsonSchemaObject> createDefs(@Nonnull final JsonSchemaData schemaData, @Nonnull final Map<String, String> redirectionMap) {
+    public Map<String, JsonSchemaObject> createDefs(@Nonnull final JsonSchemaData schemaData, @Nonnull final Map<String, String> redirectionMap) {
         final Set<String> pqonsAlreadyDone = new HashSet<>(64);
         final Map<String, JsonSchemaObject> defs = new HashMap<>(2 * schemaData.referencedPqons().size());
 
@@ -61,7 +66,7 @@ public final class JsonSchemaCreatorWithOpenAiWorkaround {
         return defs;
     }
 
-    private static void createDefsForMyselfAndSubclassesRecursively(final Set<String> pqonsAlreadyDone, final Map<String, JsonSchemaObject> defs, final JsonSchemaData schemaDataOrg, @Nonnull final Map<String, String> redirectionMap) {
+    private void createDefsForMyselfAndSubclassesRecursively(final Set<String> pqonsAlreadyDone, final Map<String, JsonSchemaObject> defs, final JsonSchemaData schemaDataOrg, @Nonnull final Map<String, String> redirectionMap) {
         final String pqon = schemaDataOrg.classDefinition().getName();
         if (pqonsAlreadyDone.contains(pqon)) {
             return;
@@ -94,7 +99,7 @@ public final class JsonSchemaCreatorWithOpenAiWorkaround {
         }
     }
 
-    private static void createDefsForReferencesRecursively(final Set<String> pqonsAlreadyDone, final Map<String, JsonSchemaObject> defs, final JsonSchemaData schemaData, @Nonnull final Map<String, String> redirectionMap) {
+    private void createDefsForReferencesRecursively(final Set<String> pqonsAlreadyDone, final Map<String, JsonSchemaObject> defs, final JsonSchemaData schemaData, @Nonnull final Map<String, String> redirectionMap) {
         for (final var ref: schemaData.referencedPqons().values()) {
             // create the object definition for either self, a single subclass, or anyOf the possible subclass
             createDefsForMyselfAndSubclassesRecursively(pqonsAlreadyDone, defs, ref, redirectionMap);
@@ -136,14 +141,14 @@ public final class JsonSchemaCreatorWithOpenAiWorkaround {
     }
 
     /** Returns the list of required parameters. */
-    public static List<String> buildRequiredFromFields(final ClassDefinition classDefinition) {
+    public List<String> buildRequiredFromFields(final ClassDefinition classDefinition) {
         final List<String> required = new ArrayList<>(classDefinition.getFields().size() + 8);
         required.add(MimeTypes.JSON_FIELD_PQON);
         recurseRequiredFields(classDefinition, required);
         return required;
     }
 
-    private static void recurseRequiredFields(final ClassDefinition classDefinition, final List<String> required) {
+    private void recurseRequiredFields(final ClassDefinition classDefinition, final List<String> required) {
         // if the class definition is null, we have reached the top of the hierarchy
         if (classDefinition == null) {
             return;
@@ -152,15 +157,17 @@ public final class JsonSchemaCreatorWithOpenAiWorkaround {
         recurseRequiredFields(classDefinition.getParentMeta(), required);
         // now, add the fields of the current class
         for (final FieldDefinition field : classDefinition.getFields()) {
-            required.add(field.getName());
+            if (openAiWorkaround || (field.getMultiplicity() == Multiplicity.SCALAR ? field.getIsRequired() : field.getIsAggregateRequired())) {
+                required.add(field.getName());
+            }
         }
     }
 
-    private static Object makeType(final boolean required, final String type) {
-        if (required) {
+    private Object makeType(final boolean required, final String type) {
+        if (required || !openAiWorkaround) {
             return type;
         } else {
-            return List.of(type, "null");
+            return List.of(type, "null");  // OpenAI workaround: when a field is optional, we need to allow null values, otherwise it will complain about missing fields
         }
     }
 
@@ -173,12 +180,12 @@ public final class JsonSchemaCreatorWithOpenAiWorkaround {
      * @param useRefs when a ref is desired (i.e. always, except when creating the defs map)
      * @return a JsonSchemaObject representing the class definition
      */
-    public static JsonSchemaObject buildJsonSchemaObject(@Nullable final ClassDefinition metaData, @Nullable final String description, final boolean isRequired, final boolean useRefs) {
+    public JsonSchemaObject buildJsonSchemaObject(@Nullable final ClassDefinition metaData, @Nullable final String description, final boolean isRequired, final boolean useRefs) {
         final JsonSchemaObject object = new JsonSchemaObject();
         if (useRefs && metaData != null) {
             // do the reference variant
             final String reference = "#/$defs/" + metaData.getName();
-            if (isRequired) {
+            if (isRequired || !openAiWorkaround) {
                 object.setRef(reference);
             } else {
                 object.setAnyOf(List.of(
@@ -192,12 +199,15 @@ public final class JsonSchemaCreatorWithOpenAiWorkaround {
         object.setDescription(description);
         object.setAddProps(Boolean.FALSE);
         if (metaData == null) {
-            // generic object without specific fields, nor PQON
-            // OpenAi does not like if it is completely empty
-//            object.setProperties(Map.of());
-//            object.setRequired(List.of());
-            object.setType("null");
-            object.setAddProps(null);
+            if (openAiWorkaround) {
+                // OpenAi does not like if it is completely empty
+                object.setType("null");
+                object.setAddProps(null);
+            } else {
+                // generic object without specific fields, nor PQON
+                object.setProperties(Map.of());
+                object.setRequired(List.of());
+            }
             object.setTitle("Generic map - unsupported by OpenAI, cannot use");
             return object;
         }
@@ -212,7 +222,7 @@ public final class JsonSchemaCreatorWithOpenAiWorkaround {
         return object;
     }
 
-    private static void recurseBuildJsonSchemaObjectFields(final ClassDefinition classDefinition, final Map<String, AbstractJsonSchemaField> properties) {
+    private void recurseBuildJsonSchemaObjectFields(final ClassDefinition classDefinition, final Map<String, AbstractJsonSchemaField> properties) {
         if (classDefinition == null) {
             return;
         }
@@ -223,7 +233,7 @@ public final class JsonSchemaCreatorWithOpenAiWorkaround {
         }
     }
 
-    private static AbstractJsonSchemaField buildField(final FieldDefinition metaData) {
+    private AbstractJsonSchemaField buildField(final FieldDefinition metaData) {
         final String comment = metaData.getTrailingComment();
         switch (metaData.getMultiplicity()) {
         case SCALAR:
@@ -241,7 +251,7 @@ public final class JsonSchemaCreatorWithOpenAiWorkaround {
         }
     }
 
-    private static AbstractJsonSchemaField buildFieldNoArray(final FieldDefinition metaData, final String comment) {
+    private AbstractJsonSchemaField buildFieldNoArray(final FieldDefinition metaData, final String comment) {
         final boolean required = metaData.getIsRequired();
         final Object str = makeType(required, "string");  // predefine because it occurs so often
         switch (metaData.getDataCategory()) {

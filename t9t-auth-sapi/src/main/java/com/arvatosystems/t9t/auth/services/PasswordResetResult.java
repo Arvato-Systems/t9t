@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.auth.jpa;
+package com.arvatosystems.t9t.auth.services;
 
-import com.arvatosystems.t9t.auth.jpa.entities.UserEntity;
-import com.arvatosystems.t9t.auth.jpa.entities.UserStatusEntity;
-import com.arvatosystems.t9t.auth.services.PasswordSyncStatus;
-
-public interface IPasswordChangeService {
-    /** This method is invoked if the user changes her/his password. Returns the sync status. */
-    PasswordSyncStatus changePassword(String newPassword, UserEntity userEntity, UserStatusEntity userStatusEntity);
+/**
+ * Result of issuing a password reset, including the outcome of optional
+ * synchronization to an external secrets store.
+ */
+public record PasswordResetResult(String password, PasswordSyncStatus syncStatus) {
 }

@@ -80,7 +80,7 @@ public interface IAuthPersistenceAccess {
     Map<String, Object> getUserZ(Long userRef);
     Map<String, Object> getTenantZ(String tenantId);
 
-    String assignNewPasswordIfEmailMatches(RequestContext ctx, String userId, String emailAddress);
+    PasswordResetResult assignNewPasswordIfEmailMatches(RequestContext ctx, String userId, String emailAddress);
 
     void deletePasswordBlacklist();
 

@@ -15,9 +15,10 @@ public class CreateJsonSchemaRequestHandler extends AbstractRequestHandler<Creat
     @Override
     public CreateJsonSchemaResponse execute(final RequestContext ctx, final CreateJsonSchemaRequest request) throws Exception {
         final var schemaData = ClassWalker.getSchemaData(request.getPqon());
+        final var schemaCreator = new JsonSchemaCreatorWithOpenAiWorkaround(Boolean.TRUE.equals(request.getOpenAiWorkaround()));
 
-        final var jsonSchemaObject = JsonSchemaCreatorWithOpenAiWorkaround.buildJsonSchemaObject(schemaData.classDefinition(), null, true, true);
-        jsonSchemaObject.setDefs(JsonSchemaCreatorWithOpenAiWorkaround.createDefs(schemaData, T9tUtil.nvl(request.getMappings(), Map.of())));
+        final var jsonSchemaObject = schemaCreator.buildJsonSchemaObject(schemaData.classDefinition(), null, true, true);
+        jsonSchemaObject.setDefs(schemaCreator.createDefs(schemaData, T9tUtil.nvl(request.getMappings(), Map.of())));
 
         // create the response object and set the JSON schema
         final CreateJsonSchemaResponse response = new CreateJsonSchemaResponse();

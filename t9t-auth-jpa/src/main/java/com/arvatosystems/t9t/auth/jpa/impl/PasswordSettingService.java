@@ -30,11 +30,14 @@ import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.PasswordUtil;
 import com.arvatosystems.t9t.auth.jpa.IPasswordSettingService;
+import com.arvatosystems.t9t.auth.jpa.PasswordSettingResult;
 import com.arvatosystems.t9t.auth.jpa.entities.PasswordEntity;
 import com.arvatosystems.t9t.auth.jpa.entities.UserEntity;
 import com.arvatosystems.t9t.auth.jpa.entities.UserStatusEntity;
 import com.arvatosystems.t9t.auth.jpa.persistence.IPasswordEntityResolver;
 import com.arvatosystems.t9t.auth.jpa.persistence.IUserEntityResolver;
+import com.arvatosystems.t9t.auth.services.IPasswordSyncService;
+import com.arvatosystems.t9t.auth.services.PasswordSyncStatus;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.services.IAuthSessionService;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -46,17 +49,18 @@ public class PasswordSettingService extends AbstractPasswordService implements I
     protected final IPasswordEntityResolver passwordResolver = Jdp.getRequired(IPasswordEntityResolver.class);
     protected final IUserEntityResolver userEntityResolver = Jdp.getRequired(IUserEntityResolver.class);
     protected final Provider<RequestContext> contextProvider = Jdp.getProvider(RequestContext.class);
+    protected final IPasswordSyncService passwordSyncService = Jdp.getRequired(IPasswordSyncService.class);
 
     @IsLogicallyFinal
     protected IAuthSessionService authSessionService;
 
     @Override
-    public void setPasswordForUser(final RequestContext ctx, final UserEntity userEntity, final String newPassword) {
-        setPasswordForUser(ctx.executionStart, userEntity, newPassword, ctx.userRef);
+    public PasswordSettingResult setPasswordForUser(final RequestContext ctx, final UserEntity userEntity, final String newPassword) {
+        return setPasswordForUser(ctx.executionStart, userEntity, newPassword, ctx.userRef);
     }
 
     @Override
-    public PasswordEntity setPasswordForUser(final Instant now, final UserEntity userEntity, final String newPassword, final Long passwordSetByUserRef) {
+    public PasswordSettingResult setPasswordForUser(final Instant now, final UserEntity userEntity, final String newPassword, final Long passwordSetByUserRef) {
 
         // password must be checked against blacklist
         checkPasswordAgainstBlacklist(newPassword);
@@ -87,9 +91,19 @@ public class PasswordSettingService extends AbstractPasswordService implements I
         newPwdEntity.setUserExpiry(now.plusSeconds(T9tConstants.ONE_DAY_IN_S * T9tConstants.DEFAULT_MAXIUM_NUMBER_OF_DAYS_IN_BETWEEN_USER_ACTIVITIES));
         newPwdEntity.setPasswordSerialNumber(nextPasswordNo);
         passwordResolver.save(newPwdEntity);
-        getAuthSessionService().userSessionInvalidation(contextProvider.get(), userEntity.getUserId(), false);
+        final RequestContext ctx = contextProvider.get();
+        getAuthSessionService().userSessionInvalidation(ctx, userEntity.getUserId(), false);
         LOGGER.info("Password for user {} has been successfully reset", userEntity.getUserId());
-        return newPwdEntity;
+
+        // synchronize password to external secrets store if configured for this user
+        PasswordSyncStatus syncStatus = PasswordSyncStatus.DISABLED;
+        if (Boolean.TRUE.equals(userEntity.getSyncPasswordToKeyStore())) {
+            syncStatus = passwordSyncService.storePassword(userEntity.getUserId(), ctx.tenantId, newPassword);
+            if (syncStatus == PasswordSyncStatus.ERROR) {
+                LOGGER.error("Failed to sync password for user {}/{} to external secrets store", ctx.tenantId, userEntity.getUserId());
+            }
+        }
+        return new PasswordSettingResult(newPwdEntity, syncStatus);
     }
 
     private IAuthSessionService getAuthSessionService() {

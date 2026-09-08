@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zul.Tab;
@@ -50,6 +51,7 @@ public class Tabbox28 extends Tabbox implements IViewModelOwner, IDataSelectRece
     private static final long serialVersionUID = -7088578448192569162L;
     private static final Logger LOGGER = LoggerFactory.getLogger(Tabbox28.class);
     private static final AtomicInteger UNDEF_IDS = new AtomicInteger();
+    private static final String TAB_SELECT_LISTENER = Tabbox28.class.getName() + ".tabSelectListener";
 
     private Tabs tabs;
     private EventDataSelect28 lastSelected;
@@ -94,11 +96,13 @@ public class Tabbox28 extends Tabbox implements IViewModelOwner, IDataSelectRece
         // onClick handler:
         // 1) send the current selection to the new tabpanel
         // 2) in case of a new selection (inbound), forward that to the current tabpanel (therefore we have to store it)
-        tab.addEventListener(Events.ON_SELECT, (SelectEvent ev) -> {
+        final EventListener<SelectEvent> selectListener = (SelectEvent ev) -> {
             LOGGER.debug("SELECT event on Tab {}", tabId);
 //          currentTab = panel;
             panel.setSelectionData(lastSelected);
-        });
+        };
+        tab.setAttribute(TAB_SELECT_LISTENER, selectListener);
+        tab.addEventListener(Events.ON_SELECT, selectListener);
         if (extension != null)
             extension.afterRegisterPanel(this, tab, panel);
     }
@@ -108,12 +112,18 @@ public class Tabbox28 extends Tabbox implements IViewModelOwner, IDataSelectRece
         if (firstTab.getId().equals(panel.getId())) {
             firstTab = null;
         }
-        panel.getLinkedTab().setParent(null);
+        final Tab linkedTab = panel.getLinkedTab();
+        if (linkedTab != null) {
+            @SuppressWarnings("unchecked")
+            final EventListener<SelectEvent> selectListener = (EventListener<SelectEvent>) linkedTab.getAttribute(TAB_SELECT_LISTENER);
+            if (selectListener != null) {
+                LOGGER.debug("Removing event listener on Tab {}", linkedTab.getId());
+                linkedTab.removeEventListener(Events.ON_SELECT, selectListener);
+                linkedTab.removeAttribute(TAB_SELECT_LISTENER);
+            }
+            linkedTab.setParent(null);
+        }
         panel.setParent(null);
-        panel.removeEventListener(Events.ON_SELECT, (SelectEvent ev) -> {
-            LOGGER.debug("Removing event listener on Tab {}", panel.getLinkedTab().getId());
-            panel.setSelectionData(lastSelected);
-        });
     }
 
     public void notifyCurrent() {

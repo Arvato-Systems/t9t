@@ -224,7 +224,6 @@ public class MigrationElements {
         config.encoding(configuration.getScriptEncoding());
         config.baselineDescription("Baseline");
         config.ignoreMigrationPatterns("*:Ignored");
-        config.cleanOnValidationError(false);
         config.cleanDisabled(true);
         config.outOfOrder(true);
 

@@ -166,6 +166,7 @@ package (com.arvatosystems) t9t.auth {
         optional Boolean                            onlyExternalAuth;                       // set to true to disable internal authentication
         optional languageTag                        language;                               // user's language
         optional shortText                          firstName;                              // first name of the user
+        optional Boolean                            syncPasswordToKeyStore;                 // if true, password changes are synchronized to a password sync service (e.g. OpenBao KV)
     }
 
     final class UserDescription extends UserRef {

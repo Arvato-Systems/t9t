@@ -89,12 +89,13 @@ public abstract class AbstractAiCreateOrEditDtoRequestHandler<T extends BonaPort
         }
         // jsonSchemaData.log(2);
         // generate the JSON schema for the DTO and the wrapper
-        final JsonSchemaObject jsonSchemaObjOfDto = CACHED_SCHEMA_DATA.computeIfAbsent(bclass.getPqon(), x -> JsonSchemaCreatorWithOpenAiWorkaround.buildJsonSchemaObject(bclass.getMetaData(), null, true, true));
-        final JsonSchemaObject jsonSchemaObjWrapper = JsonSchemaCreatorWithOpenAiWorkaround.buildJsonSchemaObject(WRAPPER_BCLASS.getMetaData(), "The desired DTO", true, false);
+        final var schemaCreator = new JsonSchemaCreatorWithOpenAiWorkaround(true);
+        final JsonSchemaObject jsonSchemaObjOfDto = CACHED_SCHEMA_DATA.computeIfAbsent(bclass.getPqon(), x -> schemaCreator.buildJsonSchemaObject(bclass.getMetaData(), null, true, true));
+        final JsonSchemaObject jsonSchemaObjWrapper = schemaCreator.buildJsonSchemaObject(WRAPPER_BCLASS.getMetaData(), "The desired DTO", true, false);
         // Log the raw wrapper
         // LOGGER.debug("Generated JSON schema for Wrapper: {}", ToStringHelper.toStringML(jsonSchemaObjWrapper));
         // link the DTO schema to the wrapper schema via $defs and $ref
-        jsonSchemaObjWrapper.setDefs(JsonSchemaCreatorWithOpenAiWorkaround.createDefs(jsonSchemaData, redirectionMap));
+        jsonSchemaObjWrapper.setDefs(schemaCreator.createDefs(jsonSchemaData, redirectionMap));
         jsonSchemaObjWrapper.getProperties().put(InternalResponseWrapper.meta$$dto.getName(), jsonSchemaObjOfDto);
 
         // call the LLM service

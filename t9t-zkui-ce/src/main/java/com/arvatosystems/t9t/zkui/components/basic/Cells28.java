@@ -154,10 +154,20 @@ public class Cells28 extends Row {
     }
 
     protected void myOnCreate() {
-        IViewModelOwner vmOwner = GridIdTools.getAnchestorOfType(this, IViewModelOwner.class);
+        if (idf != null) {
+            // already initialized before (for example a component reused from a navigation cache which received a duplicate /
+            // stale onCreate event): nothing to do, avoid recreating the field and avoid re-walking the (possibly not yet
+            // fully reattached) ancestor chain.
+            return;
+        }
+
+        IViewModelOwner vmOwner = GridIdTools.findAnchestorOfType(this, IViewModelOwner.class);
         if (vmOwner == null) {
-            LOGGER.error("****  FATAL: unable to create cells28 inside viewModel {}, vmOwner is null.", viewModelId);
-            throw new RuntimeException("Unable to create cells28 inside viewModel " + viewModelId);
+            // this can happen for a component which is in the process of being (re-)attached, e.g. when it belongs to a
+            // navigation entry which is currently being reloaded from a cache. Simply ignore this (stale / premature) event;
+            // a subsequent onCreate (once the component is properly attached) will perform the real initialization.
+            LOGGER.warn("Cells28 {} has no ancestor of type IViewModelOwner (yet), skipping initialization", dataFieldId);
+            return;
         }
         LOGGER.debug("vmOwner is {}", vmOwner.getClass().getSimpleName() + ":" + vmOwner.getViewModelId());
         viewModelId = GridIdTools.enforceViewModelId(vmOwner);

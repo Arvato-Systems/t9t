@@ -10,7 +10,7 @@ Most of the screens of this UI belong to one of two categories:
 
 * data retrieval (search screens)
 
-Others screens (change password etc.) are exceptions and won't be described in detail in this document.
+The login flow, main shell, tenant / post-login selections, logout, and password-related entry screens are described separately in `Chapter_1_Login_and_Main_Screen.md`.
 
 
 

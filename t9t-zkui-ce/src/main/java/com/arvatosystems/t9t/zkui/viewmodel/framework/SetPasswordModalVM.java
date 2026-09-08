@@ -27,10 +27,12 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 import com.arvatosystems.t9t.zkui.services.IUserDAO;
@@ -60,7 +62,16 @@ public class SetPasswordModalVM {
             showError(session.translate("changePwd", "password.mismatch"));
         }
 
-        userDAO.setPassword(user, newPassword);
+        try {
+            userDAO.setPassword(user, newPassword);
+        } catch (ReturnCodeException e) {
+            if (e.getReturnCode() != T9tAuthException.PASSWORD_SYNC_FAILED) {
+                throw e;
+            }
+            closeWindow();
+            Messagebox.show(e.getReturnMessage(), session.translate("com", "info"), Messagebox.OK, Messagebox.EXCLAMATION);
+            return;
+        }
 
         Events.sendEvent("onClose", windowComponent, false);
         closeWindow();

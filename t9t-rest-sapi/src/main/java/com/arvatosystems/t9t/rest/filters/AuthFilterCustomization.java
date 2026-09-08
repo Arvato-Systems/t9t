@@ -52,7 +52,7 @@ import com.arvatosystems.t9t.rest.utils.RestUtils;
 
 @Singleton
 public class AuthFilterCustomization implements IAuthFilterCustomization {
-    private static final Logger LOGGER = LoggerFactory.getLogger(T9tRestAuthenticationFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthFilterCustomization.class);
     private static final int MAX_AUTH_ENTRIES = 200;
     private static final int MAX_SIZE_AUTH_HEADER = 4096;
 

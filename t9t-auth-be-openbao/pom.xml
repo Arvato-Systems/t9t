@@ -17,7 +17,6 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-java</artifactId>
@@ -25,16 +24,22 @@
         <relativePath>../t9t-settings-java</relativePath>
     </parent>
 
-    <artifactId>t9t-httppool-be</artifactId>
+    <artifactId>t9t-auth-be-openbao</artifactId>
+    <description>OpenBao KV password synchronization backend for t9t authentication</description>
 
     <dependencies>
+        <!-- compile dependencies -->
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-auth-sapi</artifactId>
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-base-api</artifactId>
+            <artifactId>t9t-cfg-be</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
         </dependency>
 
         <!-- JUnit Test -->
