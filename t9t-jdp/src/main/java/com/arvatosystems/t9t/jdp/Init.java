@@ -39,7 +39,11 @@ public final class Init {
         // Jdp.excludePackagePrefix("java.");
         Jdp.includePackagePrefix("de.jpaw.");
         Jdp.includePackagePrefix("com.arvatosystems.");
-        Packages.walkExtraPackages((prefix, packageName) -> Jdp.includePackagePrefix(packageName + "."));
+        Packages.walkExtraPackages((prefix, packageName) -> {
+            if (packageName != null && !packageName.startsWith("com.arvatosystems.") && !packageName.startsWith("de.jpaw.")) {
+                Jdp.includePackagePrefix(packageName + ".");
+            }
+        });
 
         final Reflections[] scannedPackages = InitContainers.initializeT9t();
         Jdp.scanClasses(scannedPackages);

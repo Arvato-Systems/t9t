@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.cfg;
 
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,22 +29,37 @@ import org.slf4j.LoggerFactory;
 
 public final class Packages {
     private static final Logger LOGGER = LoggerFactory.getLogger(Packages.class);
-    private static final String PROPERTIES_FILENAME = "/extraBonapartePrefixes.properties";
+    private static final String PROPERTIES_FILENAME = "extraBonapartePrefixes.properties";
     private static final Map<String, String> EXTRA_PACKAGES = new ConcurrentHashMap<>();
     static {
-        // obtain extra packages from some resource file, or initialize it to the empty map if no such resource can be found
-        final Properties props = new Properties();
+        // scan all resource files of given name
+        final ClassLoader cl = Packages.class.getClassLoader();
         try {
-            props.load(Packages.class.getResourceAsStream(PROPERTIES_FILENAME));
-        } catch (final Exception e) {
-            // this is not an error
-        }
-        for (final Map.Entry<Object, Object> e: props.entrySet()) {
-            if (e.getKey() instanceof String key && e.getValue() instanceof String value) {
-                EXTRA_PACKAGES.put(key, value);
+            final Enumeration<URL> urls = cl.getResources(PROPERTIES_FILENAME);
+
+            while (urls.hasMoreElements()) {
+                final URL nextUrl = urls.nextElement();
+                try {
+                    try (java.io.InputStream stream = nextUrl.openStream()) {
+                        final Properties props = new Properties();
+                        props.load(stream);
+                        for (final Map.Entry<Object, Object> e: props.entrySet()) {
+                            if (e.getKey() instanceof String key && e.getValue() instanceof String value) {
+                                EXTRA_PACKAGES.put(key, value);
+                                LOGGER.info("Mapping prefix {} to package {} (resource {})", e.getKey(), e.getValue(), nextUrl);
+                            }
+                        }
+                    }
+                } catch (final Exception e) {
+                    LOGGER.error("Error reading extra package prefixes from resource {}", nextUrl, e);
+                }
             }
+            if (EXTRA_PACKAGES.isEmpty()) {
+                LOGGER.info("No extra bonaparte package prefixes found in any resource {}", PROPERTIES_FILENAME);
+            }
+        } catch (final Exception e) {
+            LOGGER.error("Error reading extra package prefixes from resources {}", PROPERTIES_FILENAME, e);
         }
-        LOGGER.info("{} extra package prefixes found in properties resource {}", EXTRA_PACKAGES.size(), PROPERTIES_FILENAME);
     }
 
     private Packages() {
