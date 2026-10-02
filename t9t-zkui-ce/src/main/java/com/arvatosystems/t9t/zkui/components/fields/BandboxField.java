@@ -26,10 +26,10 @@ import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.ui.UIFilter;
-import de.jpaw.bonaparte.pojos.ui.UIFilterType;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.base.ui.UIFilter;
+import com.arvatosystems.t9t.base.ui.UIFilterType;
 import com.arvatosystems.t9t.zkui.components.EventDataSelect28;
 import com.arvatosystems.t9t.zkui.components.ISelectReceiver;
 import com.arvatosystems.t9t.zkui.components.basic.Bandpopup28;

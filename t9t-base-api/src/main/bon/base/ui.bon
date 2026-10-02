@@ -1,0 +1,110 @@
+/*
+ * Copyright (c) 2012 - 2026 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import meta.*
+/**
+ * Configuration for UI.
+ * Assigned to factoryId 25, classIds 41-50
+ *
+ * To define default settings for a grid, the following data is required:
+ * - List<UIFilter> to define search fields
+ * - List<String> to define fieldnames in result grid (using default widths)
+ * If widths should be specified as well, a list of UIColumns is required.
+ */
+
+package (com.arvatosystems) t9t.base.ui factoryId 25 {
+    default private unsigned trim noControlChars;
+
+    enum Alignment    { DEFAULT="D", LEFT="L", CENTER="C", RIGHT="M" }  // default aligns by field type: boolean and images centered, numeric right, rest left (subject to change for locale specific refinement)
+    enum LayoutHint   { TEXT="T", IMAGE="I", CHECKBOX="B", OBJECT="O" } // object is a generic bonaortable, the only way to display it is via popup and specific toString renderers
+
+    enum UIFilterType {
+        EQUALITY        = "E",                      // filter criteria must match exactly (the only possible for references and enums)
+        LOWER_BOUND     = "L",                      // input is a lower bound
+        UPPER_BOUND     = "U",                      // input is an upper bound
+        RANGE           = "R",                      // lower and upper bound (relates to 2 separate input fields)
+        NULL            = "N",                      // field should be null
+        IN              = "I",                      // field should be one of multiple options
+        LIKE            = "W",                      // equality with wildcard (affects plausi check, only possible for text fields)
+        CUSTOM          = "C"                       // custom filter - must specify qualifier
+    }
+
+    /** Defines properties of a column displayed in some UI, to be used with the foldingComposer. */
+    class UIColumn classId 41 {
+        required identifier                         fieldName;              // field name in dotted notation (data.component.field[arrayIndex])
+        required int                                width;                  // specific width, if 0, then it is determined using the data type width
+        optional Enum Alignment                     alignment;              // L/M/R
+        optional Enum LayoutHint                    layoutHint;             // type of view to display
+    }
+
+
+    /** Defines properties of a column used as a filter - lean. */
+    class UIFilter classId 45 {
+        required Enum UIFilterType                  filterType;             // determines which type of filter to apply
+        required identifier                         fieldName;              // field name in dotted notation (data.component.field[arrayIndex])
+        optional Boolean                            negate;                 // if Boolean.TRUE, then negate the filter
+        optional Unicode(32)                        qualifier;              // specifies custom implementation - required for UIFilterType C but can be used for standard filter types as well
+        optional Boolean                            caseInsensitive;        // only for StringFilter: ignores case when comparing
+        optional Element                            equalsValue;            // filter with preset condition: equality
+        optional Element                            lowerBound;             // filter with preset condition: lower bound
+        optional Element                            upperBound;             // filter with preset condition: upper bound
+        optional Element                            likeValue;              // filter with preset condition: substring
+        required Element List<>                     valueList;              // filter with preset condition: multi-value selection
+        optional Boolean                            nullValue;              // filter with preset condition NULL (only for Nullfilter)
+    }
+
+    /** User specific configuration for a column. */
+    class UIColumnConfiguration classId 42 extends UIColumn {
+        required boolean                            visible;                // true, if column should be shown.
+        required boolean                            allowSorting;           // leave it false if sorting would be too resource intense
+        required boolean                            negateFilter;           // if a filter is configured: negate the condition
+        optional Enum UIFilterType                  filterType;             // determines which type of filter to apply
+        optional Boolean                            notSelectable;          // TRUE if the column cannot be selected in a grid to be displayed (columns which are for filter only)
+        optional (UIMeta)                           meta;                   // condensed meta data
+        optional Unicode(32)                        filterQualifier;        // specifies custom implementation - required for UIFilterType C but can be used for standard filter types as well
+    }
+
+    /** Condensed meta data (meta.FieldDefinition), which is required if the UI is not Java based. */
+    final class UIMeta classId 44 {
+        required boolean                            isRequired;             // if the fields allow null (if collections: the collection elements)
+        optional Boolean                            isList;                 // multiplicity (either true or absent / null)
+        optional Boolean                            isMap;                  // multiplicity (either true or absent / null)
+        required Ascii(32)                          dataCategory;           // the high level category (instance name of enum DataCategory)
+        required identifier                         dataType;               // the Bonaparte data type, here: in all lower case
+        required Unicode(255) Map<String>           fieldProperties;        // decimals="n" etc.
+        required Unicode(255) Map<String>           classProperties;        // properties at class level for nested objects (dataType = ref) (currently not populated)
+        optional identifier                         pqon;                   // for enums, the PQON (for xenums, the pqon of the base enum)
+        optional identifier                         pqon2;                  // for xenums, the PQON
+        optional Int                                length;                 // for text the number of characters, for numbers the maximum total digits (including decimals)
+        optional Int                                minLength;              // for text or numbers
+        optional Int                                decimalDigits;          // for numbers
+        optional Boolean                            isSigned;               // for numeric types only
+        required enumIdType List<>                  enumInstances;          // for enums or xenums: the instance names
+        required enumTokenType List<>               enumTokens;             // for enums or xenums: the corresponding tokens
+        optional Boolean                            allowCtrl;              // for alphanumeric types (unicode) only: allow newlines and control chars?
+    }
+
+    /** Parameters used by autoconfiguration, to determine default column withs. */
+    class UIDefaults classId 43 {
+        required int                                renderMaxArrayColumns;  // unrolled lists: how many columns to show at max?
+        required int                                widthObject;            // width in pixels of an object column (shows a button)
+        required int                                widthCheckbox;          // width in pixels of an boolean column (shown as checkbox)
+        required int                                widthEnum;              // width in pixels of an enum or xenum type
+        required int                                widthEnumset;           // width in pixels of an enumset type
+        required int                                widthOffset;            // width in pixels offset for variable width items
+        required int                                widthPerCharacter;      // width in pixels per character
+        required int                                widthMax;               // width in pixels where to cap huge columns
+    }
+}

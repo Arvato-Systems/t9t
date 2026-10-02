@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2025 Arvato Systems GmbH
+ * Copyright (c) 2012 - 2026 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.zkui.services;
+package com.arvatosystems.t9t.zkui.components.dropdown28;
 
-import java.util.List;
-
-import org.zkoss.zul.Div;
-
-import com.arvatosystems.t9t.base.ui.UIFilter;
-import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
-import com.arvatosystems.t9t.zkui.viewmodel.support.SearchFilterRowVM;
-
-public interface ISearchFilterConfigCreator {
-
-    void createComponent(Div parent, UIGridPreferences uiGridPreferences, List<UIFilter> selectedFilters);
-
-    List<SearchFilterRowVM> getSelectedFilters();
-
+public record ComboBoxEntryCacheKey(String dropdownId, String displayFormat) {
 }

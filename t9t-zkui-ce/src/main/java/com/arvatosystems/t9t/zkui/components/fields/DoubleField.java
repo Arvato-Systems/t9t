@@ -20,8 +20,8 @@ import org.zkoss.zul.Doublebox;
 import de.jpaw.bonaparte.pojos.api.DoubleFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.ui.UIFilter;
 
+import com.arvatosystems.t9t.base.ui.UIFilter;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 public class DoubleField extends AbstractField<Doublebox> {

@@ -28,17 +28,12 @@ import com.google.common.io.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.api.ColumnCollector;
 import de.jpaw.bonaparte.core.MapParser;
-import de.jpaw.bonaparte.pojos.ui.UIColumn;
-import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
-import de.jpaw.bonaparte.pojos.ui.UIDefaults;
-import de.jpaw.bonaparte.pojos.ui.UIFilter;
-import de.jpaw.bonaparte.pojos.ui.UIMeta;
 import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.json.JsonParser;
 import de.jpaw.util.ExceptionUtil;
 
+import com.arvatosystems.t9t.base.ColumnCollector;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.FieldMappers;
 import com.arvatosystems.t9t.base.IGridConfigContainer;
@@ -49,6 +44,11 @@ import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.entities.InternalTenantId;
 import com.arvatosystems.t9t.base.types.TenantIsolationCategoryType;
+import com.arvatosystems.t9t.base.ui.UIColumn;
+import com.arvatosystems.t9t.base.ui.UIColumnConfiguration;
+import com.arvatosystems.t9t.base.ui.UIDefaults;
+import com.arvatosystems.t9t.base.ui.UIFilter;
+import com.arvatosystems.t9t.base.ui.UIMeta;
 import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 import com.arvatosystems.t9t.base.uiprefs.UILeanGridPreferences;
 

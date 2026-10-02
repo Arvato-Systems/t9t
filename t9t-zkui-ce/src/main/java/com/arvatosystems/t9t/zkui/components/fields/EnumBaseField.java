@@ -25,8 +25,8 @@ import org.zkoss.zul.Comboitem;
 
 import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.ui.UIFilter;
 
+import com.arvatosystems.t9t.base.ui.UIFilter;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.Constants;
 

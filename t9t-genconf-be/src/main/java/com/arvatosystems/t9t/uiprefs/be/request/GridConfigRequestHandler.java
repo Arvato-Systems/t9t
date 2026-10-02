@@ -25,8 +25,6 @@ import java.util.concurrent.ConcurrentMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
-import de.jpaw.bonaparte.pojos.ui.UIFilter;
 import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.dp.Jdp;
 
@@ -36,6 +34,8 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.base.ui.UIColumnConfiguration;
+import com.arvatosystems.t9t.base.ui.UIFilter;
 import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 import com.arvatosystems.t9t.base.uiprefs.UILeanGridPreferences;
 import com.arvatosystems.t9t.translation.services.ITranslationProvider;

@@ -241,8 +241,10 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
     }
 
     protected void invalidateCache() {
-        if (cachesDropdown != null)
+        if (cachesDropdown != null) {
             session.invalidateCachedDropDownData(cachesDropdown);
+            session.invalidateCachedComboBoxEntryData(cachesDropdown);
+        }
     }
 
     @Override

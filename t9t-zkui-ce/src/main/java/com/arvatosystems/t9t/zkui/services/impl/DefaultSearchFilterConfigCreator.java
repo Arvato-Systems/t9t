@@ -33,14 +33,14 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Popup;
 
-import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
-import de.jpaw.bonaparte.pojos.ui.UIFilter;
-import de.jpaw.bonaparte.pojos.ui.UIFilterType;
-import de.jpaw.bonaparte.pojos.ui.UIMeta;
 import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Fallback;
 
+import com.arvatosystems.t9t.base.ui.UIColumnConfiguration;
+import com.arvatosystems.t9t.base.ui.UIFilter;
+import com.arvatosystems.t9t.base.ui.UIFilterType;
+import com.arvatosystems.t9t.base.ui.UIMeta;
 import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 import com.arvatosystems.t9t.zkui.components.dropdown28.SimpleListModelExt;
 import com.arvatosystems.t9t.zkui.services.ISearchFilterConfigCreator;

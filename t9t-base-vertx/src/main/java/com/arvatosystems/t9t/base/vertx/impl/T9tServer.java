@@ -312,6 +312,15 @@ public class T9tServer extends AbstractVerticle {
                     LOGGER.error("Interrupted.", e);
                 }
 
+                final IRestModule restModule = Jdp.getOptional(IRestModule.class);
+                if (restModule != null) {
+                    try {
+                        restModule.stopRestServer();
+                    } catch (final Exception e) {
+                        LOGGER.error("Failed to stop REST server during shutdown", e);
+                    }
+                }
+
                 LOGGER.info("Initiating JDP shutdown sequence (service shutdown)");
                 Jdp.shutdown();
                 LOGGER.info("Normal end " + PRINTED_NAME);

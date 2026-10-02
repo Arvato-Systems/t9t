@@ -25,12 +25,12 @@ import org.zkoss.zul.Comboitem;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.ui.UIFilter;
-import de.jpaw.bonaparte.pojos.ui.UIFilterType;
 
 import com.arvatosystems.t9t.authc.api.TenantDescription;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.types.TenantIsolationCategoryType;
+import com.arvatosystems.t9t.base.ui.UIFilter;
+import com.arvatosystems.t9t.base.ui.UIFilterType;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 public class TenantField extends AbstractField<Combobox> {

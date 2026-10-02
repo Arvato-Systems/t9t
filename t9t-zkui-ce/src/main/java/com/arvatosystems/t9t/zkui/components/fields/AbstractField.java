@@ -23,10 +23,10 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zul.impl.InputElement;
 
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.ui.UIFilter;
-import de.jpaw.bonaparte.pojos.ui.UIFilterType;
 
 import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.base.ui.UIFilter;
+import com.arvatosystems.t9t.base.ui.UIFilterType;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 public abstract class AbstractField<E extends InputElement> implements IField {

@@ -18,14 +18,14 @@ package com.arvatosystems.t9t.uiprefs;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.jpaw.bonaparte.api.ColumnCollector;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.ui.UIColumn;
-import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
 
+import com.arvatosystems.t9t.base.ColumnCollector;
 import com.arvatosystems.t9t.base.FieldMappers;
+import com.arvatosystems.t9t.base.ui.UIColumn;
+import com.arvatosystems.t9t.base.ui.UIColumnConfiguration;
 import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 
 public final class ColumnSelection {

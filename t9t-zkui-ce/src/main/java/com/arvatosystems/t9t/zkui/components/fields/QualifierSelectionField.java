@@ -20,9 +20,9 @@ import org.zkoss.zul.Combobox;
 import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.ui.UIFilter;
-import de.jpaw.bonaparte.pojos.ui.UIFilterType;
 
+import com.arvatosystems.t9t.base.ui.UIFilter;
+import com.arvatosystems.t9t.base.ui.UIFilterType;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.Dropdown28FactoryForQualifiers;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 

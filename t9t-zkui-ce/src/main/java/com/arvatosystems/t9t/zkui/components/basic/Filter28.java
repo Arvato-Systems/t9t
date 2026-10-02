@@ -44,12 +44,12 @@ import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.ui.UIFilter;
 import de.jpaw.bonaparte.util.ToStringHelper;
 
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.FieldMappers;
 import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.base.ui.UIFilter;
 import com.arvatosystems.t9t.zkui.components.IGridIdOwner;
 import com.arvatosystems.t9t.zkui.components.fields.FieldFactory;
 import com.arvatosystems.t9t.zkui.components.fields.IField;

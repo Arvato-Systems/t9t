@@ -1,7 +1,8 @@
-# Required prerequisites
+# Overview of Branches
 
-jpaw: https://github.com/arvato-systems-jacs/jpaw
-
-bonaparte-dsl: https://github.com/arvato-systems-jacs/bonaparte-dsl
-
-bonaparte-java: https://github.com/arvato-systems-jacs/bonaparte-java
+| Branch | Status of Snapshot/Build  | Checkstyle |
+| ------ | ------------------------- | ---------- |
+| **master** | [![Build](https://github.com/arvato-systems-jacs/t9t/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/arvato-systems-jacs/t9t/actions/workflows/build.yml) | [![Checkstyle](https://github.com/arvato-systems-jacs/t9t/actions/workflows/checkstyle.yml/badge.svg?branch=master)](https://github.com/arvato-systems-jacs/t9t/actions/workflows/checkstyle.yml) |
+| [release/9.2](https://github.com/arvato-systems-jacs/t9t/tree/release/9.2) | [![Snapshots](https://github.com/arvato-systems-jacs/t9t/actions/workflows/snapshots.yml/badge.svg?branch=release%2F9.2)](https://github.com/arvato-systems-jacs/t9t/actions/workflows/snapshots.yml) | [![Checkstyle](https://github.com/arvato-systems-jacs/t9t/actions/workflows/checkstyle.yml/badge.svg?branch=release%2F9.2)](https://github.com/arvato-systems-jacs/t9t/actions/workflows/checkstyle.yml) |
+| [release/9.3](https://github.com/arvato-systems-jacs/t9t/tree/release/9.3) | [![Snapshots](https://github.com/arvato-systems-jacs/t9t/actions/workflows/snapshots.yml/badge.svg?branch=release%2F9.3)](https://github.com/arvato-systems-jacs/t9t/actions/workflows/snapshots.yml) | [![Checkstyle](https://github.com/arvato-systems-jacs/t9t/actions/workflows/checkstyle.yml/badge.svg?branch=release%2F9.3)](https://github.com/arvato-systems-jacs/t9t/actions/workflows/checkstyle.yml) |
+| [release/10.0](https://github.com/arvato-systems-jacs/t9t/tree/release/10.0) | [![Snapshots](https://github.com/arvato-systems-jacs/t9t/actions/workflows/snapshots.yml/badge.svg?branch=release%2F10.0)](https://github.com/arvato-systems-jacs/t9t/actions/workflows/snapshots.yml) | [![Checkstyle](https://github.com/arvato-systems-jacs/t9t/actions/workflows/checkstyle.yml/badge.svg?branch=release%2F10.0)](https://github.com/arvato-systems-jacs/t9t/actions/workflows/checkstyle.yml) |

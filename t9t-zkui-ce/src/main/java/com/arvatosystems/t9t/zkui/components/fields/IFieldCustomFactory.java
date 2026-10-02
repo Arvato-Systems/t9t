@@ -18,8 +18,8 @@ package com.arvatosystems.t9t.zkui.components.fields;
 import org.zkoss.zk.ui.Component;
 
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.ui.UIFilter;
 
+import com.arvatosystems.t9t.base.ui.UIFilter;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 /** Interface which must be implemented by custom filters. It is a factory for IField instances.

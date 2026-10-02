@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 import meta.*               // identifier typedef
-import ui.*                 // UI configuration stuff
 import api.*
 import apiw.*
 import t9t.base.types.*
 import t9t.base.api.*
 import t9t.base.output.*
+import t9t.base.ui.*
 
 package (com.arvatosystems) t9t.base.uiprefs {
     default private unsigned trim noControlChars;
@@ -27,9 +27,11 @@ package (com.arvatosystems) t9t.base.uiprefs {
     type identifier is Ascii(255) regexp "[\\x21-\\x7E]*";  // allow [] because arrays can be indexed
     type gridConfigKey is Unicode(40);                   // specific key for the data, possibly concatenated fields with custom separators.
 
-    /** Configuration for the UI grid configuration. It will be stored in the generic configuration
+    /**
+     * Configuration for the UI grid configuration. It will be stored in the generic configuration
      * table using the group UI-GRID (old model) or a specific table (new model).
      */
+    @Deprecated
     class UIGridPreferences {
         required (UIColumnConfiguration) required List <> columns;          // list of all columns, with display related settings. The ordering in the list provides the ordering on screen.
         required boolean                            dynamicWidths;          // true: use dynamic grid column widths (by content), false: use configured fixed widths

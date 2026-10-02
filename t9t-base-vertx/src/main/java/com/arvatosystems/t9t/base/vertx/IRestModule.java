@@ -19,4 +19,8 @@ import io.vertx.core.Vertx;
 
 public interface IRestModule {
     void createRestServer(Vertx vertx, int port);
+
+    /** Stops the REST server if it was started via {@link #createRestServer(Vertx, int)}. Default: nothing to stop. */
+    default void stopRestServer() {
+    }
 }

@@ -18,8 +18,8 @@ package com.arvatosystems.t9t.zkui.viewmodel.support;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.jpaw.bonaparte.pojos.ui.UIFilter;
-import de.jpaw.bonaparte.pojos.ui.UIFilterType;
+import com.arvatosystems.t9t.base.ui.UIFilter;
+import com.arvatosystems.t9t.base.ui.UIFilterType;
 
 public class SearchFilterRowVM {
     private boolean selected;

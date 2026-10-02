@@ -23,10 +23,10 @@ import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.meta.DataCategory;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.ui.UIFilter;
-import de.jpaw.bonaparte.pojos.ui.UIFilterType;
 
 import com.arvatosystems.t9t.base.search.Description;
+import com.arvatosystems.t9t.base.ui.UIFilter;
+import com.arvatosystems.t9t.base.ui.UIFilterType;
 import com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28Db;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28BasicFactory;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;

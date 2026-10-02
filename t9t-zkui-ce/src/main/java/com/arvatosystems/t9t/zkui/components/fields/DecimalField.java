@@ -22,8 +22,8 @@ import org.zkoss.zul.Decimalbox;
 import de.jpaw.bonaparte.pojos.api.DecimalFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.ui.UIFilter;
 
+import com.arvatosystems.t9t.base.ui.UIFilter;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 public class DecimalField extends AbstractField<Decimalbox> {

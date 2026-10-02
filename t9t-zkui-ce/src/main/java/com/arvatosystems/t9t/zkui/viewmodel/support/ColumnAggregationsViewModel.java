@@ -35,11 +35,11 @@ import org.zkoss.zul.Window;
 import de.jpaw.bonaparte.pojos.api.AggregateColumn;
 import de.jpaw.bonaparte.pojos.api.AggregateFunctionType;
 import de.jpaw.bonaparte.pojos.meta.DataCategory;
-import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
-import de.jpaw.bonaparte.pojos.ui.UIMeta;
 import de.jpaw.bonaparte.util.FreezeTools;
 
 import com.arvatosystems.t9t.base.IGridConfigContainer;
+import com.arvatosystems.t9t.base.ui.UIColumnConfiguration;
+import com.arvatosystems.t9t.base.ui.UIMeta;
 import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 import com.arvatosystems.t9t.base.uiprefs.UILeanGridPreferences;
 import com.arvatosystems.t9t.zkui.components.grid.ILeanGridConfigResolver;

@@ -35,8 +35,6 @@ import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.ui.UIDefaults;
-import de.jpaw.bonaparte.pojos.ui.UIFilter;
 import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.CrudViewModel;
@@ -45,6 +43,8 @@ import com.arvatosystems.t9t.base.ILeanGridConfigContainer;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
+import com.arvatosystems.t9t.base.ui.UIDefaults;
+import com.arvatosystems.t9t.base.ui.UIFilter;
 import com.arvatosystems.t9t.base.uiprefs.UILeanGridPreferences;
 import com.arvatosystems.t9t.uiprefsv3.LeanGridConfigDTO;
 import com.arvatosystems.t9t.uiprefsv3.LeanGridConfigKey;

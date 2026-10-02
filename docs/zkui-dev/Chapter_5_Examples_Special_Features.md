@@ -39,7 +39,7 @@ public class SalesOrderPaymentUpdate implements IGridContextMenu<PayInstrumentDT
     @Override
     public boolean isEnabled(DataWithTrackingW<PayInstrumentDTO, TrackingBase> dwt) {
         PayInstrumentDTO data = dwt.getData();
-        if (Boolean.TRUE == data.getPaid())
+        if (Boolean.TRUE.equals(data.getPaid()))
             return false;
         if (data.getPaymentMethod() == PaymentMethodCodeEnum.TERMS || data.getPaymentMethod() == PaymentMethodCodeEnum.DIRECT_DEBIT)
             return true;   // TODO: check if order not yet complete

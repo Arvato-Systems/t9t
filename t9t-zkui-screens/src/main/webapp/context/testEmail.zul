@@ -1,15 +1,18 @@
 <?xel-method prefix="l"  name="newI18nLabel"  class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String newI18nLabel(String)"?>
 
-<window id="sendTestEmailWin" width="50%" height="30%" title="${l:newI18nLabel('sendTestEmailTitle')}"
-                viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.SendTestEmailVM', inst=inst)">
+<window id="sendTestEmailWin"
+        apply="org.zkoss.bind.BindComposer"
+        width="50%" height="30%"
+        title="${l:newI18nLabel('sendTestEmailTitle')}"
+        viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.SendTestEmailVM', inst=inst)">
     <groupbox28>
-         <form28 id="sendTestEmail" viewModelId="sendTestEmailVM" aspect="2" numColumns="2">
+        <form28 id="sendTestEmail" viewModelId="sendTestEmailVM" aspect="2" numColumns="2">
             <rows>
-              <cells28 id="emailAddress" value="@bind(vm.toEmail)"/>
+                <cells28 id="emailAddress" value="@bind(vm.toEmail)"/>
             </rows>
-          </form28>
-           <cell>
-               <button28 id="sendEmail" onClick="@command('sendEmail')"></button28>
-           </cell>
+        </form28>
     </groupbox28>
+    <hlayout>
+        <button28 id="sendEmailButton" onClick="@command('sendEmail')"></button28>
+    </hlayout>
 </window>

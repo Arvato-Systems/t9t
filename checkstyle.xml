@@ -29,7 +29,7 @@
   -->
   <property name="severity" value="error"/>
 
-  <property name="fileExtensions" value="java, sql, xtend, properties, xml, bon, bddl"/>
+  <property name="fileExtensions" value="java, sql, xtend, properties, json, xml, bon, bddl, zul, xsd, wsdl, jrxml"/>
 
   <!-- Excludes all 'module-info.java' files              -->
   <!-- See https://checkstyle.org/config_filefilters.html -->
@@ -68,7 +68,7 @@
   <!-- Checks for whitespace                               -->
   <!-- See https://checkstyle.org/config_whitespace.html -->
   <module name="FileTabCharacter">
-    <property name="fileExtensions" value="java, xml, json, xtend, xtend, bon, bddl"/>
+    <property name="fileExtensions" value="java, sql, xtend, properties, json, xml, bon, bddl, zul, xsd, wsdl, jrxml"/>
   </module>
 
   <!-- Miscellaneous other checks.                   -->

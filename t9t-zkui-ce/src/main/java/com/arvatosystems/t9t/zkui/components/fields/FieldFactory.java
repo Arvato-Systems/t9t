@@ -27,12 +27,12 @@ import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.XEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumSetDefinition;
-import de.jpaw.bonaparte.pojos.ui.UIFilter;
-import de.jpaw.bonaparte.pojos.ui.UIFilterType;
 import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.types.TenantIsolationCategoryType;
+import com.arvatosystems.t9t.base.ui.UIFilter;
+import com.arvatosystems.t9t.base.ui.UIFilterType;
 import com.arvatosystems.t9t.init.InitContainers;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.Constants;
