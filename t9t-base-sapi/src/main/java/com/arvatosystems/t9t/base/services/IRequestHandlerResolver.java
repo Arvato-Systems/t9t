@@ -18,64 +18,60 @@ package com.arvatosystems.t9t.base.services;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.annotation.Nonnull;
-
-import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.api.RequestParameters;
-import com.arvatosystems.t9t.cfg.Packages;
 
-/** Defines the methods to convert the name of a request object to the class name of the corresponding request handler,
+/**
+ * Defines the methods to convert the name of a request object to the class name of the corresponding request handler,
  * and also to provide an instance of it. The default implementation does this by naming convention as well as caching.
- *  Jdp is not used here.
+ * Jdp is not used here.
  *
- *   Also methods to overwrite an existing implementation are provided, this is used by caching algorithms, plugging into the cross module resolvers. */
+ * Also methods to overwrite an existing implementation are provided, this is used by caching algorithms, plugging into the cross module resolvers.
+ */
 public interface IRequestHandlerResolver {
-    String PREFIX = MessagingUtil.TWENTYEIGHT_PACKAGE_PREFIX + ".";
 
     <RQ extends RequestParameters> IRequestHandler<RQ> getHandlerInstance(Class<RQ> requestClass);
 
     <RQ extends RequestParameters> void setHandlerInstance(Class<RQ> requestClass, IRequestHandler<RQ> newInstance);
 
-
-    // see also NoTenantCustomization
-    default <RQ extends RequestParameters> List<String> getRequestHandlerClassnameCandidates(final Class<RQ> requestClass) {
-        // default strategy: insert a ".be" after "com.arvato-systems.t9t.[a-z]*"
-        final String requestClassName = requestClass.getCanonicalName();
-        final List<String> candidates = new ArrayList<>(4);
-        checkPrefix(candidates, requestClassName, PREFIX);
-        if (candidates.isEmpty()) {
-            // check extra packages (if any)
-            Packages.walkExtraPackages((prefix, packageName) -> checkPrefix(candidates, requestClassName, packageName));
-        }
-        // Check for additional candidates: Find "request" package name component, construct from there
-        final int pos = requestClassName.indexOf(".request.");
-        if (pos > 0) {
-            // found some candidates
-            final String part1 = requestClassName.substring(0, pos);
-            final String part2 = requestClassName.substring(pos);
-            final String additionalCandidate1 = part1 + ".be" + part2 + "Handler";
-            final String additionalCandidate2 = part1 + ".jpa" + part2 + "Handler";
-            if (!candidates.contains(additionalCandidate1)) {
-                candidates.add(additionalCandidate1);
-            }
-            if (!candidates.contains(additionalCandidate2)) {
-                candidates.add(additionalCandidate2);
-            }
-        }
-        return candidates;
+    default int getSkippedComponentsForHandlerClassnameCandidates() {
+        return 4; // default: skip the first 4 components of the package name
     }
 
-    /** Adds potential class names for request handlers to the provided result list. */
-    default void checkPrefix(@Nonnull final List<String> candidates, @Nonnull final String base, @Nonnull final String packagePrefix) {
-        if (base.startsWith(packagePrefix)) {
-            final int nextDot = base.indexOf('.', packagePrefix.length());
-            if (nextDot > 0) {
-                // found some candidates
-                final String part1 = base.substring(0, nextDot);
-                final String part2 = base.substring(nextDot);
-                candidates.add(part1 + ".be" + part2 + "Handler");
-                candidates.add(part1 + ".jpa" + part2 + "Handler");
+    /**
+     * Enumerates the fully qualified names of potential request handler classes for the given request class.
+     * The candidates consist of the package name with an inserted "be" or "jpa" component after the first 4 components, up to before the last,
+     * then followed by the simple name of the request, with suffix "Handler".
+     * For example com.dummy.app.pkg.request.XyzRequest would have the candidates com.dummy.app.pkg.{be,jpa}.request.XyzRequestHandler.
+     * If there are too few components in the package name, no candidates are returned.
+     *
+     * Customizations can override this method to provide additional candidates, e.g. by inserting a "custom" package component or similar.
+     */
+    default <RQ extends RequestParameters> List<String> getRequestHandlerClassnameCandidates(final Class<RQ> requestClass) {
+        // default strategy: insert a ".be" after "com.arvato-systems.t9t.[a-z]*"
+        final String packageName = requestClass.getPackageName();
+        final String requestClassNameSuffix = "." + requestClass.getSimpleName() + "Handler";
+
+        // Find the dot after the fourth component, or return an empty list if there are less than 5 components.
+        int splitAt = 0; // initialize
+        final int toSkip = getSkippedComponentsForHandlerClassnameCandidates();
+        for (int component = 0; component < toSkip; component++) {
+            splitAt = packageName.indexOf('.', splitAt + 1);
+            if (splitAt < 0) {
+                return List.of(); // less than 5 components, no candidates
             }
         }
+        // construct the various candidates
+        final List<String> candidates = new ArrayList<>(8);
+
+        // Move the split right, one component at a time.
+        do {
+            final String part1 = packageName.substring(0, splitAt + 1); // the first part, including the dot
+            final String part2 = packageName.substring(splitAt); // the second part, including the dot
+            candidates.add(part1 + "be" + part2 + requestClassNameSuffix);
+            candidates.add(part1 + "jpa" + part2 + requestClassNameSuffix);
+            splitAt = packageName.indexOf('.', splitAt + 1);
+        } while (splitAt > 0);
+
+        return candidates;
     }
 }
