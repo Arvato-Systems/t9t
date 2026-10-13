@@ -55,10 +55,14 @@ public interface IRequestHandlerResolver {
         int splitAt = 0; // initialize
         final int toSkip = getSkippedComponentsForHandlerClassnameCandidates();
         for (int component = 0; component < toSkip; component++) {
-            splitAt = packageName.indexOf('.', splitAt + 1);
-            if (splitAt < 0) {
-                return List.of(); // less than 5 components, no candidates
+            final int nextSplit = packageName.indexOf('.', splitAt + 1);  // check if there is another component
+            if (nextSplit < 0) {
+                if (component < 2) {
+                    return List.of(); // less than 3 components, no candidates (must be an error)
+                }
+                break; // less than 5 components, check at least one candidate pair
             }
+            splitAt = nextSplit;
         }
         // construct the various candidates
         final List<String> candidates = new ArrayList<>(8);

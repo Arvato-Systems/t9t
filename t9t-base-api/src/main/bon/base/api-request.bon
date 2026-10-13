@@ -416,6 +416,17 @@ package (com.arvatosystems) t9t.base.request {
         required meta.identifier required Set<>     qualifiers;
     }
 
+    /**
+     * Returns the values for one of the well-known, runtime-backed UI dropdowns.
+     * Intended to support dropdowns.
+     */
+    class GetDropdownValuesRequest extends RequestParameters return GetDropdownValuesResponse {
+        required Unicode(64)                       dropdownId;                    // one of: timeZoneId, charsetEncoding, countryCode, languageCode
+    }
+    class GetDropdownValuesResponse extends ServiceResponse {
+        required Unicode(64) required List<>       values;                        // the dropdown values
+    }
+
     /** Returns PQONs of classes related to configuration data. */
     class GetConfigPQONsRequest extends RequestParameters return GetConfigPQONsResponse {}
 

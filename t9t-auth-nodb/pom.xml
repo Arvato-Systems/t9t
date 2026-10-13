@@ -41,5 +41,9 @@
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-jwt</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-auth-ext</artifactId>
+        </dependency>
     </dependencies>
 </project>

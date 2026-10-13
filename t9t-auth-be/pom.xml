@@ -42,6 +42,10 @@
             <artifactId>t9t-base-be</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-auth-ext</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
         </dependency>
