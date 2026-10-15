@@ -24,11 +24,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.StringFilter;
-
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.SearchFilters;
+import com.arvatosystems.t9t.api.StringFilter;
 import com.arvatosystems.t9t.base.ITestConnection;
 import com.arvatosystems.t9t.base.request.LogMessageRequest;
 import com.arvatosystems.t9t.base.request.PingRequest;

@@ -30,8 +30,8 @@
     <dependencies>
         <!-- compile dependencies -->
         <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-api-auth</artifactId>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-api-auth</artifactId>
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>

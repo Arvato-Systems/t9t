@@ -16,10 +16,10 @@
 package com.arvatosystems.t9t.zkui.context;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 
+import com.arvatosystems.t9t.api.DataWithTracking;
+import com.arvatosystems.t9t.api.TrackingBase;
+import com.arvatosystems.t9t.api.auth.Permissionset;
 import com.arvatosystems.t9t.zkui.components.basic.Grid28;
 
 /** Implementations of this interface are obtained as Singletons via Jdp,

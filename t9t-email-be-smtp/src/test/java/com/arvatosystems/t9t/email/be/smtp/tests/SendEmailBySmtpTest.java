@@ -21,9 +21,8 @@ import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import de.jpaw.bonaparte.api.media.MediaTypes;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaTypes;
 import com.arvatosystems.t9t.email.EmailModuleCfgDTO;
 import com.arvatosystems.t9t.email.api.EmailMessage;
 import com.arvatosystems.t9t.email.api.RecipientEmail;

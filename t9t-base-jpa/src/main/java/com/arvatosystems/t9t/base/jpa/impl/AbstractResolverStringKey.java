@@ -17,9 +17,9 @@ package com.arvatosystems.t9t.base.jpa.impl;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Alternative;
 
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.jpa.IResolverStringKey;
 
 /** Base implementation of the IEntityResolver interface, suitable for tables with a natural key. */

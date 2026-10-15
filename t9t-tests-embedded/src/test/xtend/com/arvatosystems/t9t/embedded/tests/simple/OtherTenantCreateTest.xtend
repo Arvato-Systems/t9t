@@ -23,8 +23,8 @@ import com.arvatosystems.t9t.io.CommunicationTargetChannelType
 import com.arvatosystems.t9t.io.DataSinkCategoryType
 import com.arvatosystems.t9t.io.DataSinkDTO
 import com.arvatosystems.t9t.io.request.DataSinkSearchRequest
-import de.jpaw.bonaparte.api.SearchFilters
-import de.jpaw.bonaparte.pojos.api.media.MediaType
+import com.arvatosystems.t9t.api.SearchFilters
+import com.arvatosystems.t9t.api.media.MediaType
 import java.util.UUID
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll

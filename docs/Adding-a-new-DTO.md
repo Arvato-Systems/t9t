@@ -276,7 +276,7 @@ The documentation describes the essential changes, java files will need addition
     import com.arvatosystems.t9t.{module}.ExampleDTO
     import com.arvatosystems.t9t.{module}.ExampleKey
     import com.arvatosystems.t9t.{module}.request.ExampleCrudRequest
-    import de.jpaw.bonaparte.pojos.api.OperationType
+    import com.arvatosystems.t9t.api.OperationType
     
     class ExampleExtensions {
         // Extension method for merge operation with surrogate key

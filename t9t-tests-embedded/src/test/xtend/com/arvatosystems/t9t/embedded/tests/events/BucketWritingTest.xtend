@@ -20,7 +20,7 @@ import com.arvatosystems.t9t.base.search.ReadAllResponse
 import com.arvatosystems.t9t.bucket.request.BucketEntrySearchRequest
 import com.arvatosystems.t9t.bucket.request.SingleBucketWriteRequest
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
-import de.jpaw.bonaparte.api.SearchFilters
+import com.arvatosystems.t9t.api.SearchFilters
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test

@@ -24,8 +24,8 @@ import java.util.Map;
 
 import jakarta.activation.DataSource;
 
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaTypeInfo;
 
 public class MediaDataSource implements DataSource {
     private final MediaData data;

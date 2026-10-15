@@ -16,27 +16,27 @@ import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 
 import de.jpaw.bonaparte.core.ObjectValidationException;
-import de.jpaw.bonaparte.pojos.api.BooleanFilter;
-import de.jpaw.bonaparte.pojos.api.ByteArrayFilter;
-import de.jpaw.bonaparte.pojos.api.ByteFilter;
-import de.jpaw.bonaparte.pojos.api.BytesFilter;
-import de.jpaw.bonaparte.pojos.api.DayFilter;
-import de.jpaw.bonaparte.pojos.api.DecimalFilter;
-import de.jpaw.bonaparte.pojos.api.DoubleFilter;
-import de.jpaw.bonaparte.pojos.api.FieldFilter;
-import de.jpaw.bonaparte.pojos.api.FloatFilter;
-import de.jpaw.bonaparte.pojos.api.InstantFilter;
-import de.jpaw.bonaparte.pojos.api.IntFilter;
-import de.jpaw.bonaparte.pojos.api.LongFilter;
-import de.jpaw.bonaparte.pojos.api.NullFilter;
-import de.jpaw.bonaparte.pojos.api.ShortFilter;
-import de.jpaw.bonaparte.pojos.api.StringFilter;
-import de.jpaw.bonaparte.pojos.api.TimeFilter;
-import de.jpaw.bonaparte.pojos.api.TimestampFilter;
-import de.jpaw.bonaparte.pojos.api.UuidFilter;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
 
+import com.arvatosystems.t9t.api.BooleanFilter;
+import com.arvatosystems.t9t.api.ByteArrayFilter;
+import com.arvatosystems.t9t.api.ByteFilter;
+import com.arvatosystems.t9t.api.BytesFilter;
+import com.arvatosystems.t9t.api.DayFilter;
+import com.arvatosystems.t9t.api.DecimalFilter;
+import com.arvatosystems.t9t.api.DoubleFilter;
+import com.arvatosystems.t9t.api.FieldFilter;
+import com.arvatosystems.t9t.api.FloatFilter;
+import com.arvatosystems.t9t.api.InstantFilter;
+import com.arvatosystems.t9t.api.IntFilter;
+import com.arvatosystems.t9t.api.LongFilter;
+import com.arvatosystems.t9t.api.NullFilter;
+import com.arvatosystems.t9t.api.ShortFilter;
+import com.arvatosystems.t9t.api.StringFilter;
+import com.arvatosystems.t9t.api.TimeFilter;
+import com.arvatosystems.t9t.api.TimestampFilter;
+import com.arvatosystems.t9t.api.UuidFilter;
 import com.arvatosystems.t9t.base.jpa.IJpaFilter;
 
 @Singleton

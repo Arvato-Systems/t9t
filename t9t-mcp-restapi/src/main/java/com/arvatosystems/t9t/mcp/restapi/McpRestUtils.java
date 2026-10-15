@@ -24,11 +24,10 @@ import jakarta.ws.rs.core.Response;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
-
 import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
 import com.arvatosystems.t9t.ai.mcp.McpProtocolVersion;
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaType;
 
 public final class McpRestUtils {
 

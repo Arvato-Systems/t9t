@@ -26,8 +26,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-
+import com.arvatosystems.t9t.api.auth.JwtInfo;
 import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
 

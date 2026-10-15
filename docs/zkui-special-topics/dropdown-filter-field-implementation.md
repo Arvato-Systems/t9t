@@ -36,7 +36,7 @@ Changes:
 - Added `setAdditionalFilter(SearchFilter)` method to set primary runtime filter
 - Added `setAdditionalFilter2(SearchFilter)` method to set secondary runtime filter
 - Modified `reloadDropDownData()` to combine all filters using `SearchFilters.and()` utility
-- Added import for `de.jpaw.bonaparte.api.SearchFilters`
+- Added import for `com.arvatosystems.t9t.api.SearchFilters`
 
 Filter combination logic:
 ```java

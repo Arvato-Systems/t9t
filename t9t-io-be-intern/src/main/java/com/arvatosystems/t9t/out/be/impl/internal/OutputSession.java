@@ -32,17 +32,17 @@ import jakarta.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaStorageLocation;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ExceptionUtil;
 
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaStorageLocation;
+import com.arvatosystems.t9t.api.media.MediaType;
+import com.arvatosystems.t9t.api.media.MediaTypeDescriptor;
+import com.arvatosystems.t9t.api.media.MediaTypeInfo;
+import com.arvatosystems.t9t.api.media.MediaXType;
 import com.arvatosystems.t9t.base.FieldMappers;
 import com.arvatosystems.t9t.base.IInputQueuePartitioner;
 import com.arvatosystems.t9t.base.T9tException;

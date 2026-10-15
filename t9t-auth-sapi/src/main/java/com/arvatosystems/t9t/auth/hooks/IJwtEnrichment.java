@@ -18,8 +18,7 @@ package com.arvatosystems.t9t.auth.hooks;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-
+import com.arvatosystems.t9t.api.auth.JwtInfo;
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.TenantDTO;
 import com.arvatosystems.t9t.auth.UserDTO;

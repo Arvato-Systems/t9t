@@ -15,9 +15,9 @@
  */
 package com.arvatosystems.t9t.barcode.be.api;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.media.MediaData;
 import com.arvatosystems.t9t.barcode.api.GenerateBarcodeRequest;
 import com.arvatosystems.t9t.barcode.api.GenerateBarcodeResponse;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;

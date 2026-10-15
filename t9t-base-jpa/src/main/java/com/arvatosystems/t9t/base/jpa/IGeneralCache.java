@@ -18,7 +18,8 @@ package com.arvatosystems.t9t.base.jpa;
 import java.util.Collection;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
+
+import com.arvatosystems.t9t.apiw.Ref;
 
 // TODO: move to t9t
 public interface IGeneralCache<R extends Ref, E extends BonaPersistableKey<Long>> {

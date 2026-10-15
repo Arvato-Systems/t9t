@@ -56,11 +56,7 @@ import freemarker.template.TemplateModelException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.api.media.MediaTypes;
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
-import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
@@ -68,6 +64,10 @@ import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ExceptionUtil;
 
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaType;
+import com.arvatosystems.t9t.api.media.MediaTypes;
+import com.arvatosystems.t9t.api.media.MediaXType;
 import com.arvatosystems.t9t.barcode.api.FlipMode;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;

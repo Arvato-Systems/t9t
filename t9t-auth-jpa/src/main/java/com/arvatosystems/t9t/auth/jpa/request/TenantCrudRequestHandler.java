@@ -20,9 +20,9 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.OperationType;
 import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.auth.TenantDTO;
 import com.arvatosystems.t9t.auth.jpa.entities.TenantEntity;

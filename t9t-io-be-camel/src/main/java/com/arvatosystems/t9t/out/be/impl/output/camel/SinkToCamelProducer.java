@@ -27,13 +27,13 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.util.ApplicationException;
 
+import com.arvatosystems.t9t.api.media.MediaTypeDescriptor;
+import com.arvatosystems.t9t.api.media.MediaTypeInfo;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.base.services.SimplePatternEvaluator;
 import com.arvatosystems.t9t.io.CamelPostProcStrategy;

@@ -17,8 +17,7 @@ package com.arvatosystems.t9t.doc.services;
 
 import java.util.Map;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-
+import com.arvatosystems.t9t.api.media.MediaData;
 import com.arvatosystems.t9t.doc.DocConfigDTO;
 import com.arvatosystems.t9t.doc.DocEmailCfgDTO;
 import com.arvatosystems.t9t.doc.DocModuleCfgDTO;

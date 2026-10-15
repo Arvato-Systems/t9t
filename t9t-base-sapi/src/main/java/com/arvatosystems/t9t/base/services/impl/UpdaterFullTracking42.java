@@ -17,11 +17,10 @@ package com.arvatosystems.t9t.base.services.impl;
 
 import java.time.Instant;
 
-import de.jpaw.bonaparte.refsw.RequestContext;
-import de.jpaw.bonaparte.refsw.TrackingUpdater;
-
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.entities.FullTracking;
+import com.arvatosystems.t9t.refsw.RequestContext;
+import com.arvatosystems.t9t.refsw.TrackingUpdater;
 
 public class UpdaterFullTracking42 implements TrackingUpdater<FullTracking> {
 

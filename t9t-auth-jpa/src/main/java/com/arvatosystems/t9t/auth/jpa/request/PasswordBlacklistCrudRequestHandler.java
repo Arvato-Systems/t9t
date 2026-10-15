@@ -17,10 +17,10 @@ package com.arvatosystems.t9t.auth.jpa.request;
 
 import java.util.Locale;
 
-import de.jpaw.bonaparte.pojos.api.NoTracking;
-import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.NoTracking;
+import com.arvatosystems.t9t.api.OperationType;
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.PasswordBlacklistDTO;
 import com.arvatosystems.t9t.auth.jpa.entities.PasswordBlacklistEntity;

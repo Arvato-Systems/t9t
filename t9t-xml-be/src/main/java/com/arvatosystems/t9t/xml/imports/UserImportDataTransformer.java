@@ -15,10 +15,10 @@
  */
 package com.arvatosystems.t9t.xml.imports;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
 
+import com.arvatosystems.t9t.api.OperationType;
 import com.arvatosystems.t9t.auth.RoleKey;
 import com.arvatosystems.t9t.auth.RoleRef;
 import com.arvatosystems.t9t.auth.UserDTO;

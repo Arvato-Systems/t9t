@@ -24,16 +24,16 @@ import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.FieldFilter;
-import de.jpaw.bonaparte.pojos.api.LongFilter;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.StringFilter;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.DataWithTrackingS;
+import com.arvatosystems.t9t.api.FieldFilter;
+import com.arvatosystems.t9t.api.LongFilter;
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.StringFilter;
+import com.arvatosystems.t9t.api.media.MediaType;
+import com.arvatosystems.t9t.apiw.Ref;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;

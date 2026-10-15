@@ -25,13 +25,13 @@ import com.google.common.base.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Provider;
 import de.jpaw.util.ExceptionUtil;
 
+import com.arvatosystems.t9t.api.media.MediaTypeDescriptor;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.services.IFileUtil;

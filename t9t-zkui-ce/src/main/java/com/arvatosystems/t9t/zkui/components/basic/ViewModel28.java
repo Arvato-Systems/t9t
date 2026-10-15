@@ -21,9 +21,9 @@ import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zul.Div;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.zkui.components.IDataFactoryOwner;
 import com.arvatosystems.t9t.zkui.components.IDataFieldFactory;

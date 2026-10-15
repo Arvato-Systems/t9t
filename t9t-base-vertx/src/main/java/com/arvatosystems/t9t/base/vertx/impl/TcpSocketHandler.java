@@ -28,11 +28,11 @@ import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ByteBuilder;
 
+import com.arvatosystems.t9t.api.auth.JwtInfo;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;

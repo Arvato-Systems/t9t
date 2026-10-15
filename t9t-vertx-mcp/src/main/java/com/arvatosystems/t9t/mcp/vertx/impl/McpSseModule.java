@@ -29,9 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import de.jpaw.bonaparte.api.codecs.IMessageCoderFactory;
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
@@ -39,6 +37,8 @@ import de.jpaw.util.ApplicationException;
 
 import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
 import com.arvatosystems.t9t.ai.request.AiGetSseRequest;
+import com.arvatosystems.t9t.api.auth.JwtInfo;
+import com.arvatosystems.t9t.api.codecs.IMessageCoderFactory;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;

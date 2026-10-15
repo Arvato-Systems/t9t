@@ -20,16 +20,16 @@ import jakarta.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPARLImpl;
-import de.jpaw.bonaparte.pojos.api.PersistenceProviders;
 import de.jpaw.dp.CustomScope;
 import de.jpaw.dp.Default;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 
+import com.arvatosystems.t9t.api.PersistenceProviders;
 import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.jpa.refs.PersistenceProviderJPA;
+import com.arvatosystems.t9t.jpa.refs.PersistenceProviderJPARLImpl;
 
 /**
  * The provider for the JPA persistence context.

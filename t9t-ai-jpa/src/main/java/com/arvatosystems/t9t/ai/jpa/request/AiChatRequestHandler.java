@@ -23,9 +23,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.ai.AiAssistantDTO;
@@ -46,6 +43,9 @@ import com.arvatosystems.t9t.ai.request.AiChatRequest;
 import com.arvatosystems.t9t.ai.request.AiChatResponse;
 import com.arvatosystems.t9t.ai.service.IAiChatLogService;
 import com.arvatosystems.t9t.ai.service.IAiChatService;
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaTypeDescriptor;
+import com.arvatosystems.t9t.api.media.MediaTypeInfo;
 import com.arvatosystems.t9t.base.IUploadChecker;
 import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.base.MessagingUtil;

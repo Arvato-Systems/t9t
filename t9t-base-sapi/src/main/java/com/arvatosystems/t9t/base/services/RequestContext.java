@@ -30,11 +30,10 @@ import com.google.common.collect.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.StringFilter;
-import de.jpaw.bonaparte.refsw.impl.AbstractRequestContext;
 import de.jpaw.util.ExceptionUtil;
 
 import com.arvatosystems.t9t.annotations.AllowPublicAccess;
+import com.arvatosystems.t9t.api.StringFilter;
 import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
@@ -44,6 +43,7 @@ import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.event.BucketWriteKey;
 import com.arvatosystems.t9t.base.request.StackLevel;
+import com.arvatosystems.t9t.refsw.impl.AbstractRequestContext;
 import com.arvatosystems.t9t.server.InternalHeaderParameters;
 
 /**

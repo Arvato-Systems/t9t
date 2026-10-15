@@ -15,8 +15,7 @@
  */
 package com.arvatosystems.t9t.doc.services;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-
+import com.arvatosystems.t9t.api.media.MediaData;
 import com.arvatosystems.t9t.barcode.api.BarcodeFormat;
 
 // special case of IImageGenerator

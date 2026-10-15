@@ -28,12 +28,11 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-
 import com.arvatosystems.t9t.ai.AiPromptDTO;
 import com.arvatosystems.t9t.ai.AiPromptParameter;
 import com.arvatosystems.t9t.ai.AiPromptParameterDTO;
 import com.arvatosystems.t9t.ai.AiPromptRef;
+import com.arvatosystems.t9t.api.DataWithTracking;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.zkui.exceptions.ServiceResponseException;

@@ -29,9 +29,9 @@ import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Messagebox;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 import de.jpaw.util.ByteArray;
 
+import com.arvatosystems.t9t.api.DataWithTracking;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.plugins.LoadedPluginDTO;
 import com.arvatosystems.t9t.plugins.LoadedPluginRef;

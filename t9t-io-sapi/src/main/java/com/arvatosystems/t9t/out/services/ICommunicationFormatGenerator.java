@@ -22,8 +22,8 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 
+import com.arvatosystems.t9t.api.media.MediaXType;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.io.DataSinkDTO;

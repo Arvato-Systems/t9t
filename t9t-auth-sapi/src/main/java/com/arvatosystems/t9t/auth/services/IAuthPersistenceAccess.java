@@ -23,10 +23,9 @@ import java.util.UUID;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.OperationTypes;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-
+import com.arvatosystems.t9t.api.DataWithTrackingS;
+import com.arvatosystems.t9t.api.OperationTypes;
+import com.arvatosystems.t9t.api.auth.JwtInfo;
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.SessionDTO;
 import com.arvatosystems.t9t.auth.UserDTO;

@@ -15,9 +15,8 @@
  */
 package com.arvatosystems.t9t.auth;
 
-import de.jpaw.bonaparte.pojos.api.NoTracking;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-
+import com.arvatosystems.t9t.api.NoTracking;
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.auth.request.ApiKeyCrudRequest;
 import com.arvatosystems.t9t.auth.request.ApiKeySearchRequest;
 import com.arvatosystems.t9t.auth.request.AuthModuleCfgCrudRequest;

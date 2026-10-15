@@ -40,9 +40,5 @@
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
         </dependency>
-        <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-refs</artifactId>
-        </dependency>
     </dependencies>
 </project>

@@ -36,9 +36,9 @@ import com.arvatosystems.t9t.base.ITestConnection
 import com.arvatosystems.t9t.base.crud.CrudStringKeyResponse
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse
 import de.jpaw.annotations.AddLogger
-import de.jpaw.bonaparte.pojos.api.OperationType
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset
-import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType
+import com.arvatosystems.t9t.api.OperationType
+import com.arvatosystems.t9t.api.auth.Permissionset
+import com.arvatosystems.t9t.api.auth.UserLogLevelType
 import java.util.UUID
 
 // utility class to create a new tenant for a test suite. A user, a tenant and a role is created, all with the same ID

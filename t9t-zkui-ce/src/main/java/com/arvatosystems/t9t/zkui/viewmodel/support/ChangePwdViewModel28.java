@@ -24,9 +24,9 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Messagebox;
 
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.auth.request.GetPasswordChangeRequirementsResponse;
 import com.arvatosystems.t9t.base.auth.ChangePasswordUI;

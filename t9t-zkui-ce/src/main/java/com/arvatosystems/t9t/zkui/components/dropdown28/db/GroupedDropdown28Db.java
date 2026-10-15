@@ -25,9 +25,9 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Combobox;
 
-import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.apiw.Ref;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.base.search.DescriptionList;
 import com.arvatosystems.t9t.base.search.LeanGroupedSearchRequest;

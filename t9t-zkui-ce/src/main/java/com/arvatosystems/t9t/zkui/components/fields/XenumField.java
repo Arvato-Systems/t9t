@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Comboitem;
 
 import de.jpaw.bonaparte.enums.BonaEnum;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
@@ -30,6 +29,7 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 
+import com.arvatosystems.t9t.api.SearchFilter;
 import com.arvatosystems.t9t.base.search.XenumFilter;
 import com.arvatosystems.t9t.base.ui.UIFilter;
 import com.arvatosystems.t9t.base.ui.UIFilterType;

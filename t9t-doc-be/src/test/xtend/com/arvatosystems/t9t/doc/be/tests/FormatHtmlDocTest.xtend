@@ -24,8 +24,8 @@ import com.arvatosystems.t9t.doc.services.IDocModuleCfgDtoResolver
 import com.arvatosystems.t9t.doc.services.IDocPersistenceAccess
 import com.arvatosystems.t9t.jdp.Init
 import com.google.common.collect.ImmutableMap
-import de.jpaw.bonaparte.api.media.MediaTypes
-import de.jpaw.bonaparte.pojos.api.media.MediaData
+import com.arvatosystems.t9t.api.media.MediaTypes
+import com.arvatosystems.t9t.api.media.MediaData
 import de.jpaw.dp.Jdp
 import de.jpaw.util.ByteArray
 import java.nio.charset.StandardCharsets

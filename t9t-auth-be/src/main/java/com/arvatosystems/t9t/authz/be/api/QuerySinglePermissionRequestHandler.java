@@ -15,9 +15,9 @@
  */
 package com.arvatosystems.t9t.authz.be.api;
 
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.auth.Permissionset;
 import com.arvatosystems.t9t.authz.api.QuerySinglePermissionRequest;
 import com.arvatosystems.t9t.authz.api.QuerySinglePermissionResponse;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;

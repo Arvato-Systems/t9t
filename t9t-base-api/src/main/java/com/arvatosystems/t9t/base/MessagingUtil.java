@@ -27,17 +27,17 @@ import jakarta.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.bonaparte.core.DataConverter;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.enums.XEnum;
 import de.jpaw.util.ApplicationException;
 
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.SearchFilters;
+import com.arvatosystems.t9t.apiw.Ref;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -60,8 +60,8 @@ public final class MessagingUtil {
 
     public static String[] getPackagesToScanForXenums() {
         final List<String> packages = new ArrayList<>(4);
-        packages.add(JPAW_PACKAGE_PREFIX);  // includes bonaparte
-        packages.add(TWENTYEIGHT_PACKAGE_PREFIX);
+        // packages.add(JPAW_PACKAGE_PREFIX);       // no xenum used in bonaparte
+        packages.add(TWENTYEIGHT_PACKAGE_PREFIX);   // includes api subpackages
         Packages.walkExtraPackages((prefix, packageName) -> packages.add(packageName));
         // On next line: according to https://shipilev.net/blog/2016/arrays-wisdom-ancients/#_conclusion it is faster than providing a correctly sized list!
         return packages.toArray(new String[0]);
@@ -78,7 +78,10 @@ public final class MessagingUtil {
      */
     public static void initializeBonaparteParsers() {
         BonaPortableFactory.useFixedClassLoader(null);
-        BonaPortableFactory.addToPackagePrefixMap("t9t", TWENTYEIGHT_PACKAGE_PREFIX);               // and of course everything else starting with "t9t"
+        BonaPortableFactory.addToPackagePrefixMap("t9t",  TWENTYEIGHT_PACKAGE_PREFIX);              // and of course everything else starting with "t9t"
+        BonaPortableFactory.addToPackagePrefixMap("api",  TWENTYEIGHT_PACKAGE_PREFIX + ".api");     // migrated from bonaparte
+        BonaPortableFactory.addToPackagePrefixMap("apip", TWENTYEIGHT_PACKAGE_PREFIX + ".apip");    // migrated from bonaparte
+        BonaPortableFactory.addToPackagePrefixMap("apiw", TWENTYEIGHT_PACKAGE_PREFIX + ".apiw");    // migrated from bonaparte
         Packages.walkExtraPackages(BonaPortableFactory::addToPackagePrefixMap);
     }
 

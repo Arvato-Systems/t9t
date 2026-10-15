@@ -20,8 +20,8 @@ import java.util.List;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.ColumnCollector;
 import com.arvatosystems.t9t.base.FieldMappers;
 import com.arvatosystems.t9t.base.ui.UIColumn;

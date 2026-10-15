@@ -24,10 +24,10 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import org.slf4j.Logger;
 
-import de.jpaw.bonaparte.api.codecs.IMessageCoderFactory;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.util.CharTestsASCII;
 
+import com.arvatosystems.t9t.api.codecs.IMessageCoderFactory;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 
 /** A ServiceModule is a microservice like portion which owns its own

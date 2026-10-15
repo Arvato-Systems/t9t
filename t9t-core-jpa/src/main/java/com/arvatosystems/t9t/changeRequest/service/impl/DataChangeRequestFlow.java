@@ -24,10 +24,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.OperationType;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.RequestParameters;

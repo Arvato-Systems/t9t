@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.msglog.jpa.request;
 
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.NoTracking;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.StringFilter;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.NoTracking;
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.SearchFilters;
+import com.arvatosystems.t9t.api.StringFilter;
+import com.arvatosystems.t9t.api.auth.Permissionset;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractMonitoringSearchRequestHandler;

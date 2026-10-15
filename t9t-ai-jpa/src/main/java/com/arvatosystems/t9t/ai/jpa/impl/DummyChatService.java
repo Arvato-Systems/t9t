@@ -20,8 +20,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
@@ -29,6 +27,8 @@ import com.arvatosystems.t9t.ai.AiAssistantDTO;
 import com.arvatosystems.t9t.ai.AiConversationDTO;
 import com.arvatosystems.t9t.ai.AiResponseStructure;
 import com.arvatosystems.t9t.ai.service.IAiChatService;
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaTypeDescriptor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 /**

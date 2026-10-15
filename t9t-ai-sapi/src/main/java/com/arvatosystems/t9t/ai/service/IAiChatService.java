@@ -22,12 +22,12 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 
 import com.arvatosystems.t9t.ai.AiAssistantDTO;
 import com.arvatosystems.t9t.ai.AiConversationDTO;
 import com.arvatosystems.t9t.ai.AiResponseStructure;
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaTypeDescriptor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 /**

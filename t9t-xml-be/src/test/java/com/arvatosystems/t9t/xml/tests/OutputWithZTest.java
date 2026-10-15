@@ -24,11 +24,11 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.api.media.MediaTypes;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.media.MediaTypeDescriptor;
+import com.arvatosystems.t9t.api.media.MediaTypeInfo;
+import com.arvatosystems.t9t.api.media.MediaTypes;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.services.IOutputSession;

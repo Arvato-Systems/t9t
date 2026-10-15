@@ -26,11 +26,11 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.dp.ReflectionsPackageCache;
 
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tException;
 

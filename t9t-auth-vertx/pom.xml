@@ -51,10 +51,6 @@
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.jpaw</groupId>
             <artifactId>jdp-core</artifactId>
         </dependency>
         <dependency>

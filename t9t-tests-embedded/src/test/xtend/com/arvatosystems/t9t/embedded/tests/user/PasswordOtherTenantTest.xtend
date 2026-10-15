@@ -23,7 +23,7 @@ import com.arvatosystems.t9t.base.ITestConnection
 import com.arvatosystems.t9t.doc.DocConfigDTO
 import com.arvatosystems.t9t.doc.DocEmailReceiverDTO
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
-import de.jpaw.bonaparte.pojos.api.OperationType
+import com.arvatosystems.t9t.api.OperationType
 import de.jpaw.util.ApplicationException
 import de.jpaw.util.ExceptionUtil
 import java.util.UUID

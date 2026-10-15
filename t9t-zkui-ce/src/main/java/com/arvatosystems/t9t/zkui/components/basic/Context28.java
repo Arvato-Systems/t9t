@@ -21,9 +21,8 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Menuseparator;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.auth.Permissionset;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 /** Component which creates a context menu by comma separated list of IDs.

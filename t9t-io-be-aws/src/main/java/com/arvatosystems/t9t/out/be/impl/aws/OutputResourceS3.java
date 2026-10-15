@@ -31,12 +31,12 @@ import software.amazon.awssdk.services.s3.S3ClientBuilder;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.util.ExceptionUtil;
 
+import com.arvatosystems.t9t.api.media.MediaTypeDescriptor;
 import com.arvatosystems.t9t.aws.AwsClientBuilder;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;

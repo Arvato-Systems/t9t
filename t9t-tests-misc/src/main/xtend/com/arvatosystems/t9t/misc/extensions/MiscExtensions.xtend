@@ -68,7 +68,7 @@ import com.arvatosystems.t9t.uiprefsv3.LeanGridConfigDTO
 import com.arvatosystems.t9t.uiprefsv3.LeanGridConfigKey
 import com.arvatosystems.t9t.uiprefsv3.request.LeanGridConfigCrudRequest
 import de.jpaw.bonaparte.core.MapComposer
-import de.jpaw.bonaparte.pojos.api.OperationType
+import com.arvatosystems.t9t.api.OperationType
 
 class MiscExtensions {
 

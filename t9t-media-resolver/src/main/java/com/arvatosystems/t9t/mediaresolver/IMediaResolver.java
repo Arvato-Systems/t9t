@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.mediaresolver;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaData;
 
 /**
  * Interface for implementations which resolve a lazy MediaData object, i.e. turn a lazy one into one with actual contents.

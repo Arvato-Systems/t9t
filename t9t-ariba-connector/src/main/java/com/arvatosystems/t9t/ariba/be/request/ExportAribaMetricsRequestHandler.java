@@ -26,7 +26,6 @@ import jakarta.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 
@@ -38,6 +37,7 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.jpa.refs.PersistenceProviderJPA;
 import com.arvatosystems.t9t.out.be.jackson.T9tJacksonGenericSerializer;
 import com.arvatosystems.t9t.out.jpa.impl.GenericRemoterViaDirectHttp;
 import com.arvatosystems.t9t.out.services.IGenericRemoter;

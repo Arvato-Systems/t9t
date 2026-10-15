@@ -15,8 +15,7 @@
  */
 package com.arvatosystems.t9t.zkui;
 
-import de.jpaw.bonaparte.api.SearchFilters;
-
+import com.arvatosystems.t9t.api.SearchFilters;
 import com.arvatosystems.t9t.zkui.components.basic.Tabpanel28;
 
 public interface ITabpanelExtension {

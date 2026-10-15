@@ -28,15 +28,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.AggregateColumn;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.AggregateColumn;
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.FieldMappers;
 import com.arvatosystems.t9t.base.ILeanGridConfigContainer;

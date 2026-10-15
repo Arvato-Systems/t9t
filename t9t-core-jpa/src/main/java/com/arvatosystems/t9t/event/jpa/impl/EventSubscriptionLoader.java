@@ -23,7 +23,6 @@ import jakarta.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Startup;
@@ -35,6 +34,7 @@ import com.arvatosystems.t9t.base.services.IEventHandler;
 import com.arvatosystems.t9t.base.services.impl.EventSubscriptionCache;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.event.jpa.entities.SubscriberConfigEntity;
+import com.arvatosystems.t9t.jpa.refs.PersistenceProviderJPA;
 
 @Startup(55333)
 public class EventSubscriptionLoader implements StartupOnly {

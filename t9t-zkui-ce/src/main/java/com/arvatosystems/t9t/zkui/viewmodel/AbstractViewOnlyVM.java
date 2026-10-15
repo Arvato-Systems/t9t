@@ -26,11 +26,11 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Init;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.DataWithTracking;
+import com.arvatosystems.t9t.api.DataWithTrackingS;
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;

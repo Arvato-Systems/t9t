@@ -29,16 +29,20 @@
 
     <dependencies>
         <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-api</artifactId>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-api-auth</artifactId>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-api-auth</artifactId>
         </dependency>
         <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-api-media</artifactId>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-api-media</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-refs</artifactId>
         </dependency>
 
         <dependency>

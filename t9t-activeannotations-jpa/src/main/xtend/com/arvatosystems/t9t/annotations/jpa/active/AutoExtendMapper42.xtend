@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.annotations.jpa.active
 import com.arvatosystems.t9t.annotations.NotUpdatable
 import com.arvatosystems.t9t.base.T9tException
 import com.arvatosystems.t9t.base.jpa.impl.AbstractEntityMapper
-import de.jpaw.bonaparte.pojos.apiw.Ref
+import com.arvatosystems.t9t.apiw.Ref
 import de.jpaw.dp.Singleton
 import de.jpaw.dp.Specializes
 import de.jpaw.util.ApplicationException

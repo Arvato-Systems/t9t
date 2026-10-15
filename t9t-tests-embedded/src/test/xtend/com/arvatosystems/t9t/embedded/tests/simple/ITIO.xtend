@@ -29,9 +29,9 @@ import com.arvatosystems.t9t.io.SinkDTO
 import com.arvatosystems.t9t.io.be.camel.init.CamelContextProvider
 import com.arvatosystems.t9t.io.request.SinkSearchRequest
 import com.arvatosystems.t9t.io.request.StoreSinkRequest
-import de.jpaw.bonaparte.api.SearchFilters
-import de.jpaw.bonaparte.pojos.api.media.MediaType
-import de.jpaw.bonaparte.pojos.api.media.MediaXType
+import com.arvatosystems.t9t.api.SearchFilters
+import com.arvatosystems.t9t.api.media.MediaType
+import com.arvatosystems.t9t.api.media.MediaXType
 import de.jpaw.dp.Jdp
 import org.junit.jupiter.api.Test
 

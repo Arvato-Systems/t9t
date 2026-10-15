@@ -25,13 +25,13 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Combobox;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.NumericEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.types.TenantIsolationCategoryType;

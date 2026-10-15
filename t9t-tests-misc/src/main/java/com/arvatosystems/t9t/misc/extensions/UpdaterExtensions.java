@@ -22,10 +22,10 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
 
+import com.arvatosystems.t9t.api.DataWithTracking;
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.SearchFilter;
 import com.arvatosystems.t9t.base.ITestConnection;
 import com.arvatosystems.t9t.base.crud.CrudAnyKeyResponse;
 import com.arvatosystems.t9t.base.request.GetServerInformationRequest;

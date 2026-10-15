@@ -27,9 +27,10 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
+
+import com.arvatosystems.t9t.api.DataWithTracking;
+import com.arvatosystems.t9t.api.DataWithTrackingS;
+import com.arvatosystems.t9t.api.TrackingBase;
 
 /** Generic viewModel for modal windows MVVM. */
 @SuppressWarnings("rawtypes")

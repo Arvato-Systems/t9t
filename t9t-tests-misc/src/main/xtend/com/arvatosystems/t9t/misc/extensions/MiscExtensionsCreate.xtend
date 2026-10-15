@@ -39,7 +39,7 @@ import com.arvatosystems.t9t.rep.request.ReportConfigCrudRequest
 import com.arvatosystems.t9t.rep.request.ReportParamsCrudRequest
 import com.arvatosystems.t9t.ssm.SchedulerSetupDTO
 import com.arvatosystems.t9t.ssm.request.SchedulerSetupCrudRequest
-import de.jpaw.bonaparte.pojos.api.OperationType
+import com.arvatosystems.t9t.api.OperationType
 
 class MiscExtensionsCreate {
 

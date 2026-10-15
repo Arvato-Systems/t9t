@@ -17,11 +17,11 @@ package com.arvatosystems.t9t.doc.be.impl;
 
 import java.util.function.Function;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaXType;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.types.Recipient;
 import com.arvatosystems.t9t.doc.api.DocumentSelector;

@@ -17,11 +17,11 @@ package com.arvatosystems.t9t.zkui.components.fields;
 
 import org.zkoss.zul.Comboitem;
 
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 
+import com.arvatosystems.t9t.api.SearchFilter;
 import com.arvatosystems.t9t.base.search.EnumFilter;
 import com.arvatosystems.t9t.base.ui.UIFilter;
 import com.arvatosystems.t9t.base.ui.UIFilterType;

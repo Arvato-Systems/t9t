@@ -33,8 +33,8 @@ import com.arvatosystems.t9t.event.SubscriberConfigDTO
 import com.arvatosystems.t9t.event.SubscriberConfigKey
 import com.arvatosystems.t9t.event.request.SubscriberConfigCrudRequest
 import com.arvatosystems.t9t.remote.connect.Connection
-import de.jpaw.bonaparte.api.SearchFilters
-import de.jpaw.bonaparte.pojos.api.OperationType
+import com.arvatosystems.t9t.api.SearchFilters
+import com.arvatosystems.t9t.api.OperationType
 import java.time.Instant
 import java.util.UUID
 import org.junit.jupiter.api.Assertions

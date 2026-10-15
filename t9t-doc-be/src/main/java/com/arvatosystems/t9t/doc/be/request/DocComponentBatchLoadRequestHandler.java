@@ -24,13 +24,13 @@ import org.slf4j.LoggerFactory;
 import de.jpaw.bonaparte.core.CSVConfiguration;
 import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.StringCSVParser;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.json.JsonException;
 import de.jpaw.json.JsonParser;
 
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaType;
 import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;

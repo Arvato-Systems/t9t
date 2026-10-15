@@ -20,8 +20,7 @@ import java.nio.charset.Charset;
 
 import jakarta.annotation.Nullable;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-
+import com.arvatosystems.t9t.api.media.MediaTypeDescriptor;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.io.DataSinkDTO;

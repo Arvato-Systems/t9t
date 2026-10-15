@@ -21,7 +21,6 @@ import java.util.Locale;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 
@@ -30,6 +29,7 @@ import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.auth.jpa.entities.PasswordBlacklistEntity;
 import com.arvatosystems.t9t.auth.services.IAuthModuleCfgDtoResolver;
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.jpa.refs.PersistenceProviderJPA;
 
 public class AbstractPasswordService {
 

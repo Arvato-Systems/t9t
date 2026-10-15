@@ -17,13 +17,13 @@ package com.arvatosystems.t9t.zkui.context.bpmn;
 
 import java.time.Instant;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.DataWithTracking;
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.bpmn.ProcessExecutionStatusDTO;
 import com.arvatosystems.t9t.bpmn.request.ProcessExecutionStatusCrudRequest;
 import com.arvatosystems.t9t.zkui.components.basic.Grid28;

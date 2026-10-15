@@ -40,10 +40,10 @@ import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
-import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.OperationType;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.services.ITimeZoneProvider;

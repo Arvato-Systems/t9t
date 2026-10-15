@@ -45,7 +45,7 @@ import com.arvatosystems.t9t.base.crud.CrudCompositeKeyResponse
 import com.arvatosystems.t9t.base.crud.CrudModuleCfgResponse
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion
-import de.jpaw.bonaparte.pojos.api.OperationType
+import com.arvatosystems.t9t.api.OperationType
 import com.arvatosystems.t9t.base.crud.CrudStringKeyResponse
 
 class AuthExtensions {

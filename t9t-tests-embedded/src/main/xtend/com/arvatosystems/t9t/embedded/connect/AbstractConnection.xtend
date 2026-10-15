@@ -35,7 +35,7 @@ import com.arvatosystems.t9t.server.services.IRequestProcessor
 import com.arvatosystems.t9t.server.services.IUnauthenticatedServiceRequestExecutor
 import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.core.BonaPortable
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo
+import com.arvatosystems.t9t.api.auth.JwtInfo
 import de.jpaw.dp.Inject
 import de.jpaw.util.ApplicationException
 import java.util.UUID

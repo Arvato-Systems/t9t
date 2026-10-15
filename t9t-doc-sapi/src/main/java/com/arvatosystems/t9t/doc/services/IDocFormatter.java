@@ -19,9 +19,8 @@ import java.util.Map;
 
 import jakarta.annotation.Nullable;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaXType;
-
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaXType;
 import com.arvatosystems.t9t.doc.api.DocumentSelector;
 import com.arvatosystems.t9t.doc.api.TemplateType;
 

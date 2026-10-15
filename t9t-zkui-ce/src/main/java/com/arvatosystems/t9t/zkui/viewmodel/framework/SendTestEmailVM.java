@@ -22,11 +22,11 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zul.Messagebox;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaType;
 import com.arvatosystems.t9t.email.api.SendTestEmailRequest;
 import com.arvatosystems.t9t.email.api.SendTestEmailResponse;
 import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;

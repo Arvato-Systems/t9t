@@ -15,12 +15,12 @@
  */
 package com.arvatosystems.t9t.schemaLoader.util;
 
+import static java.util.Collections.emptyList;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import static java.util.Collections.emptyList;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 /**
  * @author TWEL006

@@ -20,7 +20,7 @@ import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import com.arvatosystems.t9t.api.auth.JwtInfo;
 
 public abstract class AbstractJWTPool implements IJWT {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractJWTPool.class);

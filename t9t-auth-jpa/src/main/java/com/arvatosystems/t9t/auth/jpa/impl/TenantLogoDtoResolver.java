@@ -17,11 +17,11 @@ package com.arvatosystems.t9t.auth.jpa.impl;
 
 import java.nio.charset.StandardCharsets;
 
-import de.jpaw.bonaparte.api.media.MediaTypes;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ByteArray;
 
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaTypes;
 import com.arvatosystems.t9t.auth.TenantLogoDTO;
 import com.arvatosystems.t9t.auth.jpa.entities.TenantLogoEntity;
 import com.arvatosystems.t9t.auth.jpa.mapping.ITenantLogoDTOMapper;

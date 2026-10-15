@@ -29,8 +29,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-api</artifactId>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-api</artifactId>
         </dependency>
 
         <dependency>

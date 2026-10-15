@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.doc.services;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaData;
 
 // implementations are qualified by name / type of the image, for example QR_CODE
 public interface IImageGenerator {

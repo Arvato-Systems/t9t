@@ -19,12 +19,12 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Bandbox;
 
-import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.DataWithTracking;
+import com.arvatosystems.t9t.api.SearchFilters;
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.zkui.components.EventDataSelect28;

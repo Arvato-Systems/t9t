@@ -23,17 +23,17 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.AndFilter;
-import de.jpaw.bonaparte.pojos.api.FieldFilter;
-import de.jpaw.bonaparte.pojos.api.NotFilter;
-import de.jpaw.bonaparte.pojos.api.OrFilter;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.SortColumn;
-import de.jpaw.bonaparte.pojos.api.StringFilter;
-import de.jpaw.bonaparte.pojos.api.UuidFilter;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.AndFilter;
+import com.arvatosystems.t9t.api.FieldFilter;
+import com.arvatosystems.t9t.api.NotFilter;
+import com.arvatosystems.t9t.api.OrFilter;
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.SearchFilters;
+import com.arvatosystems.t9t.api.SortColumn;
+import com.arvatosystems.t9t.api.StringFilter;
+import com.arvatosystems.t9t.api.UuidFilter;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.base.services.ISearchTools;
 

@@ -19,11 +19,10 @@ import java.util.Map;
 
 import com.google.common.html.HtmlEscapers;
 
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaType;
+import com.arvatosystems.t9t.api.media.MediaTypeDescriptor;
+import com.arvatosystems.t9t.api.media.MediaTypeInfo;
 import com.arvatosystems.t9t.doc.services.IDocComponentConverter;
 
 //extend this class to add conversions from additional format types

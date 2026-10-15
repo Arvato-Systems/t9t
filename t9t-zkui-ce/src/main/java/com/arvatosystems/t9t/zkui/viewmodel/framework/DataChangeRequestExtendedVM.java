@@ -35,12 +35,12 @@ import org.zkoss.zul.Messagebox;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.JsonComposerPrettyPrint;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.DataWithTracking;
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.TrackingBase;
+import com.arvatosystems.t9t.api.auth.Permissionset;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.crud.CrudAnyKeyRequest;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;

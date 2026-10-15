@@ -29,8 +29,8 @@ import static extension com.arvatosystems.t9t.auth.extensions.AuthExtensions.*
 import static extension com.arvatosystems.t9t.doc.extensions.DocExtensions.*
 import com.arvatosystems.t9t.authc.api.ResetPasswordRequest
 import com.arvatosystems.t9t.doc.DocConfigDTO
-import de.jpaw.bonaparte.pojos.api.media.MediaXType
-import de.jpaw.bonaparte.pojos.api.media.MediaType
+import com.arvatosystems.t9t.api.media.MediaXType
+import com.arvatosystems.t9t.api.media.MediaType
 import com.arvatosystems.t9t.doc.DocEmailReceiverDTO
 import com.arvatosystems.t9t.doc.DocTemplateDTO
 import com.arvatosystems.t9t.base.ITestConnection

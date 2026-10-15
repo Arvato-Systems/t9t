@@ -17,16 +17,16 @@ package com.arvatosystems.t9t.zkui.context.monitoring;
 
 import java.util.List;
 
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.InstantFilter;
-import de.jpaw.bonaparte.pojos.api.IntFilter;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.StringFilter;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.DataWithTracking;
+import com.arvatosystems.t9t.api.InstantFilter;
+import com.arvatosystems.t9t.api.IntFilter;
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.SearchFilters;
+import com.arvatosystems.t9t.api.StringFilter;
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.msglog.MessageDTO;
 import com.arvatosystems.t9t.msglog.MessageStatisticsDTO;
 import com.arvatosystems.t9t.zkui.components.basic.Grid28;

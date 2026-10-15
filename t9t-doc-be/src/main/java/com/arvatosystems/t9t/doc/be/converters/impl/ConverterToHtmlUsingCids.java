@@ -17,11 +17,11 @@ package com.arvatosystems.t9t.doc.be.converters.impl;
 
 import java.util.Map;
 
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaTypeDescriptor;
+import com.arvatosystems.t9t.api.media.MediaTypeInfo;
 import com.arvatosystems.t9t.doc.services.IDocComponentConverter;
 
 //converter which references images using CID: (for email use)

@@ -18,9 +18,9 @@ package com.arvatosystems.t9t.base.services;
 import java.util.List;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
+import com.arvatosystems.t9t.api.DataWithTrackingS;
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 

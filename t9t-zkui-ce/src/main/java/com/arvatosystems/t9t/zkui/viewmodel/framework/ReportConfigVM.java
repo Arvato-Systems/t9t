@@ -31,13 +31,13 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Messagebox;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
-import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ExceptionUtil;
 
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaType;
+import com.arvatosystems.t9t.api.media.MediaXType;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.rep.ReportConfigDTO;

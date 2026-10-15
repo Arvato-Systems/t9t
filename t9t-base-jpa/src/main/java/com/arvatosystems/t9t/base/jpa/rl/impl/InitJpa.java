@@ -21,7 +21,6 @@ import jakarta.persistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
@@ -32,6 +31,7 @@ import com.arvatosystems.t9t.base.jpa.ormspecific.IEMFCustomizer;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
 import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
+import com.arvatosystems.t9t.jpa.refs.PersistenceProviderJPA;
 
 @Startup(12000)
 public class InitJpa implements StartupOnly {

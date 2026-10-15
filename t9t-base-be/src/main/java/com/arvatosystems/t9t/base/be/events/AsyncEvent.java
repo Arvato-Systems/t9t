@@ -18,14 +18,14 @@ package com.arvatosystems.t9t.base.be.events;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
 
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaTypeDescriptor;
+import com.arvatosystems.t9t.api.media.MediaTypeInfo;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.IEventImpl;
 import com.arvatosystems.t9t.base.types.XTargetChannelType;

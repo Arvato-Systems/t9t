@@ -15,8 +15,8 @@ import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
-//import de.jpaw.xenums.init.ReflectionsPackageCache;
 
+//import de.jpaw.xenums.init.ReflectionsPackageCache;
 import com.arvatosystems.t9t.base.MessagingUtil;
 
 public final class ClassWalker {

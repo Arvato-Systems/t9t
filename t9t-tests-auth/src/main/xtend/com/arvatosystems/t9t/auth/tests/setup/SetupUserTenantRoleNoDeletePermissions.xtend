@@ -16,8 +16,8 @@
 package com.arvatosystems.t9t.auth.tests.setup
 
 import com.arvatosystems.t9t.base.ITestConnection
-import de.jpaw.bonaparte.pojos.api.OperationType
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset
+import com.arvatosystems.t9t.api.OperationType
+import com.arvatosystems.t9t.api.auth.Permissionset
 
 // sets up a user who cannot delete anything
 class SetupUserTenantRoleNoDeletePermissions extends SetupUserTenantRole {

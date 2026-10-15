@@ -17,9 +17,9 @@ package com.arvatosystems.t9t.changeRequest.be.request;
 
 import jakarta.annotation.Nonnull;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.OperationType;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;

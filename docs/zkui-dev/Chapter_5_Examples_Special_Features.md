@@ -116,8 +116,8 @@ package com.arvatosystems.t9t.zkui.viewmodel;
 import org.zkoss.bind.annotation.Init;
 import com.arvatosystems.t9t.base.crud.CrudAnyKeyResponse;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyRequest;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
+import com.arvatosystems.t9t.api.TrackingBase;
+import com.arvatosystems.t9t.apiw.Ref;
 
 @Init(superclass=true)
 public class CrudSurrogateKeyVM<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase>

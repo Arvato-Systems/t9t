@@ -22,7 +22,7 @@ import com.arvatosystems.t9t.plugins.request.UnloadPluginRequest
 import com.arvatosystems.t9t.plugins.request.UploadPluginRequest
 import com.arvatosystems.t9t.plugins.request.UploadPluginResponse
 import de.jpaw.annotations.AddLogger
-import de.jpaw.bonaparte.api.media.MediaDataUtil
+import com.arvatosystems.t9t.api.media.MediaDataUtil
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Disabled

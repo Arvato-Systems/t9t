@@ -15,14 +15,14 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel.framework;
 
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.NoTracking;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.DataWithTracking;
+import com.arvatosystems.t9t.api.NoTracking;
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.SearchFilters;
+import com.arvatosystems.t9t.api.StringFilter;
 import com.arvatosystems.t9t.auth.PasswordBlacklistDTO;
 import com.arvatosystems.t9t.zkui.IKeyFromDataProvider;
 

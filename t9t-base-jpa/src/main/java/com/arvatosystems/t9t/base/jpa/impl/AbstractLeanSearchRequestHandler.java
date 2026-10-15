@@ -21,9 +21,9 @@ import java.util.function.Function;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
-import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.LongFilter;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
 import com.arvatosystems.t9t.base.search.Description;

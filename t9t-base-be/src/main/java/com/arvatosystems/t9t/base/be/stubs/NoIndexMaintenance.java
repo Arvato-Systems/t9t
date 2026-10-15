@@ -20,11 +20,11 @@ import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Any;
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.OperationType;
 import com.arvatosystems.t9t.base.services.IIndexMaintenance;
 
 @Fallback

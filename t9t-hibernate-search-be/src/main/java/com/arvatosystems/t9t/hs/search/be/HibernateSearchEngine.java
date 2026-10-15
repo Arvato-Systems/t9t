@@ -35,13 +35,12 @@ import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
-import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.SortColumn;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
@@ -50,6 +49,7 @@ import com.arvatosystems.t9t.base.services.ITextSearch;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.hs.T9tHibernateSearchException;
 import com.arvatosystems.t9t.hs.configurate.be.core.impl.EntityConfigurer;
+import com.arvatosystems.t9t.jpa.refs.PersistenceProviderJPA;
 
 @Singleton
 @Named(T9tConstants.TEXT_SEARCH_ID_HIBERNATE_SEARCH)

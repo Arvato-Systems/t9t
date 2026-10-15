@@ -18,12 +18,12 @@ package com.arvatosystems.t9t.zkui.context;
 import org.zkoss.zul.Messagebox;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Any;
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.DataWithTracking;
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.zkui.components.basic.Grid28;
 
 @Singleton

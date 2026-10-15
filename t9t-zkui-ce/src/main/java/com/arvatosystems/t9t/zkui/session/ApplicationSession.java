@@ -58,16 +58,16 @@ import org.zkoss.image.AImage;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
 
-import de.jpaw.bonaparte.api.auth.JwtConverter;
 import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.enums.BonaEnum;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
 
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.auth.JwtConverter;
+import com.arvatosystems.t9t.api.auth.JwtInfo;
+import com.arvatosystems.t9t.api.auth.Permissionset;
 import com.arvatosystems.t9t.authc.api.GetTenantLogoRequest;
 import com.arvatosystems.t9t.authc.api.GetTenantLogoResponse;
 import com.arvatosystems.t9t.authc.api.TenantDescription;

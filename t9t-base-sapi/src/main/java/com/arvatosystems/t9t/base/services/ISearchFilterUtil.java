@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.base.services;
 
 import java.util.Set;
 
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import com.arvatosystems.t9t.api.SearchFilter;
 
 /**
  * search filter utility class

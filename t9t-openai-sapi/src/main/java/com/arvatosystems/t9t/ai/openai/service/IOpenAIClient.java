@@ -21,8 +21,6 @@ import java.util.Map;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-
 import com.arvatosystems.t9t.ai.openai.OpenAIChatCompletionReq;
 import com.arvatosystems.t9t.ai.openai.OpenAICreateEmbeddingsReq;
 import com.arvatosystems.t9t.ai.openai.OpenAIObjectChatCompletion;
@@ -34,6 +32,7 @@ import com.arvatosystems.t9t.ai.openai.OpenAITool;
 import com.arvatosystems.t9t.ai.openai.request.AIModel;
 import com.arvatosystems.t9t.ai.openai.responses.OpenAICreateResponseReq;
 import com.arvatosystems.t9t.ai.openai.responses.OpenAIResponseResult;
+import com.arvatosystems.t9t.api.media.MediaData;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 /**

@@ -30,13 +30,13 @@ import org.slf4j.LoggerFactory;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.SortColumn;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.DataWithTrackingS;
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.SortColumn;
+import com.arvatosystems.t9t.api.TrackingBase;
+import com.arvatosystems.t9t.apiw.Ref;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.jpa.IEntityMapper;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;

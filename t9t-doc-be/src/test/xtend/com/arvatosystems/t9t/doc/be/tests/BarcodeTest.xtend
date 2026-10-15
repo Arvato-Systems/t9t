@@ -28,7 +28,7 @@ import com.arvatosystems.t9t.doc.services.IDocModuleCfgDtoResolver
 import com.arvatosystems.t9t.doc.services.IDocPersistenceAccess
 import com.arvatosystems.t9t.doc.services.IImageGenerator
 import com.google.common.collect.ImmutableMap
-import de.jpaw.bonaparte.api.media.MediaTypes
+import com.arvatosystems.t9t.api.media.MediaTypes
 import de.jpaw.dp.Jdp
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach

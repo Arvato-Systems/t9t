@@ -34,12 +34,12 @@ import jakarta.annotation.Nullable;
 
 import org.slf4j.Logger;
 
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.enums.TokenizableEnum;
 
+import com.arvatosystems.t9t.api.media.MediaTypeDescriptor;
+import com.arvatosystems.t9t.api.media.MediaTypeInfo;
 import com.arvatosystems.t9t.base.request.AggregationGranularityType;
 /**
  * Utility class for common checks and operations.

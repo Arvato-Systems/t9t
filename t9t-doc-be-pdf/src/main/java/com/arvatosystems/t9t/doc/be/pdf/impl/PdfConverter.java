@@ -25,14 +25,14 @@ import org.slf4j.LoggerFactory;
 import org.xhtmlrenderer.pdf.ITextFontResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
-import de.jpaw.bonaparte.api.media.MediaTypes;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ExceptionUtil;
 
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaType;
+import com.arvatosystems.t9t.api.media.MediaTypes;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.doc.T9tDocException;
 import com.arvatosystems.t9t.doc.services.IDocConverter;

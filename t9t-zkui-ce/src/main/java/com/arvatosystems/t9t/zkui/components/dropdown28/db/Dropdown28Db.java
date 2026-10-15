@@ -32,11 +32,11 @@ import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.ListModels;
 
-import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.SearchFilters;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.base.search.LeanSearchRequest;
 import com.arvatosystems.t9t.zkui.components.dropdown28.ComboBoxEntry;

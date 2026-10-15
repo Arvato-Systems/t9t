@@ -18,8 +18,7 @@ package com.arvatosystems.t9t.auth.services;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-
+import com.arvatosystems.t9t.api.auth.JwtInfo;
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.AuthenticationIssuerType;
 import com.arvatosystems.t9t.auth.TenantDTO;

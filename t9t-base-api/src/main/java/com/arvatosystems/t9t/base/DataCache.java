@@ -24,8 +24,7 @@ import java.util.function.Predicate;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-import de.jpaw.bonaparte.pojos.apiw.Ref;
-
+import com.arvatosystems.t9t.apiw.Ref;
 import com.arvatosystems.t9t.base.cache.DataMap;
 
 /**

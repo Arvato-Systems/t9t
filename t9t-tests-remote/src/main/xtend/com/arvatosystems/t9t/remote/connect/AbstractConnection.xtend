@@ -26,7 +26,7 @@ import com.arvatosystems.t9t.base.auth.AuthenticationResponse
 import com.arvatosystems.t9t.base.auth.PasswordAuthentication
 import com.arvatosystems.t9t.base.types.AuthenticationParameters
 import de.jpaw.annotations.AddLogger
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo
+import com.arvatosystems.t9t.api.auth.JwtInfo
 import de.jpaw.util.ApplicationException
 import java.util.UUID
 import com.arvatosystems.t9t.base.T9tConstants

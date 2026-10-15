@@ -19,7 +19,8 @@ import java.io.Serializable;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
+
+import com.arvatosystems.t9t.api.TrackingBase;
 
 /** To be applied for sequential data processing of large result sets. Can be supplied to generic search,
  * in order to convert to some DTO and output through IOutputSession, for example.

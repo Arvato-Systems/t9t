@@ -21,11 +21,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import jakarta.annotation.Nonnull;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.CompositeKeyRef;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.CompositeKeyRef;
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.apiw.Ref;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.base.T9tException;

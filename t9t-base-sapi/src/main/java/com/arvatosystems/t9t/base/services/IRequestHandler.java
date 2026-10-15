@@ -17,8 +17,7 @@ package com.arvatosystems.t9t.base.services;
 
 import jakarta.annotation.Nonnull;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
-
+import com.arvatosystems.t9t.api.OperationType;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 

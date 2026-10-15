@@ -18,8 +18,8 @@ package com.arvatosystems.t9t.remote.tests.simple
 import com.arvatosystems.t9t.auth.request.SessionSearchRequest
 import com.arvatosystems.t9t.base.search.ReadAllResponse
 import com.arvatosystems.t9t.remote.connect.Connection
-import de.jpaw.bonaparte.pojos.api.SortColumn
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS
+import com.arvatosystems.t9t.api.SortColumn
+import com.arvatosystems.t9t.api.DataWithTrackingS
 import org.junit.jupiter.api.Test
 
 class ITSessions {

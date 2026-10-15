@@ -18,9 +18,9 @@ package com.arvatosystems.t9t.authc.be.api;
 import java.util.List;
 import java.util.Map;
 
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.auth.JwtInfo;
 import com.arvatosystems.t9t.auth.AuthenticationIssuerType;
 import com.arvatosystems.t9t.auth.hooks.IJwtEnrichment;
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;

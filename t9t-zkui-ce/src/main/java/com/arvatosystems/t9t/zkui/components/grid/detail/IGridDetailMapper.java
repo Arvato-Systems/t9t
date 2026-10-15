@@ -19,7 +19,7 @@ import java.util.List;
 
 import jakarta.annotation.Nonnull;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
+import com.arvatosystems.t9t.api.DataWithTracking;
 
 public interface IGridDetailMapper<MAIN extends DataWithTracking<?, ?>, DETAIL extends DataWithTracking<?, ?>> {
 

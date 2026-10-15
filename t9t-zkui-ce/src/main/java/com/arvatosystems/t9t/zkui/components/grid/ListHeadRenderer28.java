@@ -46,14 +46,14 @@ import org.zkoss.zul.event.ColSizeEvent;
 import org.zkoss.zul.event.ZulEvents;
 
 import de.jpaw.bonaparte.core.BonaPortableClass;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.bonaparte.pojos.meta.DataCategory;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.Multiplicity;
 import de.jpaw.bonaparte.util.FieldGetter;
 import de.jpaw.util.ApplicationException;
 
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.auth.Permissionset;
 import com.arvatosystems.t9t.base.uiprefs.UILeanGridPreferences;
 import com.arvatosystems.t9t.zkui.components.basic.Filter28;
 import com.arvatosystems.t9t.zkui.components.basic.Grid28;

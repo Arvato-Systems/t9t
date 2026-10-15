@@ -1,0 +1,36 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.arvato-systems.t9t</groupId>
+        <artifactId>t9t-settings-api</artifactId>
+        <version>10.0-SNAPSHOT</version>
+        <relativePath>../t9t-settings-api</relativePath>
+    </parent>
+
+    <artifactId>t9t-api-media</artifactId>
+
+
+    <description>
+        Definition of some basic objects for noSQL object nesting as required in most applications.
+        Reserved factoryId: 25
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-xml</artifactId>
+        </dependency>
+        <!-- JUnit Test -->
+        <dependency>
+           <groupId>org.junit.jupiter</groupId>
+           <artifactId>junit-jupiter</artifactId>
+           <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>

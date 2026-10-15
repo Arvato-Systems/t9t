@@ -40,12 +40,12 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Window;
 
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.ReflectionsPackageCache;
 
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.IGridConfigContainer;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tException;

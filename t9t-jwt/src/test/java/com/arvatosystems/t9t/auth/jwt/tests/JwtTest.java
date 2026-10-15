@@ -21,8 +21,9 @@ import java.time.Instant;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.bonaparte.core.BonaPortableFactory;
 
+import com.arvatosystems.t9t.api.auth.JwtInfo;
 import com.arvatosystems.t9t.auth.jwt.IJWT;
 import com.arvatosystems.t9t.auth.jwt.JWT;
 
@@ -30,6 +31,7 @@ public class JwtTest {
 
     @Test
     public void checkSign() throws Exception {
+        BonaPortableFactory.addToPackagePrefixMap("api", "com.arvatosystems.t9t.api");     // migrated from bonaparte
         JWT jwt = JWT.createJwt(IJWT.class.getResourceAsStream("/mykeystore.jceks"), "xyzzy5");
         JwtInfo info = new JwtInfo();
 

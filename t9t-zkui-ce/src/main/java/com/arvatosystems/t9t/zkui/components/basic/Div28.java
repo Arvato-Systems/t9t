@@ -19,8 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Div;
 
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-
+import com.arvatosystems.t9t.api.auth.Permissionset;
 import com.arvatosystems.t9t.zkui.components.IPermissionOwner;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 

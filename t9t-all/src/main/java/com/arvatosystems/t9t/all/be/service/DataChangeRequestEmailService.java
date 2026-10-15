@@ -25,11 +25,11 @@ import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.OperationTypes;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.OperationTypes;
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
 import com.arvatosystems.t9t.authc.api.UserData;
 import com.arvatosystems.t9t.base.T9tConstants;

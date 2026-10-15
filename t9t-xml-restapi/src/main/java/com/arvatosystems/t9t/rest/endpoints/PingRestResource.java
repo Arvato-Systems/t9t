@@ -39,10 +39,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.apiw.Ref;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.request.PingRequest;
 import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;

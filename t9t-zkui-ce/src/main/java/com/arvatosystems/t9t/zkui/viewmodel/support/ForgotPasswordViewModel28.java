@@ -27,9 +27,9 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Messagebox;
 
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.authc.api.ResetPasswordRequest;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;

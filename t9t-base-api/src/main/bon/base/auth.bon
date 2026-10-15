@@ -35,16 +35,17 @@ package (com.arvatosystems) t9t.base.auth {
     type passwordHash           is Binary(64);
 
     enum PermissionType {
-        FRONTEND    = "U",          // permission to see UI screens or to use dialog elements
-        BACKEND     = "B",          // permission on request handlers. The trailing "Request(Handler)" can be omitted from the permission
-        PREPARED    = "P",          // permission on prepared (canned) requests (by ID). Evaluated by the ExecutePreparedRequest request.
-        REPORTING   = "R",          // permission to run specific reports
-        CHANNEL     = "C",          // permission to write to certain targets like queues or topics
-        EXTERNAL    = "X",          // permission to invoke requests on a remote server
-        ASSISTANT   = "A",          // permission on AI assistants
-        TOOL_CALL   = "T",          // access to specific tool calls (MCP tools)
-        RESOURCE    = "E",          // access to resources via MCP
-        PROMPT      = "O"           // access to MCP prompts
+        FRONTEND            = "U",          // permission to see UI screens or to use dialog elements (for the ZK frontend)
+        BACKEND             = "B",          // permission on request handlers. The trailing "Request(Handler)" can be omitted from the permission
+        PREPARED            = "P",          // permission on prepared (canned) requests (by ID). Evaluated by the ExecutePreparedRequest request.
+        REPORTING           = "R",          // permission to run specific reports
+        CHANNEL             = "C",          // permission to write to certain targets like queues or topics
+        EXTERNAL            = "X",          // permission to invoke requests on a remote server
+        ASSISTANT           = "A",          // permission on AI assistants
+        TOOL_CALL           = "T",          // access to specific tool calls (MCP tools)
+        RESOURCE            = "E",          // access to resources via MCP
+        PROMPT              = "O",          // access to MCP prompts
+        FRONTEND_ANGULAR    = "F"           // permission to see UI screens or to use dialog elements (for the Angular frontend)
     }
 
     /** Defines the type of user data change which is considered to be of high risk and may require user information. */

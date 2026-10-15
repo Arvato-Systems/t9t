@@ -32,11 +32,11 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Window;
 
-import de.jpaw.bonaparte.pojos.api.AggregateColumn;
-import de.jpaw.bonaparte.pojos.api.AggregateFunctionType;
 import de.jpaw.bonaparte.pojos.meta.DataCategory;
 import de.jpaw.bonaparte.util.FreezeTools;
 
+import com.arvatosystems.t9t.api.AggregateColumn;
+import com.arvatosystems.t9t.api.AggregateFunctionType;
 import com.arvatosystems.t9t.base.IGridConfigContainer;
 import com.arvatosystems.t9t.base.ui.UIColumnConfiguration;
 import com.arvatosystems.t9t.base.ui.UIMeta;

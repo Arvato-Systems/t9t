@@ -22,13 +22,13 @@ import jakarta.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
 import de.jpaw.util.ExceptionUtil;
 
+import com.arvatosystems.t9t.jpa.refs.PersistenceProviderJPA;
 import com.arvatosystems.t9t.plugins.jpa.entities.LoadedPluginEntity;
 import com.arvatosystems.t9t.plugins.services.IPluginManager;
 

@@ -50,13 +50,13 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.impl.InputElement;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
 import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.util.ExceptionUtil;
 
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.auth.Permissionset;
 import com.arvatosystems.t9t.init.InitContainers;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;

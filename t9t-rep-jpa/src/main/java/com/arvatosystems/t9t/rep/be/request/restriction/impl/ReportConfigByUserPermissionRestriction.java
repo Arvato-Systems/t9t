@@ -17,11 +17,11 @@ package com.arvatosystems.t9t.rep.be.request.restriction.impl;
 
 import java.util.List;
 
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.SearchFilters;
+import com.arvatosystems.t9t.api.StringFilter;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.rep.be.request.restriction.IReportConfigByUserPermissionRestriction;

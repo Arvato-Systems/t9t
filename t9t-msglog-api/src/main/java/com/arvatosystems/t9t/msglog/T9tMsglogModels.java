@@ -15,8 +15,7 @@
  */
 package com.arvatosystems.t9t.msglog;
 
-import de.jpaw.bonaparte.pojos.api.NoTracking;
-
+import com.arvatosystems.t9t.api.NoTracking;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.msglog.request.MessageSearchRequest;

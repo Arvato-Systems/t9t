@@ -39,8 +39,8 @@ import de.jpaw.bonaparte.jpa.BonaKey
 import de.jpaw.bonaparte.jpa.BonaPersistableKey
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking
 import de.jpaw.bonaparte.jpa.BonaTracking
-import de.jpaw.bonaparte.pojos.api.OperationType
-import de.jpaw.bonaparte.pojos.apiw.Ref
+import com.arvatosystems.t9t.api.OperationType
+import com.arvatosystems.t9t.apiw.Ref
 import de.jpaw.dp.Singleton
 import java.util.HashMap
 import java.util.HashSet

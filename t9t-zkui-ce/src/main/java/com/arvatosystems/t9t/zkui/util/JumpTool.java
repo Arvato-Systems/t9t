@@ -21,12 +21,11 @@ import java.util.UUID;
 
 import org.zkoss.bind.BindUtils;
 
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.LongFilter;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.StringFilter;
-import de.jpaw.bonaparte.pojos.api.UuidFilter;
-
+import com.arvatosystems.t9t.api.LongFilter;
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.SearchFilters;
+import com.arvatosystems.t9t.api.StringFilter;
+import com.arvatosystems.t9t.api.UuidFilter;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.viewmodel.beans.Navi;
 

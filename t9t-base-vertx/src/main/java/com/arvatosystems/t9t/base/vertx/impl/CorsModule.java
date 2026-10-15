@@ -20,11 +20,11 @@ import io.vertx.ext.web.Router;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.api.codecs.IMessageCoderFactory;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
 
+import com.arvatosystems.t9t.api.codecs.IMessageCoderFactory;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.vertx.IServiceModule;
 

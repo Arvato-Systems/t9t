@@ -15,8 +15,7 @@
  */
 package com.arvatosystems.t9t.auth.services;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-
+import com.arvatosystems.t9t.api.DataWithTrackingS;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;

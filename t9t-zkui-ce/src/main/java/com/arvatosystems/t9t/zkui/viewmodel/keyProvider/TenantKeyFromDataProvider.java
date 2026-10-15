@@ -17,13 +17,13 @@ package com.arvatosystems.t9t.zkui.viewmodel.keyProvider;
 
 import jakarta.annotation.Nonnull;
 
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.DataWithTracking;
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.SearchFilters;
+import com.arvatosystems.t9t.api.StringFilter;
 import com.arvatosystems.t9t.auth.TenantDTO;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.zkui.IKeyFromDataProvider;

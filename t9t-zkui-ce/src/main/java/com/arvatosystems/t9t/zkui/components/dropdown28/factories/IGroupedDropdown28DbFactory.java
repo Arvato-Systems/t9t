@@ -15,8 +15,7 @@
  */
 package com.arvatosystems.t9t.zkui.components.dropdown28.factories;
 
-import de.jpaw.bonaparte.pojos.apiw.Ref;
-
+import com.arvatosystems.t9t.apiw.Ref;
 import com.arvatosystems.t9t.base.search.LeanGroupedSearchRequest;
 import com.arvatosystems.t9t.zkui.components.dropdown28.db.GroupedDropdown28Db;
 

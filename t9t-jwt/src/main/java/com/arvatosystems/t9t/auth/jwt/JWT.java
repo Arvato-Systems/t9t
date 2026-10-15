@@ -36,12 +36,13 @@ import jakarta.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.api.auth.JwtConverter;
 import de.jpaw.bonaparte.core.BonaparteJsonEscaper;
 import de.jpaw.bonaparte.core.MimeTypes;
-import de.jpaw.bonaparte.pojos.api.auth.JwtAlg;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.util.ExceptionUtil;
+
+import com.arvatosystems.t9t.api.auth.JwtAlg;
+import com.arvatosystems.t9t.api.auth.JwtConverter;
+import com.arvatosystems.t9t.api.auth.JwtInfo;
 
 /**
  * JWT and JWS implementation draft-ietf-oauth-json-web-token-32.

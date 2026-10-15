@@ -17,13 +17,13 @@ package com.arvatosystems.t9t.base.services;
 
 import java.util.List;
 
-import de.jpaw.bonaparte.pojos.api.AbstractRef;
-import de.jpaw.bonaparte.pojos.api.AggregateColumn;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.SortColumn;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.refs.BaseRefResolver;
+import com.arvatosystems.t9t.api.AbstractRef;
+import com.arvatosystems.t9t.api.AggregateColumn;
+import com.arvatosystems.t9t.api.DataWithTrackingS;
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.SortColumn;
+import com.arvatosystems.t9t.api.TrackingBase;
+import com.arvatosystems.t9t.refs.BaseRefResolver;
 
 /** API to noSQL backends (mini EntityManager) */
 public interface IRefResolver<REF extends AbstractRef, DTO extends REF, TRACKING extends TrackingBase> extends BaseRefResolver<REF, DTO, TRACKING> {

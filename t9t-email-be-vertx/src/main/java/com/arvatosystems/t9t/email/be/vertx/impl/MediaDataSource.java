@@ -19,8 +19,8 @@ import java.util.Map;
 
 import io.vertx.core.buffer.Buffer;
 
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaTypeInfo;
 
 public class MediaDataSource {
     private final MediaData data;

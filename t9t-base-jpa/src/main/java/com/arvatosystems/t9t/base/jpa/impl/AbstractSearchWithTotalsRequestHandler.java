@@ -20,8 +20,8 @@ import java.io.Serializable;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.jpa.IEntityMapper;
 import com.arvatosystems.t9t.base.jpa.IResolverAnyKey;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;

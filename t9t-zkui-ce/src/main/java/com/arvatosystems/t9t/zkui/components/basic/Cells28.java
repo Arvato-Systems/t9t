@@ -28,11 +28,11 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.impl.InputElement;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.util.FieldGetter;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.FieldMappers;
 import com.arvatosystems.t9t.base.T9tConstants;

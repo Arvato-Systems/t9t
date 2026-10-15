@@ -24,7 +24,7 @@ import com.arvatosystems.t9t.ai.request.AiDtoAssistCrudRequest
 import com.arvatosystems.t9t.base.ITestConnection
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion
-import de.jpaw.bonaparte.pojos.api.OperationType
+import com.arvatosystems.t9t.api.OperationType
 
 class AiExtensions {
 

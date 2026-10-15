@@ -22,9 +22,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.NoTracking;
-
+import com.arvatosystems.t9t.api.DataWithTrackingS;
+import com.arvatosystems.t9t.api.NoTracking;
 import com.arvatosystems.t9t.auth.tests.setup.SetupUserTenantRole;
 import com.arvatosystems.t9t.base.ITestConnection;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;

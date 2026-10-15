@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.auth.be.impl;
 
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import com.arvatosystems.t9t.api.auth.JwtInfo;
 
 public record AuthData(
     String jwtToken, // encoded form, without "Bearer" prefix

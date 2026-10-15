@@ -44,11 +44,11 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
 import picocli.CommandLine.UnmatchedArgumentException;
 
-import de.jpaw.bonaparte.api.codecs.IMessageCoderFactory;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.util.DeprecationWarner;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.codecs.IMessageCoderFactory;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;

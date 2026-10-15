@@ -26,9 +26,9 @@ import jakarta.persistence.TypedQuery;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.search.CountCriteria;
 import com.arvatosystems.t9t.base.search.CountResponse;

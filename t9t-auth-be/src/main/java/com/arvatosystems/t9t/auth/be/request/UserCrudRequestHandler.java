@@ -18,11 +18,11 @@ package com.arvatosystems.t9t.auth.be.request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.auth.JwtInfo;
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.auth.T9tAuthTools;

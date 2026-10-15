@@ -18,8 +18,8 @@ package com.arvatosystems.t9t.base;
 import java.util.UUID;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 
+import com.arvatosystems.t9t.api.auth.JwtInfo;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;

@@ -25,15 +25,15 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.AndFilter;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.LongFilter;
-import de.jpaw.bonaparte.pojos.api.NoTracking;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.SortColumn;
-import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.AndFilter;
+import com.arvatosystems.t9t.api.DataWithTrackingS;
+import com.arvatosystems.t9t.api.LongFilter;
+import com.arvatosystems.t9t.api.NoTracking;
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.SortColumn;
+import com.arvatosystems.t9t.api.StringFilter;
 import com.arvatosystems.t9t.base.request.ProcessStatusDTO;
 import com.arvatosystems.t9t.base.request.ProcessStatusRequest;
 import com.arvatosystems.t9t.base.request.ProcessStatusResponse;

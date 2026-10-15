@@ -20,9 +20,10 @@ import java.util.Collections;
 import java.util.List;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.NoTracking;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
+
+import com.arvatosystems.t9t.api.DataWithTrackingS;
+import com.arvatosystems.t9t.api.NoTracking;
+import com.arvatosystems.t9t.api.TrackingBase;
 
 public abstract class AbstractGridDetailMapper<MAIN extends BonaPortable, DETAIL extends BonaPortable>
     implements IGridDetailMapper<DataWithTrackingS<MAIN, TrackingBase>, DataWithTrackingS<DETAIL, TrackingBase>> {

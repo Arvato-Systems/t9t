@@ -21,7 +21,7 @@ import com.arvatosystems.t9t.auth.request.UserCrudAndSetPasswordRequest
 import com.arvatosystems.t9t.auth.tests.setup.SetupUserTenantRole
 import com.arvatosystems.t9t.base.ITestConnection
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
-import de.jpaw.bonaparte.pojos.api.OperationType
+import com.arvatosystems.t9t.api.OperationType
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 

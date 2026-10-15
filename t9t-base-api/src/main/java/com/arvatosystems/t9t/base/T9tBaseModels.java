@@ -15,8 +15,7 @@
  */
 package com.arvatosystems.t9t.base;
 
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.auth.ChangePasswordUI;
 import com.arvatosystems.t9t.base.output.ExportParameters;
 

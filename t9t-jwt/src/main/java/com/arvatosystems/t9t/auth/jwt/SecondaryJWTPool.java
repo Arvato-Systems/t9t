@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.auth.jwt;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import com.arvatosystems.t9t.api.auth.JwtInfo;
 
 /**
  * ThreadLocal pool for {@link SecondaryJWT} instances.

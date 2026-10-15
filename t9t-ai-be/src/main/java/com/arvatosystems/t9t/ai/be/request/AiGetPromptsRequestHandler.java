@@ -23,9 +23,6 @@ import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.ai.AiPromptDTO;
@@ -33,6 +30,9 @@ import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
 import com.arvatosystems.t9t.ai.request.AiGetPromptsRequest;
 import com.arvatosystems.t9t.ai.request.AiGetPromptsResponse;
 import com.arvatosystems.t9t.ai.request.AiPromptSearchRequest;
+import com.arvatosystems.t9t.api.DataWithTrackingS;
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.StringFilter;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;

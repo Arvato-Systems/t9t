@@ -15,15 +15,15 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel.keyProvider;
 
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Any;
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.DataWithTracking;
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.SearchFilters;
+import com.arvatosystems.t9t.api.TrackingBase;
+import com.arvatosystems.t9t.apiw.Ref;
 import com.arvatosystems.t9t.zkui.IKeyFromDataProvider;
 
 /** The default implementation (which is valid for most viewModels) implements the SurrogateKey filter. */

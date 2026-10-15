@@ -29,17 +29,17 @@ import jakarta.ws.rs.core.Response.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.DataConverter;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
 
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaTypeDescriptor;
+import com.arvatosystems.t9t.api.media.MediaTypeInfo;
 import com.arvatosystems.t9t.base.IRemoteConnection;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.RandomNumberGenerators;

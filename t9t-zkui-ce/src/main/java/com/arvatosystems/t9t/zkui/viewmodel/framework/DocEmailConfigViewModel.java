@@ -17,8 +17,7 @@ package com.arvatosystems.t9t.zkui.viewmodel.framework;
 
 import org.zkoss.bind.annotation.Init;
 
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.doc.DocEmailCfgDTO;
 import com.arvatosystems.t9t.doc.DocEmailCfgRef;
 import com.arvatosystems.t9t.doc.DocEmailReceiverDTO;

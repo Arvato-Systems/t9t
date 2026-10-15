@@ -15,11 +15,12 @@
  */
 package com.arvatosystems.t9t.schemaLoader.mavenPlugin.config;
 
-import com.arvatosystems.t9t.schemaLoader.config.DatabaseConfiguration;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
+import com.arvatosystems.t9t.schemaLoader.config.DatabaseConfiguration;
 
 public class Database {
 

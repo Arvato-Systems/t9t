@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.auth;
 
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+import com.arvatosystems.t9t.api.auth.Permissionset;
 
 public final class T9tAuthTools {
     private T9tAuthTools() { }

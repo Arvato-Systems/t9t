@@ -15,10 +15,9 @@
  */
 package com.arvatosystems.t9t.auth.be.impl;
 
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
-
+import com.arvatosystems.t9t.api.auth.JwtInfo;
+import com.arvatosystems.t9t.api.auth.Permissionset;
+import com.arvatosystems.t9t.api.auth.UserLogLevelType;
 import com.arvatosystems.t9t.auth.TenantDTO;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.base.T9tConstants;

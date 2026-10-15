@@ -22,10 +22,9 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.ImmutableList;
 
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.LongFilter;
-import de.jpaw.bonaparte.pojos.api.NullFilter;
-
+import com.arvatosystems.t9t.api.LongFilter;
+import com.arvatosystems.t9t.api.NullFilter;
+import com.arvatosystems.t9t.api.SearchFilters;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.base.services.IRestrictionRefReader;
 import com.arvatosystems.t9t.base.services.ISearchRestriction;

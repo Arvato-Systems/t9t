@@ -15,8 +15,7 @@
  */
 package com.arvatosystems.t9t.zkui.init;
 
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.base.auth.ChangePasswordUI;

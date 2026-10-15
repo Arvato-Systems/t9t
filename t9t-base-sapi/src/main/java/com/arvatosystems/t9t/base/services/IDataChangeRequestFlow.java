@@ -19,8 +19,8 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.OperationType;
 
+import com.arvatosystems.t9t.api.OperationType;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 
 public interface IDataChangeRequestFlow {

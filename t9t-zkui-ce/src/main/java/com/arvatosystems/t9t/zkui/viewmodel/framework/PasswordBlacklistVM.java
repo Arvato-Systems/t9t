@@ -32,12 +32,12 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Messagebox;
 
-import de.jpaw.bonaparte.pojos.api.NoTracking;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.NoTracking;
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaType;
 import com.arvatosystems.t9t.auth.PasswordBlacklistDTO;
 import com.arvatosystems.t9t.auth.PasswordBlacklistKey;
 import com.arvatosystems.t9t.auth.request.ClearPasswordBlacklistRequest;

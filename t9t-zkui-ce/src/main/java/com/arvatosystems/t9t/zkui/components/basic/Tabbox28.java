@@ -28,9 +28,9 @@ import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Tabs;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.zkui.ITabboxExtension;
 import com.arvatosystems.t9t.zkui.components.EventDataSelect28;

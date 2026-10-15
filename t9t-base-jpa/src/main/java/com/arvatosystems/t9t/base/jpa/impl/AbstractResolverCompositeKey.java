@@ -19,10 +19,10 @@ import java.io.Serializable;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
-import de.jpaw.bonaparte.pojos.api.CompositeKeyRef;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Alternative;
 
+import com.arvatosystems.t9t.api.CompositeKeyRef;
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.jpa.IResolverCompositeKey;
 

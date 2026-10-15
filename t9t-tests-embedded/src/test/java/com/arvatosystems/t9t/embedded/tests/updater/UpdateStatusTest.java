@@ -25,8 +25,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import de.jpaw.bonaparte.api.SearchFilters;
-
+import com.arvatosystems.t9t.api.SearchFilters;
 import com.arvatosystems.t9t.base.ITestConnection;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;

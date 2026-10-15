@@ -26,8 +26,8 @@ import com.arvatosystems.t9t.io.CommunicationTargetChannelType
 import com.arvatosystems.t9t.io.DataSinkCategoryType
 import com.arvatosystems.t9t.io.DataSinkDTO
 import de.jpaw.annotations.AddLogger
-import de.jpaw.bonaparte.pojos.api.media.MediaType
-import de.jpaw.bonaparte.pojos.api.media.MediaXType
+import com.arvatosystems.t9t.api.media.MediaType
+import com.arvatosystems.t9t.api.media.MediaXType
 import java.util.UUID
 import org.eclipse.xtend.lib.annotations.Data
 

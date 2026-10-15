@@ -23,7 +23,6 @@ import jakarta.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Startup;
@@ -33,6 +32,7 @@ import de.jpaw.util.ExceptionUtil;
 import com.arvatosystems.t9t.base.services.impl.ListenerConfigCache;
 import com.arvatosystems.t9t.event.jpa.entities.ListenerConfigEntity;
 import com.arvatosystems.t9t.event.services.ListenerConfigConverter;
+import com.arvatosystems.t9t.jpa.refs.PersistenceProviderJPA;
 
 @Startup(55334)
 public class ListenerConfigLoader implements StartupOnly {

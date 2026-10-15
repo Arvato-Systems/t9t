@@ -21,14 +21,14 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
 
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.auth.JwtInfo;
+import com.arvatosystems.t9t.api.auth.Permissionset;
+import com.arvatosystems.t9t.api.auth.UserLogLevelType;
 import com.arvatosystems.t9t.auth.SessionDTO;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;

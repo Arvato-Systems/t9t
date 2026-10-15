@@ -17,8 +17,7 @@ package com.arvatosystems.t9t.base;
 
 import java.util.EnumSet;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
-
+import com.arvatosystems.t9t.api.OperationType;
 import com.arvatosystems.t9t.base.types.NoKey;
 
 /**

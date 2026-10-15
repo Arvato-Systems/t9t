@@ -26,10 +26,10 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.auth.JwtInfo;
 import com.arvatosystems.t9t.auth.jwt.IJWT;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;

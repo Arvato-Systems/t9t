@@ -17,11 +17,12 @@ package com.arvatosystems.t9t.zkui.fixedFilters;
 
 import java.time.LocalDate;
 
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.DayFilter;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.api.DayFilter;
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.SearchFilters;
 
 @Singleton
 @Named("jan2Year2000")

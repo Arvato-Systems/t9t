@@ -26,14 +26,14 @@ import org.slf4j.MDC;
 
 import de.jpaw.bonaparte.core.DataConverter;
 import de.jpaw.bonaparte.core.ObjectValidationException;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
 
+import com.arvatosystems.t9t.api.auth.JwtInfo;
+import com.arvatosystems.t9t.api.auth.UserLogLevelType;
 import com.arvatosystems.t9t.base.LogSanitizer;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.MutableInt;

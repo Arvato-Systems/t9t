@@ -35,18 +35,17 @@ import com.google.common.collect.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.OperationTypes;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ByteArray;
 
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
+import com.arvatosystems.t9t.api.DataWithTrackingS;
+import com.arvatosystems.t9t.api.OperationTypes;
+import com.arvatosystems.t9t.api.auth.JwtInfo;
+import com.arvatosystems.t9t.api.auth.Permissionset;
+import com.arvatosystems.t9t.api.auth.UserLogLevelType;
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.OidClaims;
@@ -91,6 +90,7 @@ import com.arvatosystems.t9t.base.services.ISimpleEmailAddressNormalizer;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.OidConfiguration;
+import com.arvatosystems.t9t.jpa.refs.PersistenceProviderJPA;
 
 @Singleton
 public class AuthPersistenceAccess implements IAuthPersistenceAccess {

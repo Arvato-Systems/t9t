@@ -27,7 +27,7 @@ import com.arvatosystems.t9t.ssm.SchedulerSetupKey
 import com.arvatosystems.t9t.ssm.SchedulerSetupRecurrenceType
 import com.arvatosystems.t9t.ssm.request.ClearAllRequest
 import com.arvatosystems.t9t.ssm.request.SchedulerSetupCrudRequest
-import de.jpaw.bonaparte.pojos.api.OperationType
+import com.arvatosystems.t9t.api.OperationType
 import org.junit.jupiter.api.Test
 
 class ITScheduler {

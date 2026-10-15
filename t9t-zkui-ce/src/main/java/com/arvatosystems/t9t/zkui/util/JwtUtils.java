@@ -19,8 +19,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-import de.jpaw.bonaparte.api.auth.JwtConverter;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import com.arvatosystems.t9t.api.auth.JwtConverter;
+import com.arvatosystems.t9t.api.auth.JwtInfo;
 
 public final class JwtUtils {
 

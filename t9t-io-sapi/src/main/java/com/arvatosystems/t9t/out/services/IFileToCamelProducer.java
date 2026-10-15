@@ -15,8 +15,7 @@
  */
 package com.arvatosystems.t9t.out.services;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-
+import com.arvatosystems.t9t.api.media.MediaTypeDescriptor;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 
 public interface IFileToCamelProducer {

@@ -19,8 +19,7 @@ import java.util.List;
 
 import org.zkoss.zk.ui.Component;
 
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-
+import com.arvatosystems.t9t.api.SearchFilter;
 import com.arvatosystems.t9t.base.ui.UIFilterType;
 
 /** Interface for the dynamically created fields. */

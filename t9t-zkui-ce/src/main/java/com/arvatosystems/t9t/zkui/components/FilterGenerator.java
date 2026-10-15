@@ -15,10 +15,11 @@
  */
 package com.arvatosystems.t9t.zkui.components;
 
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
+
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.SearchFilters;
+import com.arvatosystems.t9t.apiw.Ref;
 
 public final class FilterGenerator {
     private FilterGenerator() { }

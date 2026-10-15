@@ -23,13 +23,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import de.jpaw.bonaparte.pojos.api.AndFilter;
-import de.jpaw.bonaparte.pojos.api.NotFilter;
-import de.jpaw.bonaparte.pojos.api.OrFilter;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.AndFilter;
+import com.arvatosystems.t9t.api.NotFilter;
+import com.arvatosystems.t9t.api.OrFilter;
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.StringFilter;
 import com.arvatosystems.t9t.base.services.ISearchTools;
 
 public class QueueToSearchFilterTest {

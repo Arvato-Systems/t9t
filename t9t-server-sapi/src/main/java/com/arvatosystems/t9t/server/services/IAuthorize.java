@@ -17,10 +17,9 @@ package com.arvatosystems.t9t.server.services;
 
 import java.util.List;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.auth.JwtInfo;
+import com.arvatosystems.t9t.api.auth.Permissionset;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.base.auth.PermissionType;
 

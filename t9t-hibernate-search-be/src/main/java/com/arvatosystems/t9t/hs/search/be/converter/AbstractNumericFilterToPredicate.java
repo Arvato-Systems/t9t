@@ -23,8 +23,7 @@ import jakarta.annotation.Nullable;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.SearchPredicateFactory;
 
-import de.jpaw.bonaparte.pojos.api.FieldFilter;
-
+import com.arvatosystems.t9t.api.FieldFilter;
 import com.arvatosystems.t9t.base.T9tUtil;
 
 public abstract class AbstractNumericFilterToPredicate<FILTER extends FieldFilter, FIELD_TYPE extends Number> implements ISearchFilterToPredicate<FILTER> {

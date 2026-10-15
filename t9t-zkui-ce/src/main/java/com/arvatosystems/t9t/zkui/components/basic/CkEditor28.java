@@ -40,19 +40,19 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vbox;
 
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.Multiplicity;
 import de.jpaw.bonaparte.util.FieldGetter;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ByteArray;
 
+import com.arvatosystems.t9t.api.TrackingBase;
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaType;
+import com.arvatosystems.t9t.api.media.MediaTypeDescriptor;
+import com.arvatosystems.t9t.api.media.MediaTypeInfo;
+import com.arvatosystems.t9t.api.media.MediaXType;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.FieldMappers;
 import com.arvatosystems.t9t.zkui.components.IDataFieldFactory;

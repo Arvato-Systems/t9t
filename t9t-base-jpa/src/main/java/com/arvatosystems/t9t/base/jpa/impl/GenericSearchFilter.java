@@ -27,11 +27,11 @@ import jakarta.persistence.criteria.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.FieldFilter;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.dp.Specializes;
 
+import com.arvatosystems.t9t.api.FieldFilter;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.search.EnumFilter;
 import com.arvatosystems.t9t.base.search.EnumsetFilter;

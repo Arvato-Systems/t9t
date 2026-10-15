@@ -26,15 +26,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import de.jpaw.bonaparte.pojos.api.AndFilter;
-import de.jpaw.bonaparte.pojos.api.DayFilter;
-import de.jpaw.bonaparte.pojos.api.DecimalFilter;
-import de.jpaw.bonaparte.pojos.api.NotFilter;
-import de.jpaw.bonaparte.pojos.api.NullFilter;
-import de.jpaw.bonaparte.pojos.api.OrFilter;
-import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.AndFilter;
+import com.arvatosystems.t9t.api.DayFilter;
+import com.arvatosystems.t9t.api.DecimalFilter;
+import com.arvatosystems.t9t.api.NotFilter;
+import com.arvatosystems.t9t.api.NullFilter;
+import com.arvatosystems.t9t.api.OrFilter;
+import com.arvatosystems.t9t.api.StringFilter;
 import com.arvatosystems.t9t.base.search.EnumFilter;
 import com.arvatosystems.t9t.base.search.XenumFilter;
 import com.arvatosystems.t9t.base.services.IEnumResolver;

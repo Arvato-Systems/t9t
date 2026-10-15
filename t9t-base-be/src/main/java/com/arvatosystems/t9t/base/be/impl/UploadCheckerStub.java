@@ -15,10 +15,10 @@
  */
 package com.arvatosystems.t9t.base.be.impl;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.media.MediaData;
 import com.arvatosystems.t9t.base.IUploadChecker;
 
 @Singleton

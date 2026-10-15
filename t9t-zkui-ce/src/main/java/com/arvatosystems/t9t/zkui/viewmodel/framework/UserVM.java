@@ -25,11 +25,11 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.DataWithTracking;
+import com.arvatosystems.t9t.api.DataWithTrackingS;
+import com.arvatosystems.t9t.api.OperationType;
 import com.arvatosystems.t9t.auth.PermissionsDTO;
 import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.auth.UserDTO;

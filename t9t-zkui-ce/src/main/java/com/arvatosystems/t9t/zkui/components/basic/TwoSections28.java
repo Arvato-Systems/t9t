@@ -29,13 +29,13 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Vlayout;
 
-import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.SearchFilters;
+import com.arvatosystems.t9t.api.TrackingBase;
+import com.arvatosystems.t9t.api.auth.Permissionset;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.zkui.components.EventDataSelect28;
 import com.arvatosystems.t9t.zkui.components.IDataSelectReceiver;

@@ -16,12 +16,12 @@
 package com.arvatosystems.t9t.zkui.context.ai;
 
 import de.jpaw.bonaparte.core.JsonComposerPrettyPrint;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
 import com.arvatosystems.t9t.ai.AiChatLogDTO;
+import com.arvatosystems.t9t.api.DataWithTracking;
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.misc.Info;
 import com.arvatosystems.t9t.zkui.components.basic.Grid28;
 import com.arvatosystems.t9t.zkui.components.basic.ModalWindows;

@@ -17,9 +17,8 @@ package com.arvatosystems.t9t.zkui.viewmodel.framework;
 
 import org.zkoss.bind.annotation.Init;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-
+import com.arvatosystems.t9t.api.DataWithTracking;
+import com.arvatosystems.t9t.api.auth.Permissionset;
 import com.arvatosystems.t9t.auth.PermissionsDTO;
 import com.arvatosystems.t9t.auth.TenantDTO;
 import com.arvatosystems.t9t.auth.request.TenantCrudRequest;

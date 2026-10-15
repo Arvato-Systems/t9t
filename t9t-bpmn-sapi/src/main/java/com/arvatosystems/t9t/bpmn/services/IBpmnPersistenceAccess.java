@@ -22,8 +22,7 @@ import java.util.List;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-
+import com.arvatosystems.t9t.api.DataWithTrackingS;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.bpmn.ProcessDefinitionDTO;

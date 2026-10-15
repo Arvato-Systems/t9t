@@ -25,12 +25,12 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 
+import com.arvatosystems.t9t.api.DataWithTrackingS;
+import com.arvatosystems.t9t.api.SearchFilters;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.entities.FullTracking;

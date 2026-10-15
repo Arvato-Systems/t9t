@@ -17,9 +17,8 @@ package com.arvatosystems.t9t.schemaLoader.mavenPlugin.config;
 
 import java.util.List;
 
-import org.apache.maven.plugins.annotations.Parameter;
-
 import edu.emory.mathcs.backport.java.util.Collections;
+import org.apache.maven.plugins.annotations.Parameter;
 
 public class Migration {
 

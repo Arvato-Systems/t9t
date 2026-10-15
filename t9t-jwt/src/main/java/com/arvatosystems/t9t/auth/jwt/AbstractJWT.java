@@ -36,9 +36,9 @@ import jakarta.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.api.auth.JwtConverter;
-import de.jpaw.bonaparte.pojos.api.auth.JwtAlg;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import com.arvatosystems.t9t.api.auth.JwtAlg;
+import com.arvatosystems.t9t.api.auth.JwtConverter;
+import com.arvatosystems.t9t.api.auth.JwtInfo;
 
 /**
  * Abstract base class for JWT implementations, providing shared utility methods and constants.

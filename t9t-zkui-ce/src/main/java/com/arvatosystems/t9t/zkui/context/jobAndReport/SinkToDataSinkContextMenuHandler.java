@@ -15,11 +15,11 @@
  */
 package com.arvatosystems.t9t.zkui.context.jobAndReport;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.DataWithTracking;
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.io.SinkDTO;
 import com.arvatosystems.t9t.zkui.components.basic.Grid28;
 import com.arvatosystems.t9t.zkui.context.IGridContextMenu;

@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.zkui.fixedFilters;
 
 import java.util.function.Supplier;
 
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import com.arvatosystems.t9t.api.SearchFilter;
 
 /** Filters which can be applied to grids or dropdowns.
  * Implementations are selected by @Named qualifier. */

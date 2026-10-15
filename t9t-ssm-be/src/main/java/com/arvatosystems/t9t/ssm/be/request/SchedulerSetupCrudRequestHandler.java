@@ -23,11 +23,11 @@ import com.google.common.base.Joiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.auth.JwtInfo;
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.PermissionsDTO;
 import com.arvatosystems.t9t.auth.UserKey;

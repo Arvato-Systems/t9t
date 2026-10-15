@@ -26,11 +26,11 @@ import com.google.zxing.common.BitMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.api.media.MediaTypes;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ByteArray;
 
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaTypes;
 import com.arvatosystems.t9t.barcode.api.FlipMode;
 import com.arvatosystems.t9t.doc.services.IImageCustomizer;
 import com.arvatosystems.t9t.doc.services.IImageGenerator;

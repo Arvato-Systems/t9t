@@ -25,10 +25,10 @@ import com.arvatosystems.t9t.io.request.ImportFromString
 import com.arvatosystems.t9t.io.request.ImportInputSessionRequest
 import com.arvatosystems.t9t.io.request.SinkSearchRequest
 import de.jpaw.annotations.AddLogger
-import de.jpaw.bonaparte.api.SearchFilters
-import de.jpaw.bonaparte.api.media.MediaDataUtil
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS
-import de.jpaw.bonaparte.pojos.api.SortColumn
+import com.arvatosystems.t9t.api.SearchFilters
+import com.arvatosystems.t9t.api.media.MediaDataUtil
+import com.arvatosystems.t9t.api.DataWithTrackingS
+import com.arvatosystems.t9t.api.SortColumn
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.util.List

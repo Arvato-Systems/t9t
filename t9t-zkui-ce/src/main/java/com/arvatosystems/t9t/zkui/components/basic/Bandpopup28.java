@@ -29,9 +29,9 @@ import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Bandpopup;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.zkui.components.EventDataSelect28;
 import com.arvatosystems.t9t.zkui.components.IGridIdOwner;

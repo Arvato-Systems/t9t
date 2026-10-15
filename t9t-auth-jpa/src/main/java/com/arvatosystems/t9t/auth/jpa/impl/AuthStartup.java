@@ -22,14 +22,13 @@ import jakarta.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
 
+import com.arvatosystems.t9t.api.auth.Permissionset;
+import com.arvatosystems.t9t.api.auth.UserLogLevelType;
 import com.arvatosystems.t9t.auth.PasswordKey;
 import com.arvatosystems.t9t.auth.PasswordUtil;
 import com.arvatosystems.t9t.auth.PermissionsDTO;
@@ -43,6 +42,7 @@ import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.event.InvalidateCacheEvent;
 import com.arvatosystems.t9t.base.services.T9tInternalConstants;
 import com.arvatosystems.t9t.event.jpa.entities.SubscriberConfigEntity;
+import com.arvatosystems.t9t.jpa.refs.PersistenceProviderJPA;
 import com.arvatosystems.t9t.server.services.IAuthorize;
 
 @Startup(50010)

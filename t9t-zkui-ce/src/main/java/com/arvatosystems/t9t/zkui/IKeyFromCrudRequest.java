@@ -16,9 +16,9 @@
 package com.arvatosystems.t9t.zkui;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.crud.CrudAnyKeyRequest;
 
 public interface IKeyFromCrudRequest<DTO extends BonaPortable, TRACKING extends TrackingBase, REQ extends CrudAnyKeyRequest<DTO, TRACKING>> {

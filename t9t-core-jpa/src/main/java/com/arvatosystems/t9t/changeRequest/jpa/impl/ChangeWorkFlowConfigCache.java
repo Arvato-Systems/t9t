@@ -19,10 +19,10 @@ import java.util.Map;
 
 import jakarta.annotation.Nonnull;
 
-import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.apiw.Ref;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractConfigCache;
 import com.arvatosystems.t9t.changeRequest.ChangeWorkFlowConfigDTO;

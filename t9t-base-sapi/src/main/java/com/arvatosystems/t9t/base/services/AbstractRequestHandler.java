@@ -16,8 +16,8 @@
 package com.arvatosystems.t9t.base.services;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.OperationType;
 
+import com.arvatosystems.t9t.api.OperationType;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;

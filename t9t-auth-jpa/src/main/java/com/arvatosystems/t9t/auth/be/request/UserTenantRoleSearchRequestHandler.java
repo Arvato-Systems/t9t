@@ -15,10 +15,10 @@
  */
 package com.arvatosystems.t9t.auth.be.request;
 
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.SearchFilters;
+import com.arvatosystems.t9t.api.StringFilter;
 import com.arvatosystems.t9t.auth.UserTenantRoleDTO;
 import com.arvatosystems.t9t.auth.jpa.mapping.IUserTenantRoleDTOMapper;
 import com.arvatosystems.t9t.auth.jpa.persistence.IUserTenantRoleEntityResolver;

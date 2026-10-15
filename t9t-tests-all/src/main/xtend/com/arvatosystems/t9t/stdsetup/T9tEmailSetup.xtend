@@ -27,10 +27,10 @@ import com.arvatosystems.t9t.doc.DocEmailReceiverDTO
 import com.arvatosystems.t9t.doc.DocTemplateDTO
 import com.arvatosystems.t9t.doc.api.TemplateType
 import de.jpaw.annotations.AddLogger
-import de.jpaw.bonaparte.pojos.api.OperationType
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset
-import de.jpaw.bonaparte.pojos.api.media.MediaType
-import de.jpaw.bonaparte.pojos.api.media.MediaXType
+import com.arvatosystems.t9t.api.OperationType
+import com.arvatosystems.t9t.api.auth.Permissionset
+import com.arvatosystems.t9t.api.media.MediaType
+import com.arvatosystems.t9t.api.media.MediaXType
 import java.util.UUID
 import org.eclipse.xtend.lib.annotations.Data
 

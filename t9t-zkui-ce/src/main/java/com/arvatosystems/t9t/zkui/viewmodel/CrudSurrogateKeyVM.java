@@ -19,9 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Init;
 
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
-
+import com.arvatosystems.t9t.api.TrackingBase;
+import com.arvatosystems.t9t.apiw.Ref;
 import com.arvatosystems.t9t.base.crud.CrudAnyKeyResponse;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyRequest;
 

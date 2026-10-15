@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.auth.tests.setup
 
 import com.arvatosystems.t9t.base.ITestConnection
-import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType
+import com.arvatosystems.t9t.api.auth.UserLogLevelType
 
 // same as the superclass, but with reduced logging
 class SetupUserTenantRoleForBenchmarks extends SetupUserTenantRole {

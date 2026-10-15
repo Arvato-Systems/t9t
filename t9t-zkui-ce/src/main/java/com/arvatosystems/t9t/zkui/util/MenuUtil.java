@@ -22,9 +22,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.auth.Permissionset;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.viewmodel.beans.Navi;
 

@@ -23,12 +23,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.JsonComposer;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.NoTracking;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.DataWithTracking;
+import com.arvatosystems.t9t.api.NoTracking;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.msglog.MessageDTO;
 import com.arvatosystems.t9t.msglog.request.RetrieveParametersRequest;

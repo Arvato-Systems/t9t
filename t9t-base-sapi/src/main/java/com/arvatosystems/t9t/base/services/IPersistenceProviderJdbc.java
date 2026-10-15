@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.base.services;
 
 import java.sql.Connection;
 
-import de.jpaw.bonaparte.refs.PersistenceProvider;
+import com.arvatosystems.t9t.refs.PersistenceProvider;
 
 /**
  * The implementation of this class sits in t9t-base-jdbc.

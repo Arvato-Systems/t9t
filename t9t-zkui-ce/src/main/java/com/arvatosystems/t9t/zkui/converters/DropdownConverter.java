@@ -22,8 +22,7 @@ import org.zkoss.bind.BindContext;
 import org.zkoss.bind.Converter;
 import org.zkoss.zul.Comboitem;
 
-import de.jpaw.bonaparte.pojos.apiw.Ref;
-
+import com.arvatosystems.t9t.apiw.Ref;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28Db;
 

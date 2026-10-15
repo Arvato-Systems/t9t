@@ -26,8 +26,8 @@ import com.arvatosystems.t9t.io.Text
 import com.arvatosystems.t9t.io.request.WriteRecordsToDataSinkRequest
 import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.core.BonaPortable
-import de.jpaw.bonaparte.pojos.api.media.MediaType
-import de.jpaw.bonaparte.pojos.api.media.MediaXType
+import com.arvatosystems.t9t.api.media.MediaType
+import com.arvatosystems.t9t.api.media.MediaXType
 import java.util.ArrayList
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
@@ -42,7 +42,7 @@ import java.util.UUID
 import com.arvatosystems.t9t.auth.ApiKeyDTO
 import com.arvatosystems.t9t.auth.UserKey
 import com.arvatosystems.t9t.auth.PermissionsDTO
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset
+import com.arvatosystems.t9t.api.auth.Permissionset
 
 @AddLogger
 class ResponseTest {

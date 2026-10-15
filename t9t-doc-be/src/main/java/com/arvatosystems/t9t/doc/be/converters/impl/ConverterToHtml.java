@@ -17,10 +17,11 @@ package com.arvatosystems.t9t.doc.be.converters.impl;
 
 import com.google.common.html.HtmlEscapers;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaType;
 
 @Singleton
 @Named("HTML")

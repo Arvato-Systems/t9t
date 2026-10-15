@@ -29,12 +29,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.util.FieldGetter;
 import de.jpaw.bonaparte.util.FreezeTools;
 
+import com.arvatosystems.t9t.api.TrackingBase;
+import com.arvatosystems.t9t.apiw.Ref;
 import com.arvatosystems.t9t.base.entities.InternalTenantId;
 import com.arvatosystems.t9t.base.misc.Variant;
 

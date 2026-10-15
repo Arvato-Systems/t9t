@@ -24,8 +24,8 @@ import com.arvatosystems.t9t.io.DataSinkCategoryType
 import com.arvatosystems.t9t.io.DataSinkCategoryXType
 import com.arvatosystems.t9t.io.DataSinkDTO
 import de.jpaw.annotations.AddLogger
-import de.jpaw.bonaparte.pojos.api.media.MediaType
-import de.jpaw.bonaparte.pojos.api.media.MediaXType
+import com.arvatosystems.t9t.api.media.MediaType
+import com.arvatosystems.t9t.api.media.MediaXType
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 

@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.embedded.tests.simple
 import com.arvatosystems.t9t.base.search.GenericTextSearchRequest
 import com.arvatosystems.t9t.base.search.GenericTextSearchResponse
 import com.arvatosystems.t9t.embedded.connect.Connection
-import de.jpaw.bonaparte.api.SearchFilters
+import com.arvatosystems.t9t.api.SearchFilters
 import java.util.UUID
 import org.junit.jupiter.api.Test
 

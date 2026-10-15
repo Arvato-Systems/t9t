@@ -16,7 +16,8 @@
 package com.arvatosystems.t9t.zkui.components;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
+
+import com.arvatosystems.t9t.api.SearchFilter;
 
 /** Implementations are singletons, injected by qualifier. */
 public interface IFilterGenerator {

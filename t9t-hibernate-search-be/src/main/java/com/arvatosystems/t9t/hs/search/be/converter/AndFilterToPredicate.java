@@ -22,11 +22,11 @@ import org.hibernate.search.engine.search.predicate.dsl.SearchPredicateFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.AndFilter;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.AndFilter;
+import com.arvatosystems.t9t.api.SearchFilter;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.hs.search.be.HibernateSearchHelper;
 

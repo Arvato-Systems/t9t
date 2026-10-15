@@ -17,9 +17,9 @@ package com.arvatosystems.t9t.zkui.components.grid;
 
 import java.util.List;
 
-import de.jpaw.bonaparte.pojos.api.AggregateColumn;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 
+import com.arvatosystems.t9t.api.AggregateColumn;
 import com.arvatosystems.t9t.base.ui.UIFilter;
 import com.arvatosystems.t9t.base.uiprefs.UILeanGridPreferences;
 

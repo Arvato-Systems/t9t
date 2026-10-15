@@ -21,15 +21,15 @@ import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaStorageLocation;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import de.jpaw.bonaparte.pojos.api.media.MediaXStorageLocation;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ByteArray;
 
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaStorageLocation;
+import com.arvatosystems.t9t.api.media.MediaTypeDescriptor;
+import com.arvatosystems.t9t.api.media.MediaTypeInfo;
+import com.arvatosystems.t9t.api.media.MediaXStorageLocation;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;

@@ -35,8 +35,8 @@ import org.junit.jupiter.api.Test
 import static extension com.arvatosystems.t9t.misc.extensions.BpmExtensions.*
 import de.jpaw.bonaparte.util.ToStringHelper
 import com.arvatosystems.t9t.bpmn.ProcessExecutionStatusDTO
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS
-import de.jpaw.bonaparte.pojos.api.NoTracking
+import com.arvatosystems.t9t.api.DataWithTrackingS
+import com.arvatosystems.t9t.api.NoTracking
 
 @AddLogger
 class BpmRestartParamsTest {

@@ -20,8 +20,8 @@ import com.arvatosystems.t9t.base.search.ReadAllResponse
 import com.arvatosystems.t9t.bpmn.ProcessExecutionStatusDTO
 import com.arvatosystems.t9t.bpmn.request.ProcessExecutionStatusSearchRequest
 import de.jpaw.annotations.AddLogger
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS
-import de.jpaw.bonaparte.pojos.api.NoTracking
+import com.arvatosystems.t9t.api.DataWithTrackingS
+import com.arvatosystems.t9t.api.NoTracking
 import org.junit.jupiter.api.Assertions
 
 @AddLogger

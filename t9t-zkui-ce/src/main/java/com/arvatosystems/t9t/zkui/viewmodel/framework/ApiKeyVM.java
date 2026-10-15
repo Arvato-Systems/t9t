@@ -22,8 +22,7 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zul.Messagebox;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-
+import com.arvatosystems.t9t.api.DataWithTracking;
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.ApiKeyRef;
 import com.arvatosystems.t9t.auth.PermissionsDTO;

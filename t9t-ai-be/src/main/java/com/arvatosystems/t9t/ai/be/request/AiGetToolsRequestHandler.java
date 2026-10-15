@@ -21,8 +21,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.dp.Jdp;
 
@@ -35,6 +33,8 @@ import com.arvatosystems.t9t.ai.service.AiToolRegistry;
 import com.arvatosystems.t9t.ai.tools.AiToolMediaDataResult;
 import com.arvatosystems.t9t.ai.tools.AiToolNoResult;
 import com.arvatosystems.t9t.ai.tools.AiToolStringResult;
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.auth.Permissionset;
 import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;

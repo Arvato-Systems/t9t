@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.zkui.components;
 
 import org.zkoss.zk.ui.Component;
 
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+import com.arvatosystems.t9t.api.auth.Permissionset;
 
 public interface IPermissionOwner extends Component {
     Permissionset getPermissions();

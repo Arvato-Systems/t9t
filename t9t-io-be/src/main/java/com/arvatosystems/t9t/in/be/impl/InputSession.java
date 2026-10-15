@@ -35,13 +35,13 @@ import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
 import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.bonaparte.core.DataConverter;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.media.MediaType;
 import com.arvatosystems.t9t.base.IInputQueuePartitioner;
 import com.arvatosystems.t9t.base.IStatefulServiceSession;
 import com.arvatosystems.t9t.base.StringTrimmer;

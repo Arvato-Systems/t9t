@@ -37,10 +37,10 @@ import com.google.common.base.Charsets
 import com.google.common.base.MoreObjects
 import com.google.common.io.CharStreams
 import com.google.common.io.Resources
-import de.jpaw.bonaparte.api.media.MediaDataUtil
-import de.jpaw.bonaparte.api.media.MediaTypes
-import de.jpaw.bonaparte.pojos.api.OperationType
-import de.jpaw.bonaparte.pojos.api.media.MediaData
+import com.arvatosystems.t9t.api.media.MediaDataUtil
+import com.arvatosystems.t9t.api.media.MediaTypes
+import com.arvatosystems.t9t.api.OperationType
+import com.arvatosystems.t9t.api.media.MediaData
 import de.jpaw.util.ByteArray
 import java.io.IOException
 import java.io.InputStreamReader

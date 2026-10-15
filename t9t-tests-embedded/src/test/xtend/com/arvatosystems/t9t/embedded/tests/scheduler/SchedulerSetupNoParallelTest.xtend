@@ -29,8 +29,8 @@ import com.arvatosystems.t9t.ssm.SchedulerSetupDTO
 import com.arvatosystems.t9t.ssm.SchedulerSetupRecurrenceType
 import com.arvatosystems.t9t.ssm.request.SchedulerSetupCrudRequest
 import de.jpaw.annotations.AddLogger
-import de.jpaw.bonaparte.api.SearchFilters
-import de.jpaw.bonaparte.pojos.api.OperationType
+import com.arvatosystems.t9t.api.SearchFilters
+import com.arvatosystems.t9t.api.OperationType
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 

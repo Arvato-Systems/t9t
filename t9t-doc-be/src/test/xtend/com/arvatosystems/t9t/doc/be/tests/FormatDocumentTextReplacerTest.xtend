@@ -26,7 +26,7 @@ import com.arvatosystems.t9t.doc.services.IDocPersistenceAccess
 import com.arvatosystems.t9t.doc.services.IDocTextReplacer
 import com.google.common.collect.ImmutableMap
 import de.jpaw.annotations.AddLogger
-import de.jpaw.bonaparte.api.media.MediaTypes
+import com.arvatosystems.t9t.api.media.MediaTypes
 import de.jpaw.dp.Jdp
 import java.time.ZoneId
 import java.util.Map

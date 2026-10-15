@@ -22,13 +22,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.ObjectValidationException;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
 
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.auth.JwtInfo;
+import com.arvatosystems.t9t.api.auth.Permissionset;
 import com.arvatosystems.t9t.auth.jwt.IJWT;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;

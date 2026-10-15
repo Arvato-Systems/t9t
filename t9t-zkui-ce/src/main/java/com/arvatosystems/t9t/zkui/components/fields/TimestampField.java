@@ -21,10 +21,10 @@ import java.util.Date;
 
 import org.zkoss.zul.Datebox;
 
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.TimestampFilter;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.TimestampFilter;
 import com.arvatosystems.t9t.base.ui.UIFilter;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.ApplicationUtil;

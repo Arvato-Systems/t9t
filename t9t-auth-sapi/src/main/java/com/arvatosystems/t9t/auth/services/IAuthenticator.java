@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.auth.services;
 
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import com.arvatosystems.t9t.api.auth.JwtInfo;
 
 /** Interface implemented by classes which can sign a new JWT. */
 public interface IAuthenticator {

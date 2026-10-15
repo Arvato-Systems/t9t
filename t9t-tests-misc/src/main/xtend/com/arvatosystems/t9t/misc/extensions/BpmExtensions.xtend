@@ -25,7 +25,7 @@ import com.arvatosystems.t9t.bpmn.T9tWorkflow
 import com.arvatosystems.t9t.bpmn.T9tWorkflowStepJavaTask
 import com.arvatosystems.t9t.bpmn.request.ProcessDefinitionCrudRequest
 import com.arvatosystems.t9t.io.DataSinkDTO
-import de.jpaw.bonaparte.pojos.api.OperationType
+import com.arvatosystems.t9t.api.OperationType
 import java.util.ArrayList
 import java.util.List
 

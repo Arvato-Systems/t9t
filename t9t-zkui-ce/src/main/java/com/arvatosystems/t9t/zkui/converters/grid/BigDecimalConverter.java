@@ -26,12 +26,12 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.util.BigDecimalTools;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.DataWithTracking;
 import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 
 @Singleton

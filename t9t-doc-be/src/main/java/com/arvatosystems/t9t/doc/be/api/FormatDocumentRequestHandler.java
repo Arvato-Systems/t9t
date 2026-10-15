@@ -17,9 +17,9 @@ package com.arvatosystems.t9t.doc.be.api;
 
 import java.util.HashMap;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.media.MediaData;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.doc.DocComponentDTO;

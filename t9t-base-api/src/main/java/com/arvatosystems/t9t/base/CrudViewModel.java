@@ -17,8 +17,8 @@ package com.arvatosystems.t9t.base;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.crud.CrudAnyKeyRequest;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 

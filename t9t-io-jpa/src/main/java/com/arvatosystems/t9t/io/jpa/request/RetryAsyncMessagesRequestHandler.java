@@ -23,14 +23,14 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.InstantFilter;
-import de.jpaw.bonaparte.pojos.api.IntFilter;
-import de.jpaw.bonaparte.pojos.api.NullFilter;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.InstantFilter;
+import com.arvatosystems.t9t.api.IntFilter;
+import com.arvatosystems.t9t.api.NullFilter;
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.SearchFilters;
+import com.arvatosystems.t9t.api.SortColumn;
 import com.arvatosystems.t9t.base.output.ExportStatusEnum;
 import com.arvatosystems.t9t.base.search.DummySearchCriteria;
 import com.arvatosystems.t9t.base.search.SearchCriteria;

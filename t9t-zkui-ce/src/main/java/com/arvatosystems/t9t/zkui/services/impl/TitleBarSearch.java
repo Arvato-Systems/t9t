@@ -15,11 +15,11 @@
  */
 package com.arvatosystems.t9t.zkui.services.impl;
 
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.SearchFilters;
+import com.arvatosystems.t9t.api.StringFilter;
 import com.arvatosystems.t9t.zkui.services.ITitleBarSearch;
 import com.arvatosystems.t9t.zkui.util.JumpTool;
 

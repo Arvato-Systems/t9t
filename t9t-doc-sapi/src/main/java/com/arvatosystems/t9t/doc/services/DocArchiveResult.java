@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.doc.services;
 
 import jakarta.annotation.Nonnull;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaData;
 
 public record DocArchiveResult(
     @Nonnull Long sinkRef,         // the sink which stores the data

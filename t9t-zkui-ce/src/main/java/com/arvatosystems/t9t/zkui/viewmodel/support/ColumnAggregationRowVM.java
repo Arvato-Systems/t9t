@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.zkui.viewmodel.support;
 
 import java.util.List;
 
-import de.jpaw.bonaparte.pojos.api.AggregateFunctionType;
+import com.arvatosystems.t9t.api.AggregateFunctionType;
 
 public class ColumnAggregationRowVM {
 

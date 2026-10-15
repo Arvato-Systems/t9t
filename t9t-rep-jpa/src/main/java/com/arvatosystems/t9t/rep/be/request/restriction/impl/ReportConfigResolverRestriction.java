@@ -20,11 +20,11 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.auth.Permissionset;
 import com.arvatosystems.t9t.authz.api.QueryPermissionsRequest;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;

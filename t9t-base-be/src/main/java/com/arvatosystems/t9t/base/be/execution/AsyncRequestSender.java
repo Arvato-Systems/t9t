@@ -18,19 +18,19 @@ package com.arvatosystems.t9t.base.be.execution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.api.media.MediaTypes;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaparteJsonEscaper;
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
-import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaType;
+import com.arvatosystems.t9t.api.media.MediaTypes;
+import com.arvatosystems.t9t.api.media.MediaXType;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.api.ServiceRequestHeader;

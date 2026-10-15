@@ -15,8 +15,7 @@
  */
 package com.arvatosystems.t9t.base.jpa.updater;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
-
+import com.arvatosystems.t9t.api.OperationType;
 import com.arvatosystems.t9t.base.crud.CrudAnyKeyRequest;
 import com.arvatosystems.t9t.base.crud.CrudAnyKeyResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;

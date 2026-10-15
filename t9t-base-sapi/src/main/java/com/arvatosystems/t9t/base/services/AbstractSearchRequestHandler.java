@@ -15,8 +15,7 @@
  */
 package com.arvatosystems.t9t.base.services;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
-
+import com.arvatosystems.t9t.api.OperationType;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 
 public abstract class AbstractSearchRequestHandler<REQUEST extends SearchCriteria> extends AbstractRequestHandler<REQUEST> {

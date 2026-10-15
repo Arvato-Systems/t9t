@@ -19,10 +19,10 @@ import java.math.BigDecimal;
 
 import org.zkoss.zul.Decimalbox;
 
-import de.jpaw.bonaparte.pojos.api.DecimalFilter;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 
+import com.arvatosystems.t9t.api.DecimalFilter;
+import com.arvatosystems.t9t.api.SearchFilter;
 import com.arvatosystems.t9t.base.ui.UIFilter;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 

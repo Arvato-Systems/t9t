@@ -22,9 +22,9 @@ import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.CSVConfiguration;
 import de.jpaw.bonaparte.core.StringCSVParser;
-import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.OperationType;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;

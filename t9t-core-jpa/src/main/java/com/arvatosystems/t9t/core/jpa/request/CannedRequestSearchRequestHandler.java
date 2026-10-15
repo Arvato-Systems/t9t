@@ -15,9 +15,9 @@
  */
 package com.arvatosystems.t9t.core.jpa.request;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.DataWithTrackingS;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;

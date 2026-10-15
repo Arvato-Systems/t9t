@@ -25,8 +25,8 @@ import com.arvatosystems.t9t.io.request.AsyncQueueCrudRequest
 import com.arvatosystems.t9t.io.request.GetQueueStatusRequest
 import com.arvatosystems.t9t.io.request.GetQueueStatusResponse
 import com.arvatosystems.t9t.io.request.PerformAsyncRequest
-import de.jpaw.bonaparte.api.media.MediaTypes
-import de.jpaw.bonaparte.pojos.api.OperationType
+import com.arvatosystems.t9t.api.media.MediaTypes
+import com.arvatosystems.t9t.api.OperationType
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 

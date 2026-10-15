@@ -15,12 +15,12 @@
  */
 package com.arvatosystems.t9t.zkui.context.monitoring;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.DataWithTracking;
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.msglog.MessageDTO;
 import com.arvatosystems.t9t.zkui.components.basic.Grid28;

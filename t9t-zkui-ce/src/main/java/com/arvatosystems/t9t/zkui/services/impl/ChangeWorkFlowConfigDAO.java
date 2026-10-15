@@ -24,11 +24,11 @@ import jakarta.annotation.Nonnull;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.DataWithTracking;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.changeRequest.ChangeWorkFlowConfigDTO;

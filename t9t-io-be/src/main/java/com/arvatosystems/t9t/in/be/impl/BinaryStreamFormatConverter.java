@@ -18,11 +18,11 @@ package com.arvatosystems.t9t.in.be.impl;
 import java.io.IOException;
 import java.io.InputStream;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
 import de.jpaw.util.ByteArray;
 
+import com.arvatosystems.t9t.api.media.MediaXType;
 import com.arvatosystems.t9t.io.BinaryImportDTO;
 
 /**

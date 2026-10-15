@@ -25,9 +25,9 @@ import com.arvatosystems.t9t.doc.services.IDocPersistenceAccess
 import com.arvatosystems.t9t.translation.services.ITranslationProvider
 import com.google.common.collect.ImmutableMap
 import de.jpaw.annotations.AddLogger
-import de.jpaw.bonaparte.api.media.MediaTypes
+import com.arvatosystems.t9t.api.media.MediaTypes
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum
-import de.jpaw.bonaparte.pojos.api.media.MediaData
+import com.arvatosystems.t9t.api.media.MediaData
 import de.jpaw.dp.Jdp
 import java.util.List
 import java.util.Locale

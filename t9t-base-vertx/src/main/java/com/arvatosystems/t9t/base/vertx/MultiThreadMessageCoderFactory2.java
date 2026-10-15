@@ -15,17 +15,18 @@
  */
 package com.arvatosystems.t9t.base.vertx;
 
-import de.jpaw.bonaparte.api.codecs.IMessageCoderFactory;
-import de.jpaw.bonaparte.api.codecs.IMessageDecoder;
-import de.jpaw.bonaparte.api.codecs.IMessageEncoder;
-import de.jpaw.bonaparte.api.codecs.impl.BonaparteRecordDecoder;
-import de.jpaw.bonaparte.api.codecs.impl.BonaparteRecordEncoder;
-import de.jpaw.bonaparte.api.codecs.impl.CompactRecordDecoder;
-import de.jpaw.bonaparte.api.codecs.impl.CompactRecordEncoder;
-import de.jpaw.bonaparte.api.codecs.impl.JsonDecoder;
-import de.jpaw.bonaparte.api.codecs.impl.JsonEncoder;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MimeTypes;
+
+import com.arvatosystems.t9t.api.codecs.IMessageCoderFactory;
+import com.arvatosystems.t9t.api.codecs.IMessageDecoder;
+import com.arvatosystems.t9t.api.codecs.IMessageEncoder;
+import com.arvatosystems.t9t.api.codecs.impl.BonaparteRecordDecoder;
+import com.arvatosystems.t9t.api.codecs.impl.BonaparteRecordEncoder;
+import com.arvatosystems.t9t.api.codecs.impl.CompactRecordDecoder;
+import com.arvatosystems.t9t.api.codecs.impl.CompactRecordEncoder;
+import com.arvatosystems.t9t.api.codecs.impl.JsonDecoder;
+import com.arvatosystems.t9t.api.codecs.impl.JsonEncoder;
 
 // the factory becomes multithreaded by just avoiding the caching.
 public class MultiThreadMessageCoderFactory2<D extends BonaPortable, E extends BonaPortable> implements IMessageCoderFactory<D, E, byte[]> {

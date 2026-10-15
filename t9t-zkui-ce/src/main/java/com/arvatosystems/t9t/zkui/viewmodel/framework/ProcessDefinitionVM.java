@@ -37,10 +37,10 @@ import org.zkoss.zul.Messagebox;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.JsonComposerPrettyPrint;
 import de.jpaw.bonaparte.core.MapParser;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 import de.jpaw.json.JsonParser;
 import de.jpaw.util.ByteArray;
 
+import com.arvatosystems.t9t.api.DataWithTracking;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.misc.Info;
 import com.arvatosystems.t9t.bpmn.ProcessDefinitionDTO;

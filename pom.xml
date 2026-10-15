@@ -121,7 +121,7 @@
         <xtext-maven-plugin.version>${xtext.version}</xtext-maven-plugin.version>
         <jdt.version>3.46.0</jdt.version>
 
-        <bonaparte-plugin.version>6.6.2</bonaparte-plugin.version>
+        <bonaparte-plugin.version>7.0.2</bonaparte-plugin.version>
         <license-plugin.version>5.1.2</license-plugin.version>
         <cyclonedx-maven-plugin.version>2.9.3</cyclonedx-maven-plugin.version>
 
@@ -945,6 +945,12 @@
                 <module>schema-loader-cmdline</module>
                 <module>schema-loader-maven-plugin</module>
 
+                <module>t9t-api</module>
+                <module>t9t-api-auth</module>
+                <module>t9t-api-media</module>
+                <module>t9t-refs</module>
+                <module>t9t-persistence-refs</module>
+
                 <module>t9t-annotations-api</module>
                 <module>t9t-cfg-api</module>
                 <module>t9t-base-api</module>
@@ -1208,6 +1214,12 @@
             </build>
 
             <modules>
+                <module>t9t-api</module>
+                <module>t9t-api-auth</module>
+            <!--    <module>t9t-api-media</module>  -->
+                <module>t9t-refs</module>
+                <module>t9t-persistence-refs</module>
+
                 <module>t9t-annotations-api</module>
                 <module>t9t-cfg-api</module>
                 <module>t9t-base-api</module>

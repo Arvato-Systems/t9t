@@ -34,12 +34,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.TimeZones;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
 
+import com.arvatosystems.t9t.api.OperationType;
 import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.UserKey;

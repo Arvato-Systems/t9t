@@ -15,6 +15,19 @@
  */
 package com.arvatosystems.t9t.schemaLoader.mavenPlugin;
 
+import static org.apache.commons.lang3.StringUtils.startsWithIgnoreCase;
+
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.List;
+
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+
 import com.arvatosystems.t9t.schemaLoader.SchemaLoader;
 import com.arvatosystems.t9t.schemaLoader.config.SchemaLoaderConfiguration;
 import com.arvatosystems.t9t.schemaLoader.config.SchemaLoaderConfiguration.SchemaLoaderAction;
@@ -23,18 +36,6 @@ import com.arvatosystems.t9t.schemaLoader.mavenPlugin.config.Installation;
 import com.arvatosystems.t9t.schemaLoader.mavenPlugin.config.Migration;
 import com.arvatosystems.t9t.schemaLoader.mavenPlugin.config.SqlArtifact;
 import com.arvatosystems.t9t.schemaLoader.mavenPlugin.helper.SqlDependencyHelper;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
-
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.List;
-
-import static org.apache.commons.lang3.StringUtils.startsWithIgnoreCase;
 
 public abstract class AbstractSchemaLoaderMojo extends AbstractMojo {
 

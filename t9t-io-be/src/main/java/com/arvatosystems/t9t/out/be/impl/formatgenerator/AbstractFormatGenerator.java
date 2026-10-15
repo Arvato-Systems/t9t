@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 
+import com.arvatosystems.t9t.api.media.MediaXType;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.io.DataSinkDTO;

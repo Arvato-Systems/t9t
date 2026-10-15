@@ -17,7 +17,6 @@ package com.arvatosystems.t9t.ai.jpa.request;
 
 import jakarta.annotation.Nonnull;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.ai.AiAssistantDTO;
@@ -29,6 +28,7 @@ import com.arvatosystems.t9t.ai.jpa.mapping.IAiAssistantDTOMapper;
 import com.arvatosystems.t9t.ai.jpa.persistence.IAiAssistantEntityResolver;
 import com.arvatosystems.t9t.ai.request.AiAssistantCrudRequest;
 import com.arvatosystems.t9t.ai.service.IAiChatService;
+import com.arvatosystems.t9t.api.OperationType;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;

@@ -27,9 +27,9 @@ import com.google.zxing.oned.UPCAWriter;
 import com.google.zxing.pdf417.PDF417Writer;
 import com.google.zxing.qrcode.QRCodeWriter;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.media.MediaData;
 import com.arvatosystems.t9t.barcode.api.BarcodeFormat;
 import com.arvatosystems.t9t.doc.services.IBarcodeGenerator;
 import com.arvatosystems.t9t.doc.services.ImageParameter;

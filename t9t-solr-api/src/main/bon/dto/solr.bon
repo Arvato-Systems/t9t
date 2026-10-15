@@ -16,7 +16,7 @@
 import api.*
 import apiw.*
 import api.media.*
-import de.jpaw.bonaparte.api.*
+import com.arvatosystems.t9t.api.*
 import t9t.base.types.*
 import t9t.base.entities.*
 import t9t.base.output.*

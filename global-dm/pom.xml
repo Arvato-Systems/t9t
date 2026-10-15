@@ -40,8 +40,8 @@
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonaparte-dsl plugin is set in the parent pom -->
-        <jpaw-bom.version>4.1.0</jpaw-bom.version>
-        <bonaparte-bom.version>7.3.2</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
+        <jpaw-bom.version>4.2.0</jpaw-bom.version>
+        <bonaparte-bom.version>8.0.1</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
 
         <!-- Versions of Xtext & Xtend -->
         <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings", where the variable xtext.version is defined -->

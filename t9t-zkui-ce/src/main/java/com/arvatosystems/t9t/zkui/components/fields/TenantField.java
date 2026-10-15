@@ -22,10 +22,10 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.StringFilter;
 import com.arvatosystems.t9t.authc.api.TenantDescription;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.types.TenantIsolationCategoryType;

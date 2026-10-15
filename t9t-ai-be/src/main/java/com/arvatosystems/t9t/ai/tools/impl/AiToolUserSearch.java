@@ -18,8 +18,6 @@ package com.arvatosystems.t9t.ai.tools.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
@@ -27,6 +25,8 @@ import de.jpaw.dp.Singleton;
 import com.arvatosystems.t9t.ai.service.IAiTool;
 import com.arvatosystems.t9t.ai.tools.AiToolUserList;
 import com.arvatosystems.t9t.ai.tools.AiToolUserListResult;
+import com.arvatosystems.t9t.api.DataWithTrackingS;
+import com.arvatosystems.t9t.api.SearchFilters;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.request.UserSearchRequest;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;

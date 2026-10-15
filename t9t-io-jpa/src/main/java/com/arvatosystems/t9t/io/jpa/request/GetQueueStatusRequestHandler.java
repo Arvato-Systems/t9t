@@ -18,9 +18,9 @@ package com.arvatosystems.t9t.io.jpa.request;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.jpaw.bonaparte.pojos.api.BooleanFilter;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.BooleanFilter;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;

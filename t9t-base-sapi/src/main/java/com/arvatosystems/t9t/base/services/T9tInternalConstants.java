@@ -19,7 +19,7 @@ import java.util.Objects;
 
 import org.slf4j.MDC;
 
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import com.arvatosystems.t9t.api.auth.JwtInfo;
 
 /**
  * Global constants to used all over the application, but values which should not be used by API callers.

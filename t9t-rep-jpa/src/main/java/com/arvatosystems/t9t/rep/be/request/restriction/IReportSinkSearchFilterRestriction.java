@@ -16,8 +16,8 @@
 package com.arvatosystems.t9t.rep.be.request.restriction;
 
 import de.jpaw.bonaparte.core.ObjectValidationException;
-import de.jpaw.bonaparte.pojos.api.FieldFilter;
 
+import com.arvatosystems.t9t.api.FieldFilter;
 import com.arvatosystems.t9t.base.T9tException;
 
 

@@ -27,14 +27,14 @@ import org.slf4j.MDC;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
 import de.jpaw.bonaparte.core.ObjectValidationException;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
 
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.auth.Permissionset;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;

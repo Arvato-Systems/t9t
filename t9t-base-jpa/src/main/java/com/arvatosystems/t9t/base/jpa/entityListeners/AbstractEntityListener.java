@@ -18,10 +18,10 @@ package com.arvatosystems.t9t.base.jpa.entityListeners;
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicReference;
 
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.entities.FullTracking;
 import com.arvatosystems.t9t.base.entities.FullTrackingMs;

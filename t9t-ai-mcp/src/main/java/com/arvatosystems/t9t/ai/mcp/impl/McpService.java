@@ -30,10 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
 
@@ -61,6 +58,9 @@ import com.arvatosystems.t9t.ai.request.AiGetPromptResponse;
 import com.arvatosystems.t9t.ai.request.AiGetPromptsResponse;
 import com.arvatosystems.t9t.ai.request.AiGetToolsResponse;
 import com.arvatosystems.t9t.ai.request.AiRunToolResponse;
+import com.arvatosystems.t9t.api.media.MediaData;
+import com.arvatosystems.t9t.api.media.MediaTypeDescriptor;
+import com.arvatosystems.t9t.api.media.MediaTypeInfo;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.jackson.JacksonTools;

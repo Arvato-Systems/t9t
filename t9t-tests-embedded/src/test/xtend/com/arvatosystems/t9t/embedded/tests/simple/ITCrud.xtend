@@ -19,7 +19,7 @@ import com.arvatosystems.t9t.auth.RoleKey
 import com.arvatosystems.t9t.auth.request.RoleCrudRequest
 import com.arvatosystems.t9t.auth.tests.setup.SetupUserTenantRoleNoDeletePermissions
 import com.arvatosystems.t9t.embedded.connect.Connection
-import de.jpaw.bonaparte.pojos.api.OperationType
+import com.arvatosystems.t9t.api.OperationType
 import java.util.UUID
 import org.junit.jupiter.api.Test
 import com.arvatosystems.t9t.base.T9tException

@@ -25,10 +25,10 @@ import com.arvatosystems.t9t.authz.api.QueryUsersWithPermissionResponse
 import com.arvatosystems.t9t.base.ITestConnection
 import com.arvatosystems.t9t.base.auth.PermissionType
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
-import de.jpaw.bonaparte.pojos.api.OperationType
-import de.jpaw.bonaparte.pojos.api.OperationTypes
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset
-import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType
+import com.arvatosystems.t9t.api.OperationType
+import com.arvatosystems.t9t.api.OperationTypes
+import com.arvatosystems.t9t.api.auth.Permissionset
+import com.arvatosystems.t9t.api.auth.UserLogLevelType
 import java.util.UUID
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll

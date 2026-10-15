@@ -25,8 +25,6 @@ import org.zkoss.zk.ui.Executions;
 import de.jpaw.bonaparte.converter.StringConverterEmptyToNull;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.DataConverter;
-import de.jpaw.bonaparte.pojos.api.FalseFilter;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.dp.Jdp;
@@ -34,6 +32,8 @@ import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
 
+import com.arvatosystems.t9t.api.FalseFilter;
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.IRemoteConnection;
 import com.arvatosystems.t9t.base.StringTrimmer;
 import com.arvatosystems.t9t.base.T9tConstants;

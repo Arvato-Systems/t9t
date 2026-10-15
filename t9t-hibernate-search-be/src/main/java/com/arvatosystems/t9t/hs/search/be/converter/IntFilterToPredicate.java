@@ -20,9 +20,10 @@ import jakarta.annotation.Nonnull;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.SearchPredicateFactory;
 
-import de.jpaw.bonaparte.pojos.api.IntFilter;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.api.IntFilter;
 
 @Singleton
 @Named(IntFilter.my$PQON)

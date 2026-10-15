@@ -46,24 +46,23 @@ import org.slf4j.LoggerFactory;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
-import de.jpaw.bonaparte.pojos.api.AggregateColumn;
-import de.jpaw.bonaparte.pojos.api.AggregateFunctionType;
-import de.jpaw.bonaparte.pojos.api.AndFilter;
-import de.jpaw.bonaparte.pojos.api.BooleanFilter;
-import de.jpaw.bonaparte.pojos.api.FieldFilter;
-import de.jpaw.bonaparte.pojos.api.NotFilter;
-import de.jpaw.bonaparte.pojos.api.OrFilter;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.SortColumn;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.dp.Alternative;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.enums.TokenizableEnum;
 
+import com.arvatosystems.t9t.api.AggregateColumn;
+import com.arvatosystems.t9t.api.AggregateFunctionType;
+import com.arvatosystems.t9t.api.AndFilter;
+import com.arvatosystems.t9t.api.BooleanFilter;
+import com.arvatosystems.t9t.api.FieldFilter;
+import com.arvatosystems.t9t.api.NotFilter;
+import com.arvatosystems.t9t.api.OrFilter;
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.SortColumn;
+import com.arvatosystems.t9t.api.TrackingBase;
+import com.arvatosystems.t9t.apiw.Ref;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
@@ -73,6 +72,7 @@ import com.arvatosystems.t9t.base.jpa.IResolverAnyKey;
 import com.arvatosystems.t9t.base.search.DummySearchCriteria;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.jpa.refs.PersistenceProviderJPA;
 
 /** base implementation of the IEntityResolver interface, only suitable for simple configuration data tables */
 @Alternative

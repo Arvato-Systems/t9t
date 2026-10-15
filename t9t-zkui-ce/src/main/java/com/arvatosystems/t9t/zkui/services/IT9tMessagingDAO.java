@@ -24,9 +24,9 @@ import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Filedownload;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.util.ByteArray;
 
+import com.arvatosystems.t9t.api.media.MediaData;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;

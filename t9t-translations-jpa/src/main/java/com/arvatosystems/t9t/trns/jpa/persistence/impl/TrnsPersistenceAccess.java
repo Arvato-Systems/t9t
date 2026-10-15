@@ -20,11 +20,11 @@ import java.util.List;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.jpa.refs.PersistenceProviderJPA;
 import com.arvatosystems.t9t.trns.TranslationsDTO;
 import com.arvatosystems.t9t.trns.jpa.entities.TranslationsEntity;
 import com.arvatosystems.t9t.trns.jpa.mapping.ITranslationsDTOMapper;

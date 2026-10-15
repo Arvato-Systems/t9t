@@ -25,10 +25,9 @@ import java.util.function.Function;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-import de.jpaw.bonaparte.pojos.api.FieldFilter;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.SortColumn;
-
+import com.arvatosystems.t9t.api.FieldFilter;
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.SortColumn;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 
 public interface ISearchTools {

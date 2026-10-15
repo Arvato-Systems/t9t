@@ -28,10 +28,10 @@ import com.google.common.base.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.DataWithTrackingS;
 import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;

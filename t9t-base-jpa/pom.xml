@@ -46,8 +46,8 @@
             <artifactId>persistence-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>persistence-refs</artifactId>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-persistence-refs</artifactId>
         </dependency>
         <dependency>
             <groupId>jakarta.persistence</groupId>

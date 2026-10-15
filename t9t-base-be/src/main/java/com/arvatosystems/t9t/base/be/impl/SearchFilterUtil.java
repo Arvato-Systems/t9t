@@ -22,14 +22,14 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
-import de.jpaw.bonaparte.pojos.api.AndFilter;
-import de.jpaw.bonaparte.pojos.api.FieldFilter;
-import de.jpaw.bonaparte.pojos.api.NotFilter;
-import de.jpaw.bonaparte.pojos.api.OrFilter;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.AndFilter;
+import com.arvatosystems.t9t.api.FieldFilter;
+import com.arvatosystems.t9t.api.NotFilter;
+import com.arvatosystems.t9t.api.OrFilter;
+import com.arvatosystems.t9t.api.SearchFilter;
 import com.arvatosystems.t9t.base.services.ISearchFilterUtil;
 import com.arvatosystems.t9t.base.services.ISearchTools;
 

@@ -26,9 +26,9 @@ import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.PredicateFinalStep;
 import org.hibernate.search.engine.search.predicate.dsl.SearchPredicateFactory;
 
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.SearchFilter;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;

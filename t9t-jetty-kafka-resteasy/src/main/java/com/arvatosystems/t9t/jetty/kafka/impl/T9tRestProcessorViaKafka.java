@@ -37,13 +37,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.MessageParserException;
-import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.dp.Specializes;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
 
+import com.arvatosystems.t9t.api.OperationType;
 import com.arvatosystems.t9t.authz.api.QuerySinglePermissionRequest;
 import com.arvatosystems.t9t.authz.api.QuerySinglePermissionResponse;
 import com.arvatosystems.t9t.base.IKafkaRequestTransmitter;

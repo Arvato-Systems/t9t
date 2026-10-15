@@ -15,8 +15,7 @@
  */
 package com.arvatosystems.t9t.io;
 
-import de.jpaw.bonaparte.pojos.api.NoTracking;
-
+import com.arvatosystems.t9t.api.NoTracking;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;

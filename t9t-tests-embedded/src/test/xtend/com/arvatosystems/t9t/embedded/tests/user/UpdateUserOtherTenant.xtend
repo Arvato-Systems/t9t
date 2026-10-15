@@ -27,9 +27,9 @@ import com.arvatosystems.t9t.base.search.CountResponse
 import com.arvatosystems.t9t.base.search.ReadAllResponse
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
 import de.jpaw.annotations.AddLogger
-import de.jpaw.bonaparte.api.SearchFilters
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS
-import de.jpaw.bonaparte.pojos.api.OperationType
+import com.arvatosystems.t9t.api.SearchFilters
+import com.arvatosystems.t9t.api.DataWithTrackingS
+import com.arvatosystems.t9t.api.OperationType
 import de.jpaw.util.ExceptionUtil
 import java.util.UUID
 import org.junit.jupiter.api.Assertions

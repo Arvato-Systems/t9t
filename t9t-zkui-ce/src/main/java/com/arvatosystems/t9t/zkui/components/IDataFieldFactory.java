@@ -16,8 +16,8 @@
 package com.arvatosystems.t9t.zkui.components;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
+import com.arvatosystems.t9t.api.TrackingBase;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.zkui.components.datafields.DataFieldParameters;
 import com.arvatosystems.t9t.zkui.components.datafields.IDataField;

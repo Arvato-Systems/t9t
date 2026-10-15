@@ -17,10 +17,10 @@ package com.arvatosystems.t9t.zkui.components.fields;
 
 import org.zkoss.zul.Doublebox;
 
-import de.jpaw.bonaparte.pojos.api.DoubleFilter;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 
+import com.arvatosystems.t9t.api.DoubleFilter;
+import com.arvatosystems.t9t.api.SearchFilter;
 import com.arvatosystems.t9t.base.ui.UIFilter;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 

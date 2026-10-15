@@ -18,9 +18,8 @@ package com.arvatosystems.t9t.zkui.components.basic;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-
+import com.arvatosystems.t9t.api.OperationType;
+import com.arvatosystems.t9t.api.auth.Permissionset;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 public class Button28 extends Button {

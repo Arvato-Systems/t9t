@@ -19,10 +19,10 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.oned.CodaBarWriter;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
+import com.arvatosystems.t9t.api.media.MediaData;
 import com.arvatosystems.t9t.doc.services.ImageParameter;
 import com.arvatosystems.t9t.image.be.impl.AbstractImageGenerator;
 

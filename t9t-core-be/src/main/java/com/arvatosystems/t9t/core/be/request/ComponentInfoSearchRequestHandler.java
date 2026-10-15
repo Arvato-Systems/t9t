@@ -21,14 +21,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
-import de.jpaw.bonaparte.pojos.api.AndFilter;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.NoTracking;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.SortColumn;
-import de.jpaw.bonaparte.pojos.api.StringFilter;
 import de.jpaw.dp.Jdp;
 
+import com.arvatosystems.t9t.api.AndFilter;
+import com.arvatosystems.t9t.api.DataWithTrackingS;
+import com.arvatosystems.t9t.api.NoTracking;
+import com.arvatosystems.t9t.api.SearchFilter;
+import com.arvatosystems.t9t.api.SortColumn;
+import com.arvatosystems.t9t.api.StringFilter;
 import com.arvatosystems.t9t.base.request.ComponentInfoDTO;
 import com.arvatosystems.t9t.base.request.RetrieveComponentInfoRequest;
 import com.arvatosystems.t9t.base.request.RetrieveComponentInfoResponse;

@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.solr.be;
 
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import com.arvatosystems.t9t.api.SearchFilter;
 
 /**
  * A converter for various filter types. This implementation uses xtend dispatcher methods.
