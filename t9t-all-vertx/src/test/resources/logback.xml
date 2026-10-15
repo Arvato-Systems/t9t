@@ -26,7 +26,6 @@
 
     <!-- too many messages in DEBUG from hibernate and from de.jpaw, set those to INFO only (redundant with INFO at root level) -->
     <logger name="org.hibernate.engine.internal.StatisticalLoggingSessionEventListener" level="WARN"/>
-    <logger name="com.hazelcast.nio.tcp.iobalancer.IOBalancer" level="INFO"/>
     <logger name="de.jpaw" level="INFO"/>
     <logger name="net.sf.ehcache" level="DEBUG"/>
 

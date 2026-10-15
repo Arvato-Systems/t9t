@@ -42,8 +42,10 @@ import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
+import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpSession;
 
 import com.github.benmanes.caffeine.cache.Cache;
@@ -79,6 +81,8 @@ import com.arvatosystems.t9t.base.search.LeanGroupedSearchResponse;
 import com.arvatosystems.t9t.base.search.LeanSearchRequest;
 import com.arvatosystems.t9t.base.search.LeanSearchResponse;
 import com.arvatosystems.t9t.translation.services.ITranslationProvider;
+import com.arvatosystems.t9t.zkui.components.dropdown28.ComboBoxEntry;
+import com.arvatosystems.t9t.zkui.components.dropdown28.ComboBoxEntryCacheKey;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
 import com.arvatosystems.t9t.zkui.util.Constants.DateTime;
@@ -110,6 +114,8 @@ public final class ApplicationSession {
     private Integer                          numberOfIncorrectAttempts;
     private Cache<String, Map<String, String>> enumTranslationCache = Caffeine.newBuilder().build();
     private Cache<String, List<Description>> dropdownDataCache =
+            Caffeine.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).build();
+    private final Cache<ComboBoxEntryCacheKey, Map<ComboBoxEntry, Description>> comboBoxEntryDataCache =
             Caffeine.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).build();
     private Cache<String, Map<Long, DescriptionList>> groupedDropdownDataCache =
             Caffeine.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).build();
@@ -257,6 +263,14 @@ public final class ApplicationSession {
         groupedDropdownDataCache.invalidate(dropdownId);
     }
 
+    public void invalidateCachedComboBoxEntryData(@Nonnull final String dropdownId) {
+        for (final ComboBoxEntryCacheKey key : comboBoxEntryDataCache.asMap().keySet()) {
+            if (key.dropdownId().equals(dropdownId)) {
+                comboBoxEntryDataCache.invalidate(key);
+            }
+        }
+    }
+
     /** Retrieves (possibly cached) data for a dropdown. Queries the backend if the data
      * is too old or was not queried before in this session.
      * @param dropdownId
@@ -272,6 +286,27 @@ public final class ApplicationSession {
         List<Description> resp = getDropDownData(rq);
         dropdownDataCache.put(dropdownId, resp);  // store for subsequent queries
         return resp;
+    }
+
+    /** Retrieves (possibly cached) data for a dropdown. Queries the backend if the data
+     * is too old or was not queried before in this session.
+     * @param key
+     * @param rq
+     * @param labelFormatter
+     * @return
+     */
+    @Nonnull
+    public Map<ComboBoxEntry, Description> getComboBoxEntryData(@Nonnull final ComboBoxEntryCacheKey key, @Nonnull final LeanSearchRequest rq,
+                                                    @Nonnull final Function<Description, String> labelFormatter) {
+        return comboBoxEntryDataCache.get(key, k -> {
+            LOGGER.info("No valid combo box entry data for key {} in cache, querying backend...", k);
+            final List<Description> resp = getDropDownData(rq);
+            final Map<ComboBoxEntry, Description> comboBoxEntries = new HashMap<>(resp.size());
+            for (final Description d : resp) {
+                comboBoxEntries.put(new ComboBoxEntry(d.getId(), labelFormatter.apply(d), "", null), d);
+            }
+            return Collections.unmodifiableMap(comboBoxEntries);
+        });
     }
 
     /** Retrieves (possibly cached) data for a grouped dropdown. Queries the backend if the data
@@ -665,6 +700,7 @@ public final class ApplicationSession {
     /** Sets all of (encodedJwt, jwtInfo, and the authorizationHeader. */
     public void setJwt(String jwt) {
         dropdownDataCache.invalidateAll(); // entries relate to some tenant
+        comboBoxEntryDataCache.invalidateAll();
         enumTranslationCache.invalidateAll();
         permissionCache.clear();
         navis.clear();

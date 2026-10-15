@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import jakarta.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.lang.Objects;
@@ -38,6 +40,7 @@ import de.jpaw.dp.Jdp;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.base.search.LeanSearchRequest;
 import com.arvatosystems.t9t.zkui.components.dropdown28.ComboBoxEntry;
+import com.arvatosystems.t9t.zkui.components.dropdown28.ComboBoxEntryCacheKey;
 import com.arvatosystems.t9t.zkui.components.dropdown28.ComboBoxEntryComboitemRenderer;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
 import com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28Registry;
@@ -61,7 +64,7 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
 
     private final ApplicationSession                session = ApplicationSession.get();
     private final IDropdown28DbFactory<REF>         factory;
-    private List<Description>                       entries;      // entries is not final because they can be reloaded
+    private Map<ComboBoxEntry, Description>         entries;      // entries is not final because they can be reloaded
     private final ListModelList<ComboBoxEntry>      allIds;
     private final Map<String, Description>          lookupById;    // lookup with formatted id and description/name of DTO
     private final Map<String, Description>          lookupByKey;   // lookup with DTO id only
@@ -83,13 +86,14 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
         this.dropdownDisplayFormat = dropdownDisplayFormat;
 
         factory           = myFactory;
-        entries           = session.getDropDownData(factory.getDropdownId(), factory.getSearchRequest());
+        final String displayFormat = getDisplayFormat();
+        messageFormat     = new MessageFormat(displayFormat);
+        entries           = session.getComboBoxEntryData(new ComboBoxEntryCacheKey(factory.getDropdownId(), displayFormat), factory.getSearchRequest(), this::getFormattedLabel);
         lookupByKey       = new ConcurrentHashMap<>(entries.size());
         lookupById        = new ConcurrentHashMap<>(entries.size());
         lookupByRef       = new ConcurrentHashMap<>(entries.size());
         allIds            = new ListModelList<>(entries.size());
         LOGGER.debug("Dropdown DB {} instantiated, got {} entries", factory.getDropdownId(), entries.size());
-        messageFormat = new MessageFormat(getDisplayFormat());
         getDropDownData();
 
         addEventListener(Events.ON_CHANGE, (event) -> doChangeEvent());
@@ -172,10 +176,15 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
         final LeanSearchRequest srq = factory.getSearchRequest();
         final SearchFilter adds = SearchFilters.and(additionalFilter, additionalFilter2);
         srq.setSearchFilter(fixedFilter == null ? adds : SearchFilters.and(fixedFilter.get(), adds));
-        entries = session.getDropDownData(srq);  // read uncached....
+        List<Description> descriptions = session.getDropDownData(srq);  // read uncached....
         if (descriptionFilter != null) {
-            entries = descriptionFilter.filter(entries);
+            descriptions = descriptionFilter.filter(descriptions);
         }
+        final Map<ComboBoxEntry, Description> newEntries = new ConcurrentHashMap<>(descriptions.size());
+        for (final Description d : descriptions) {
+            newEntries.put(new ComboBoxEntry(d.getId(), getFormattedLabel(d), "", null), d);
+        }
+        entries = newEntries;
         LOGGER.debug("Reloaded dropdown DB {} (uncached), got {} entries", factory.getDropdownId(), entries.size());
         getDropDownData();
     }
@@ -187,19 +196,19 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
         lookupByKey.clear();
         lookupByRef.clear();
         allIds.clear();
-        for (final Description d : entries) {
+        for (final Description d : entries.values()) {
             final String id = d.getId();
             final String label = getFormattedLabel(d);
             lookupByKey.put(id.toLowerCase(), d);
             lookupById.put(label.toLowerCase(), d);
             lookupByRef.put(d.getObjectRef(), d);
-            final ComboBoxEntry comboBoxEntry = new ComboBoxEntry(id, label, "", null);
-            allIds.add(comboBoxEntry);
         }
+        allIds.addAll(entries.keySet());
         allIds.sort(Comparator.comparing(ComboBoxEntry::getValue));
         setDropdownModel();
     }
 
+    @Nonnull
     protected String getDisplayFormat() {
         String format = ZulUtils.readConfig(T9tConfigConstants.DROPDOWN_DISPLAY_FORMAT + "." + factory.getDropdownId());
         if (format != null) {

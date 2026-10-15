@@ -6,7 +6,7 @@
         { "filterType": "W", "fieldName": "id1" },
         { "filterType": "W", "fieldName": "id2" },
         { "filterType": "W", "fieldName": "status" }
-        
+
     ],
     "fields": [
         "eventSource", "eventSeverity", "id1", "id2", "status", "statusMessage"
