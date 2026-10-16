@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.WebApp;
 import org.zkoss.zk.ui.util.WebAppInit;
-// import com.arvatosystems.t9t.init.InitContainers;
 
 public class ApplicationListener implements WebAppInit {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationListener.class);
@@ -30,6 +29,5 @@ public class ApplicationListener implements WebAppInit {
         LOGGER.info("*******************************************************");
         LOGGER.info("** ApplicationListener init()...");
         LOGGER.info("*******************************************************");
-        // InitContainers.initializeT9t();
     }
 }

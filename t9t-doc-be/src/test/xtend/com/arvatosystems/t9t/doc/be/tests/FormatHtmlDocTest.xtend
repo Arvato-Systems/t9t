@@ -85,7 +85,7 @@ class FormatHtmlDocTest {
     @BeforeAll
     def public static void setup() {
         Jdp.reset
-        Init.initializeT9t    // required to get the converters
+        Init.initializeT9tNoUi    // required to get the converters
         Jdp.bindInstanceTo(new MockedDocModuleCfgDtoResolver, IDocModuleCfgDtoResolver)
     }
 

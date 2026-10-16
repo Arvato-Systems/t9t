@@ -55,7 +55,6 @@ import com.arvatosystems.t9t.ai.request.AiGetPromptsResponse;
 import com.arvatosystems.t9t.ai.request.AiGetToolsResponse;
 import com.arvatosystems.t9t.ai.request.AiRunToolRequest;
 import com.arvatosystems.t9t.base.IRemoteDefaultUrlRetriever;
-import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.client.init.SystemConfigurationProvider;
@@ -73,8 +72,7 @@ public class T9tMcpGatewayInitializer implements ServletContextListener {
     private final IT9tMcpProcessor mcpProcessor;
 
     public T9tMcpGatewayInitializer() {
-        MessagingUtil.initializeBonaparteParsers();
-        Init.initializeT9t();
+        Init.initializeT9tNoUi();
 
         mcpProcessor = Jdp.getRequired(IT9tMcpProcessor.class);
 

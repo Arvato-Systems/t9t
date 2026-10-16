@@ -85,8 +85,8 @@ public final class InitContainers {
         }
     }
 
-    /** Full initialization - for backend server or UI. */
-    public static Reflections[] initializeT9t() {
+    /** Initialization for the ZK UI (client + grid configs). Used as subroutine for backend. */
+    public static Reflections[] initializeT9tForUi() {
         UiGridConfigPrefs.reset();  // clear all view model containers and reset error counter
 
         final Reflections[] scannedPackages = initializeT9tForClients();
@@ -100,7 +100,7 @@ public final class InitContainers {
         return scannedPackages;
     }
 
-    /** Subset of the initialization - for remote tests. */
+    /** Subset of the initialization - for remote tests or gateways. */
     public static Reflections[] initializeT9tForClients() {
         final String javaVersion = System.getProperty("java.version");
         final String javaVendor  = System.getProperty("java.vendor");

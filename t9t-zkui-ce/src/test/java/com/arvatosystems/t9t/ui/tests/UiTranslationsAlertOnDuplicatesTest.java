@@ -25,7 +25,7 @@ public class UiTranslationsAlertOnDuplicatesTest {
 
     @Test
     public void alertOnDuplicateTranslationsTest() throws Exception {
-        Init.initializeT9t();  // initialize
+        Init.initializeT9tNoUi();  // initialize, but don't need UI grids for this
         final int numDuplicates = TranslationsStack.getNumberOfDuplicateTranslations();
         if (numDuplicates != 0) {
             System.out.println(numDuplicates + " overwritten translation entries exist - check logs for details");
@@ -36,14 +36,14 @@ public class UiTranslationsAlertOnDuplicatesTest {
     @Disabled // run this one manually only
     @Test
     public void alertOnTranslationsMatchingDefaultTest() throws Exception {
-        Init.initializeT9t();  // initialize
+        Init.initializeT9tNoUi();  // initialize
         TranslationsStack.checkDuplicates(true, true, false);
     }
 
     @Disabled // run this one manually only
     @Test
     public void alertOnTranslationsDeMatchingEnTest() throws Exception {
-        Init.initializeT9t();  // initialize
+        Init.initializeT9tNoUi();  // initialize
         TranslationsStack.checkDuplicates(false, true, true);
     }
 }

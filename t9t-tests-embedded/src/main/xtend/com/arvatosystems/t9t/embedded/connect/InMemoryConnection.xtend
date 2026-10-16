@@ -111,10 +111,10 @@ class InMemoryConnection extends AbstractConnection {
             }
         }
 
-        Init.initializeT9t [
+        Init.initializeT9t([
             IEMFCustomizer         .isNow(new InMemoryEMFCustomizer)
             IQuartzPropertyProvider.isNow(new InMemoryQuartzPropertyProvider)
-        ]
+        ], true)
         return null
     }
 

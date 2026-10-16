@@ -24,9 +24,9 @@ import jakarta.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.util.ExceptionUtil;
 
+import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.types.SessionParameters;
 
 public class ConnectionDefaults {
@@ -61,7 +61,7 @@ public class ConnectionDefaults {
     static {
         // static class initialization
         SESSION_PARAMETERS.freeze();
-        BonaPortableFactory.addToPackagePrefixMap("t9t", "com.arvatosystems.t9t");
+        MessagingUtil.initializeBonaparteParsers();
 
         // read any properties file
         final Properties props = new Properties();

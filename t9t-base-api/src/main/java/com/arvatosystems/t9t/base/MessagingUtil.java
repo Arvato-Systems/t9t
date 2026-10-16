@@ -77,6 +77,11 @@ public final class MessagingUtil {
      * This would cause ClassNotFoundExceptions while parsing responses for JDK11 HttpClient asynchronously.
      */
     public static void initializeBonaparteParsers() {
+        // first, check if the prefixes have been set already, in that case, just return.
+        if (BonaPortableFactory.getPackageForPrefix("api") != null) {
+            // map already populated
+            return;
+        }
         BonaPortableFactory.useFixedClassLoader(null);
         BonaPortableFactory.addToPackagePrefixMap("t9t",  TWENTYEIGHT_PACKAGE_PREFIX);              // and of course everything else starting with "t9t"
         BonaPortableFactory.addToPackagePrefixMap("api",  TWENTYEIGHT_PACKAGE_PREFIX + ".api");     // migrated from bonaparte

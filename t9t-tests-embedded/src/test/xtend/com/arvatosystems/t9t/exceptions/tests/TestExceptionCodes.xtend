@@ -38,9 +38,6 @@ class TestExceptionCodes {
     @Test
     def void checkAllExceptions() {
         // first, actively load all exception classes (among others)
-        LOGGER.info("Skipping Init")
-        //Init.initializeT9t // Init removed because it will be initialized with the inmemoryConnection instead
-
         // check exception codes
         Assertions.assertTrue(JustATrickToAccessCodeToDescription.validateAllExceptions, "Check for all exception codes in expected range");
         Assertions.assertFalse(ApplicationException.checkForDuplicates(), "Check for duplicate exception codes");

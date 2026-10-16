@@ -28,7 +28,7 @@ public class HtmlToPdfTest {
 
     @Test
     public void testHtmlToPdf() throws Exception {
-        Init.initializeT9t();
+        Init.initializeT9tNoUi();  // initialize, but don't need UI grids for this
         final String text = "<html>"
                 + "             <head>"
                 + "                 <title>Mego-Test</title>"

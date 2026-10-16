@@ -28,13 +28,18 @@ public final class Init {
     private Init() {
     }
 
-    /** Initializes Jdp using defaults. */
+    /** Initializes Jdp using defaults (including UI grid config init). */
     public static void initializeT9t() {
-        initializeT9t(null);
+        initializeT9t(null, true);
+    }
+
+    /** Initializes Jdp using defaults (without grid config init for the UI). */
+    public static void initializeT9tNoUi() {
+        initializeT9t(null, false);
     }
 
     /** Initializes Jdp with the possibility to alter the automatically assigned classes before initialization. */
-    public static void initializeT9t(final Consumer<Reflections[]> callback) {
+    public static void initializeT9t(final Consumer<Reflections[]> callback, final boolean initUi) {
         Jdp.reset();
         // Jdp.excludePackagePrefix("java.");
         Jdp.includePackagePrefix("de.jpaw.");
@@ -45,7 +50,7 @@ public final class Init {
             }
         });
 
-        final Reflections[] scannedPackages = InitContainers.initializeT9t();
+        final Reflections[] scannedPackages = initUi ? InitContainers.initializeT9tForUi() : InitContainers.initializeT9tForClients();
         Jdp.scanClasses(scannedPackages);
         if (callback != null) {
             callback.accept(scannedPackages);

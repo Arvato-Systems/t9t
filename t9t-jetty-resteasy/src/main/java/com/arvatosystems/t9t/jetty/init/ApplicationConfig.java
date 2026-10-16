@@ -56,7 +56,7 @@ public class ApplicationConfig extends Application {
     public ApplicationConfig(@Context final ServletConfig servletConfig) {
         LOGGER.info("t9t servlet context initialization START");
         MessagingUtil.initializeBonaparteParsers();
-        Init.initializeT9t();
+        Init.initializeT9tNoUi();
         LOGGER.info("t9t servlet context initialization COMPLETE");
 
         // get remote connection config BEFORE we call a connection
