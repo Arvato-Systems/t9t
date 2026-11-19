@@ -67,7 +67,8 @@ class ITAuth {
     def void changePasswordFirstScenario() {
         val pw2 = SetupUserTenantRole.createRandomSimplePWForTests();
         val pw3 = SetupUserTenantRole.createRandomSimplePWForTests();
-        val dlg = new Connection("userId", initial, pw2)
+        val dlg = new Connection("userId", initial)
+        dlg.changePassword("userId", initial, pw2)
         dlg.changePassword("userId", pw2, pw3)
         dlg.changePassword("userId", pw3, initial)
     }

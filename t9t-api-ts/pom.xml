@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2012 - 2026 Arvato Systems GmbH
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.arvato-systems.t9t</groupId>
+        <artifactId>t9t-build</artifactId>
+        <version>10.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>t9t-api-ts</artifactId>
+    <packaging>pom</packaging>
+    <description>Angular Package Format sources for the t9t TypeScript API. npm build inputs are staged under target/npm-src/.</description>
+    <properties>
+        <npm.registry>https://npm.pkg.github.com</npm.registry>
+    </properties>
+
+    <dependencies>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-ai-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-all-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-api-auth</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-api-media</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-ariba-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-auth-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-auth-apiext</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-auth-jpa</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-base-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-bpmn-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-cfg-be</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-cluster-kafka-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-core-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-doc-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-email-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-genconf-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-hibernate-search-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-io-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-msglog-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-openai-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-pdf-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-rep-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-server-sapi</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-solr-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-solr-apiext</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-ssm-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-translation-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-translations-api</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.arvato-systems.t9t</groupId><artifactId>t9t-xml-apiext</artifactId><version>${project.version}</version></dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <configuration>
+                    <workingDirectory>${project.build.directory}/npm-src</workingDirectory>
+                    <installDirectory>${project.build.directory}/node</installDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>install-node-and-npm</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <configuration>
+                            <workingDirectory>${project.basedir}/src/main/npm</workingDirectory>
+                            <nodeVersion>${node.version}</nodeVersion>
+                            <npmVersion>${npm.version}</npmVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>prepare-npm-workspace</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <workingDirectory>${project.basedir}/src/main/npm</workingDirectory>
+                            <environmentVariables>
+                                <MAVEN_TARGET_DIRECTORY>${project.build.directory}</MAVEN_TARGET_DIRECTORY>
+                                <NPM_REGISTRY_URL>${npm.registry}</NPM_REGISTRY_URL>
+                                <NODE_AUTH_TOKEN>${env.NODE_AUTH_TOKEN}</NODE_AUTH_TOKEN>
+                            </environmentVariables>
+                            <arguments>run prepare:workspace</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm-build</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <environmentVariables>
+                                <MAVEN_TARGET_DIRECTORY>${project.build.directory}</MAVEN_TARGET_DIRECTORY>
+                                <T9T_REACTOR_ROOT>${project.basedir}/..</T9T_REACTOR_ROOT>
+                            </environmentVariables>
+                            <arguments>run build</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>test</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm-typecheck</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run typecheck</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm-pack</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <environmentVariables>
+                                <MAVEN_PROJECT_VERSION>${project.version}</MAVEN_PROJECT_VERSION>
+                                <MAVEN_BUILD_TIMESTAMP>${maven.build.timestamp}</MAVEN_BUILD_TIMESTAMP>
+                                <MAVEN_TARGET_DIRECTORY>${project.build.directory}</MAVEN_TARGET_DIRECTORY>
+                            </environmentVariables>
+                            <arguments>run package:artifact</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm-publish</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <environmentVariables>
+                                <NODE_AUTH_TOKEN>${env.NODE_AUTH_TOKEN}</NODE_AUTH_TOKEN>
+                                <NPM_REGISTRY_URL>${env.NPM_REGISTRY_URL}</NPM_REGISTRY_URL>
+                                <MAVEN_TARGET_DIRECTORY>${project.build.directory}</MAVEN_TARGET_DIRECTORY>
+                            </environmentVariables>
+                            <arguments>run publish:package</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-npm-package</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>${project.build.directory}/t9t-api-npm.tgz</file>
+                                    <type>tgz</type>
+                                    <classifier>npm</classifier>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

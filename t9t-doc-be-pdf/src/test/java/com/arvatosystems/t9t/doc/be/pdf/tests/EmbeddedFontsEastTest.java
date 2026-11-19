@@ -19,9 +19,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.BaseFont;
 import org.junit.jupiter.api.Test;
+import org.openpdf.text.DocumentException;
+import org.openpdf.text.pdf.BaseFont;
 import org.xhtmlrenderer.pdf.ITextFontResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 

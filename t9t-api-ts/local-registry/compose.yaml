@@ -1,0 +1,45 @@
+#
+# Copyright (c) 2012 - 2026 Arvato Systems GmbH
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+services:
+  npm-registry:
+    image: verdaccio/verdaccio:6.1.6
+    ports:
+      - "127.0.0.1:4873:4873"
+    volumes:
+      - npm-storage:/verdaccio/storage
+      - ./verdaccio/config.yaml:/verdaccio/conf/config.yaml:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:4873/-/ping >/dev/null"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  maven-repository:
+    image: nginx:1.29-alpine
+    ports:
+      - "127.0.0.1:8082:80"
+    volumes:
+      - ../target/local-maven-repository:/usr/share/nginx/html/repository:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1/repository/"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  npm-storage:

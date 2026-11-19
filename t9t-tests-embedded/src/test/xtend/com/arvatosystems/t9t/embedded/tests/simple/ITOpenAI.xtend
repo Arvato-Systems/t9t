@@ -20,7 +20,7 @@ import com.arvatosystems.t9t.ai.AiAssistantKey
 import com.arvatosystems.t9t.ai.AiDtoAssistDTO
 import com.arvatosystems.t9t.ai.request.AiCreateOrEditDtoResponse
 import com.arvatosystems.t9t.ai.request.GenericAiCreateOrEditDtoRequest
-import com.arvatosystems.t9t.auth.tests.setup.SetupUserTenantRoleNoDeletePermissions
+import com.arvatosystems.t9t.auth.tests.setup.SetupUserTenantRole
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
 import com.arvatosystems.t9t.io.CsvConfigurationDTO
 import de.jpaw.annotations.AddLogger
@@ -40,7 +40,7 @@ class ITOpenAI {
     def void OpenAICreateDTOTest1() {
         val dlg = new InMemoryConnection
 
-        val setup = new SetupUserTenantRoleNoDeletePermissions(dlg)
+        val setup = SetupUserTenantRole.createWithoutDelete(dlg)
 
         val newKey = UUID.randomUUID
         setup.createUserTenantRole("openai", newKey, true)

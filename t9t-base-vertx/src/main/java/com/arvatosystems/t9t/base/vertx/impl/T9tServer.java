@@ -29,8 +29,6 @@ import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerRequest;
-import io.vertx.core.net.NetServer;
-import io.vertx.core.net.NetSocket;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
@@ -83,7 +81,7 @@ public class T9tServer extends AbstractVerticle {
     @Option(names = { "--port", "-p" }, defaultValue = "8024", description = "listener port http (0 to disable)")
     private int port;
 
-    @Option(names = { "--tcpport", "-P" }, description = "listener port for plain socket (0 to disable)")
+    @Option(names = { "--tcpport", "-P" }, description = "listener port for plain socket (DEPRECATED!)")
     private int tcpPort;
 
     @Option(names = { "--restport", "-R" }, description = "listener port for REST (Jakarta-RS) (0 to disable)")
@@ -229,11 +227,7 @@ public class T9tServer extends AbstractVerticle {
         }
 
         if (tcpPort > 0) {
-            // compact format (requires ServiceRequest wrapper)
-            LOGGER.info("Listening on TCP port {} (low level socket I/O)", tcpPort);
-            final NetServer netServer = vertx.createNetServer();
-            netServer.connectHandler((final NetSocket it) -> new TcpSocketHandler(it));
-            netServer.listen(tcpPort);
+            LOGGER.warn("TCP port set to {} (low level socket I/O), but no longer supported. Remove this option!", tcpPort);
         }
 
         Jdp.bindInstanceTo(vertx, Vertx.class);

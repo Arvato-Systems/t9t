@@ -53,8 +53,14 @@ public class RESTConnection extends ConnectionDefaults {
     protected String xApiKey = null;
     protected RequestMethod requestMethod = RequestMethod.POST;  // the default request method
 
+    /** Read either the new or the old config for REST URL. */
+    private static String getConfiguredOrDefaultRestUrl() {
+        final String url = getInitialNewRestUrl();
+        return url != null ? url : getInitialRestUrl();
+    }
+
     public RESTConnection() {
-        baseRestUrl = getInitialRestUrl();
+        baseRestUrl = getConfiguredOrDefaultRestUrl();
         marshallerFrozen = false;
     }
 
@@ -66,7 +72,7 @@ public class RESTConnection extends ConnectionDefaults {
 
     /** Contructs a REST connection for an optional base REST URL, and frozen marshaller */
     public RESTConnection(@Nullable final String baseRestUrl, @Nonnull final IMarshaller marshaller) {
-        this.baseRestUrl = baseRestUrl == null ? getInitialRestUrl() : baseRestUrl;
+        this.baseRestUrl = baseRestUrl == null ? getConfiguredOrDefaultRestUrl() : baseRestUrl;
         this.marshaller = marshaller;
         marshallerFrozen = true;
     }

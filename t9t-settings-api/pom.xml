@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!--
 
-    Copyright (c) 2012 - 2025 Arvato Systems GmbH
+    Copyright (c) 2012 - 2026 Arvato Systems GmbH
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -66,6 +66,40 @@
         </pluginManagement>
 
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>${properties-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>configure-bonaparte-typescript</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>set-system-properties</goal>
+                        </goals>
+                        <configuration>
+                            <properties>
+                                <property>
+                                    <name>bonaparte.TypeScript</name>
+                                    <value>true</value>
+                                </property>
+                                <property>
+                                    <name>bonaparte.TypeScriptApi</name>
+                                    <value>${ts.api}</value>
+                                </property>
+                                <property>
+                                    <name>bonaparte.TypeScript.runtimeImport</name>
+                                    <value>${npm.package.org}/bonaparte-typescript</value>
+                                </property>
+                                <property>
+                                    <name>bonaparte.TypeScript.rpcImport</name>
+                                    <value>${npm.package.org}/t9t-api</value>
+                                </property>
+                            </properties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>

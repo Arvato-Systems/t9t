@@ -35,7 +35,7 @@ package (com.arvatosystems) t9t.base.auth {
     type passwordHash           is Binary(64);
 
     enum PermissionType {
-        FRONTEND            = "U",          // permission to see UI screens or to use dialog elements (for the ZK frontend)
+        FRONTEND            = "U",          // permission to see UI screens or to use dialog elements (for the ZK front end)
         BACKEND             = "B",          // permission on request handlers. The trailing "Request(Handler)" can be omitted from the permission
         PREPARED            = "P",          // permission on prepared (canned) requests (by ID). Evaluated by the ExecutePreparedRequest request.
         REPORTING           = "R",          // permission to run specific reports
@@ -45,7 +45,8 @@ package (com.arvatosystems) t9t.base.auth {
         TOOL_CALL           = "T",          // access to specific tool calls (MCP tools)
         RESOURCE            = "E",          // access to resources via MCP
         PROMPT              = "O",          // access to MCP prompts
-        FRONTEND_ANGULAR    = "F"           // permission to see UI screens or to use dialog elements (for the Angular frontend)
+        FRONTEND_ANGULAR    = "F",          // permission to see UI screens or to use dialog elements (for the Angular front end)
+        FRONTEND_WEBCOMP    = "W"           // permission to see UI screens or to use dialog elements (for web components based front ends)
     }
 
     /** Defines the type of user data change which is considered to be of high risk and may require user information. */

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!--
 
-    Copyright (c) 2012 - 2025 Arvato Systems GmbH
+    Copyright (c) 2012 - 2026 Arvato Systems GmbH
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -52,12 +52,12 @@
         <jprofiler.version>15_0_3</jprofiler.version>
         <jmx.exporter.version>1.0.1</jmx.exporter.version>
 
-        <min-maven.version>3.9.9</min-maven.version>  <!-- version currently used by github -->
+        <min-maven.version>3.10.0</min-maven.version>  <!-- version currently used by github -->
 
         <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
         <t9t.version>10.0-SNAPSHOT</t9t.version>
         <xtext.version>2.44.0</xtext.version>
-        <jetty.version>12.1.14</jetty.version>
+        <jetty.version>12.1.15</jetty.version>
 
         <!-- Build specific properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -91,14 +91,15 @@
         <maven-versions-plugin.version>2.21.0</maven-versions-plugin.version>
         <maven-exec-plugin.version>3.6.4</maven-exec-plugin.version>
         <owasp-maven-plugin.version>12.2.2</owasp-maven-plugin.version>
-        <spring-boot-maven-plugin.version>4.1.1</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>4.1.2</spring-boot-maven-plugin.version>
         <git-commit-id-plugin.version>9.0.2</git-commit-id-plugin.version>
         <jaxws-maven-plugin.version>4.0.3</jaxws-maven-plugin.version>
         <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>
-        <jetty-maven-plugin.version>12.1.14</jetty-maven-plugin.version>
+        <jetty-maven-plugin.version>12.1.15</jetty-maven-plugin.version>
         <maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
         <echo-maven-plugin.version>1.0.0</echo-maven-plugin.version>
         <jaxb2-maven-plugin.version>3.3.0</jaxb2-maven-plugin.version>
+        <properties-plugin.version>1.3.1</properties-plugin.version>
 
         <!-- CXF plugins may be release at different times -->
         <!--CXF codegen -->
@@ -121,17 +122,18 @@
         <xtext-maven-plugin.version>${xtext.version}</xtext-maven-plugin.version>
         <jdt.version>3.46.0</jdt.version>
 
-        <bonaparte-plugin.version>7.0.2</bonaparte-plugin.version>
+        <bonaparte-plugin.version>7.0.4</bonaparte-plugin.version>
         <license-plugin.version>5.1.2</license-plugin.version>
         <cyclonedx-maven-plugin.version>2.9.3</cyclonedx-maven-plugin.version>
 
         <checkstyle.version>12.2.0</checkstyle.version>
         <spotless.version>3.10.4</spotless.version>
-        <spotbugs.version>4.10.4</spotbugs.version>
-        <spotbugs-plugin.version>4.10.4.1</spotbugs-plugin.version>
-        <logback.version>1.6.5</logback.version>
+        <spotbugs.version>4.10.5</spotbugs.version>
+        <spotbugs-plugin.version>4.10.5.0</spotbugs-plugin.version>
+        <logback.version>1.6.6</logback.version>
         <logstash-logback.version>8.1</logstash-logback.version>
         <junit.version>6.1.3</junit.version>
+
         <!-- Swagger -->
         <swagger-maven-plugin.version>2.2.55</swagger-maven-plugin.version>
         <swagger-ui-webjars.version>5.32.15</swagger-ui-webjars.version>
@@ -141,8 +143,17 @@
         <jsonschema2pojo.version>1.3.3</jsonschema2pojo.version>
 
         <!-- Angular related versions -->
+        <frontend-maven-plugin.version>2.0.2</frontend-maven-plugin.version>
+        <node.version>v24.21.0</node.version>
+        <npm.version>11.19.1</npm.version>
         <typescript.version>~5.8.2</typescript.version>
         <rxjs.version>~7.8.1</rxjs.version>
+
+        <!-- other ts related constants / settings -->
+        <ts.models>false</ts.models>
+        <ts.api>false</ts.api>
+        <npm.package.org>@arvato-systems-jacs</npm.package.org>
+        <npm.package>${npm.package.org}/t9t-api</npm.package>
     </properties>
 
     <build>
@@ -255,6 +266,9 @@
                     <groupId>org.eclipse.xtext</groupId>
                     <artifactId>xtext-maven-plugin</artifactId>
                     <version>${xtext-maven-plugin.version}</version>
+                    <configuration>
+                        <skip>${ts.models}</skip>
+                    </configuration>
                     <executions>
                         <execution>
                             <id>compile</id>
@@ -305,6 +319,65 @@
                             <groupId>de.jpaw.bonaparte-dsl</groupId>
                             <artifactId>de.jpaw.bonaparte.dsl</artifactId>
                             <version>${bonaparte-plugin.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>de.jpaw.bonaparte-dsl</groupId>
+                            <artifactId>de.jpaw.bonaparte.jpa.dsl</artifactId>
+                            <version>${bonaparte-plugin.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
+                <plugin>
+                    <groupId>de.jpaw.bonaparte-dsl</groupId>
+                    <artifactId>de.jpaw.bonaparte.dsl.typescript.plugin</artifactId>
+                    <version>${bonaparte-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>generate-with-maven-ownership</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <npmPackageModules>bonaparte-core</npmPackageModules>
+                        <compilerSourceLevel>21</compilerSourceLevel>
+                        <compilerTargetLevel>21</compilerTargetLevel>
+                        <addOutputDirectoriesToCompileSourceRoots>false</addOutputDirectoriesToCompileSourceRoots>
+                        <sourceRoots>
+                            <sourceRoot>${project.basedir}/src/main/bon</sourceRoot>
+                        </sourceRoots>
+                        <languages>
+                            <language>
+                                <setup>de.jpaw.bonaparte.dsl.BonScriptStandaloneSetup</setup>
+                                <outputConfigurations>
+                                    <outputConfiguration>
+                                        <outputDirectory>${project.basedir}/src/generated</outputDirectory>
+                                    </outputConfiguration>
+                                </outputConfigurations>
+                            </language>
+                            <language>
+                                <setup>de.jpaw.bonaparte.jpa.dsl.BDDLStandaloneSetup</setup>
+                                <outputConfigurations>
+                                    <outputConfiguration>
+                                        <outputDirectory>${project.basedir}/src/generated</outputDirectory>
+                                    </outputConfiguration>
+                                </outputConfigurations>
+                            </language>
+                        </languages>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.eclipse.jdt</groupId>
+                            <artifactId>ecj</artifactId>
+                            <version>${jdt.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.eclipse.jdt</groupId>
+                            <artifactId>org.eclipse.jdt.core</artifactId>
+                            <version>${jdt.version}</version>
                         </dependency>
                         <dependency>
                             <groupId>de.jpaw.bonaparte-dsl</groupId>
@@ -641,6 +714,11 @@
                     <version>${build-helper-maven-plugin.version}</version>
                 </plugin>
                 <plugin>
+                    <groupId>com.github.eirslett</groupId>
+                    <artifactId>frontend-maven-plugin</artifactId>
+                    <version>${frontend-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>jarjar-maven-plugin</artifactId>
                     <version>${maven-jarjar-plugin.version}</version>
@@ -734,7 +812,7 @@
                 <configuration>
                     <properties>
                         <owner>Arvato Systems GmbH</owner>
-                        <project.inceptionYear>2012 - 2025</project.inceptionYear>
+                        <project.inceptionYear>2012 - 2026</project.inceptionYear>
                     </properties>
                     <mapping>
                         <xtend>PHP</xtend>
@@ -1410,7 +1488,56 @@
                 <module>t9t-ariba-connector</module>
             </modules>
         </profile>
+        <profile>
+            <id>ts-models</id>
+            <activation>
+                <property><name>ts</name><value>true</value></property>
+            </activation>
+            <properties>
+                <ts.models>true</ts.models>
+            </properties>
+            <modules>
+                <module>t9t-api-ts/pom.xml</module>
+            </modules>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>de.jpaw.bonaparte-dsl</groupId>
+                        <artifactId>de.jpaw.bonaparte.dsl.typescript.plugin</artifactId>
+                        <version>${bonaparte-plugin.version}</version>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>ts-api</id>
+            <activation>
+                <property><name>ts-api</name><value>true</value></property>
+            </activation>
+            <properties>
+                <ts.models>true</ts.models>
+                <ts.api>true</ts.api>
+            </properties>
+            <modules>
+                <module>t9t-api-ts/pom.xml</module>
+            </modules>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>de.jpaw.bonaparte-dsl</groupId>
+                        <artifactId>de.jpaw.bonaparte.dsl.typescript.plugin</artifactId>
+                        <version>${bonaparte-plugin.version}</version>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
-
-

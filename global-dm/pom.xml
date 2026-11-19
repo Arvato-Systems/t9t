@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!--
 
-    Copyright (c) 2012 - 2025 Arvato Systems GmbH
+    Copyright (c) 2012 - 2026 Arvato Systems GmbH
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -34,14 +34,14 @@
          mvn versions:display-dependency-updates -Dmaven.version.ignore=".*-(alpha|beta|Alpha|Beta|rc|cr|m|RC|CR|M|milestone).*,4\\..*" -DallowMajorUpdates=false
     -->
     <properties>
-        <jodatime.version>2.15.0</jodatime.version>
+        <jodatime.version>2.15.1</jodatime.version>
         <org.slf4j-api.version>2.0.20</org.slf4j-api.version>
-        <asm.version>9.10.1</asm.version>
+        <asm.version>9.11.1</asm.version>
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonaparte-dsl plugin is set in the parent pom -->
-        <jpaw-bom.version>4.2.0</jpaw-bom.version>
-        <bonaparte-bom.version>8.0.2</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
+        <jpaw-bom.version>4.2.1</jpaw-bom.version>
+        <bonaparte-bom.version>8.0.4</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
 
         <!-- Versions of Xtext & Xtend -->
         <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings", where the variable xtext.version is defined -->
@@ -55,11 +55,11 @@
         <eclipselink.version>5.0.2</eclipselink.version>
         <hibernate.version>7.4.7.Final</hibernate.version>
         <hibernate-validator.version>9.0.1.Final</hibernate-validator.version>
-        <hibernate-search.version>8.4.0.Final</hibernate-search.version>
+        <hibernate-search.version>8.4.1.Final</hibernate-search.version>
 
         <hazelcast.version>5.7.0</hazelcast.version>
         <ehcache3.version>3.10.9</ehcache3.version>
-        <jandex.version>3.6.0</jandex.version>
+        <jandex.version>3.6.1</jandex.version>
 
         <!-- Javax ws / rs implementation versions -->
         <jaxb-xjc.version>4.0.9</jaxb-xjc.version>
@@ -88,7 +88,7 @@
         <jakarta.servlet-api.version>6.1.0</jakarta.servlet-api.version>                <!-- 6.1.0 for EE 11 web -->
 
         <!-- Microprofile -->
-        <microprofile-api.version>3.1.2</microprofile-api.version>
+        <microprofile-api.version>3.1.3</microprofile-api.version>
         <microprofile-smallrye-impl.version>2.4.1</microprofile-smallrye-impl.version>
 
         <!-- Commons (use with care, only few are regularly updated) -->
@@ -96,7 +96,7 @@
         <commons-cli.version>1.11.0</commons-cli.version>
         <commons-codec.version>1.23.0</commons-codec.version>
         <commons-io.version>2.22.0</commons-io.version>                   <!-- regularly updated again -->
-        <commons-lang3.version>3.21.0</commons-lang3.version>             <!-- regularly updated again -->
+        <commons-lang3.version>3.22.0</commons-lang3.version>             <!-- regularly updated again -->
         <commons-beanutils.version>1.11.0</commons-beanutils.version>     <!-- must be 1.9.2 at least due to CVE-2014-0114, but still pulls in outdated collections3 -->
         <commons-collections4.version>4.6.0</commons-collections4.version>
         <commons-fileupload.version>1.6.0</commons-fileupload.version>      <!-- must be 1.3.3 at least due to CVE-2016-1000031 -->
@@ -114,21 +114,21 @@
         <azure-cosmos-sdk.version>4.83.0</azure-cosmos-sdk.version>
 
         <!-- More AI stuff & DM for its dependencies -->
-        <grpc.version>1.84.0</grpc.version>
+        <grpc.version>1.85.1</grpc.version>
 
         <!-- needed for MCP -->
-        <reactor-core.version>3.8.7</reactor-core.version>
-        <reactor-netty.version>1.3.7</reactor-netty.version>
+        <reactor-core.version>3.8.8</reactor-core.version>
+        <reactor-netty.version>1.3.8</reactor-netty.version>
         <mcp-sdk.version>2.0.1</mcp-sdk.version>
 
         <!-- Test support -->
         <hamcrest.version>3.0</hamcrest.version>   <!-- avoid unless required -->
-        <byte-buddy.version>1.18.14</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
+        <byte-buddy.version>1.18.16</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
         <org.mockito.version>5.24.0</org.mockito.version>
         <archunit.version>1.4.2</archunit.version>
 
         <!-- Others -->
-        <bouncycastle.version>1.86</bouncycastle.version>
+        <bouncycastle.version>1.87</bouncycastle.version>
         <bouncycastle-tsp.version>1.46-donotuse</bouncycastle-tsp.version>     <!--  is older than the others! Is it still required? -->
         <woodstox.version>7.2.2</woodstox.version>
         <stax2-api.version>4.2.2</stax2-api.version>
@@ -141,29 +141,31 @@
         <httpclient5.version>5.6.5</httpclient5.version>
         <pdfbox.version>3.0.8</pdfbox.version>
         <freemarker.version>2.3.35</freemarker.version>
-        <jasperreports.version>7.0.8</jasperreports.version>
-        <openpdf.version>1.3.43</openpdf.version>
-        <flyingsaucer.version>9.4.0</flyingsaucer.version>
         <jmh.version>1.37</jmh.version>
         <kubernetes-client.version>7.9.0</kubernetes-client.version>
 
+        <!-- both jasper reports and flyingsaucer must fit to the openpdf version -->
+        <jasperreports.version>7.1.1</jasperreports.version>
+        <openpdf.version>3.0.5</openpdf.version>
+        <flyingsaucer.version>10.7.0</flyingsaucer.version>
+
         <guava.version>33.7.2-jre</guava.version>
         <caffeine.version>3.2.4</caffeine.version>
-        <resteasy.version>7.0.5.Final</resteasy.version>
+        <resteasy.version>7.0.6.Final</resteasy.version>
         <resteasy-vertx.version>2.0.0.Beta1</resteasy-vertx.version>
         <googlemaps.services.version>2.2.0</googlemaps.services.version>
         <apache-poi.version>5.5.1</apache-poi.version>
         <xmlbeans.version>5.4.1</xmlbeans.version>
         <gson.version>2.14.0</gson.version>
         <log4j2.version>2.26.1</log4j2.version>     <!-- see comment below -->
-        <reload4j.version>1.2.26</reload4j.version>
+        <reload4j.version>1.2.27</reload4j.version>
 
         <!-- Spring core -->
-        <spring-bom.version>7.0.9</spring-bom.version>
+        <spring-bom.version>7.0.10</spring-bom.version>
         <!-- Spring boot -->
-        <spring-boot.version>4.1.1</spring-boot.version>
+        <spring-boot.version>4.1.2</spring-boot.version>
 
-        <netty.version>4.2.19.Final</netty.version>
+        <netty.version>4.2.20.Final</netty.version>
         <vertx.version>5.1.10</vertx.version>
         <hazelcast-kubernetes.version>2.2.3</hazelcast-kubernetes.version>
 
@@ -171,20 +173,20 @@
 
         <c3p0.version>0.14.2</c3p0.version>
         <hikaricp.version>7.1.0</hikaricp.version>
-        <flyway.version>13.5.0</flyway.version>
+        <flyway.version>13.10.3</flyway.version>
         <reflections.version>0.9.10</reflections.version>
         <maven-plugin-api.version>3.9.16</maven-plugin-api.version>
-        <jackson.version>2.22.3</jackson.version>
+        <jackson.version>2.23.0</jackson.version>
         <solr.version>8.11.1</solr.version>
-        <camel.version>4.22.1</camel.version>
-        <jsch.version>2.28.7</jsch.version>
-        <mina.version>2.2.9</mina.version>
+        <camel.version>4.22.2</camel.version>
+        <jsch.version>2.28.8</jsch.version>
+        <mina.version>2.2.10</mina.version>
         <kafka.version>3.9.2</kafka.version>
-        <rabbitmq.version>5.37.0</rabbitmq.version>
-        <error-prone.version>2.50.0</error-prone.version>
+        <rabbitmq.version>5.37.1</rabbitmq.version>
+        <error-prone.version>2.52.0</error-prone.version>
 
         <!-- Monitoring -->
-        <micrometer.version>1.17.1</micrometer.version>
+        <micrometer.version>1.17.2</micrometer.version>
         <prometheus.version>0.16.0</prometheus.version>
 
         <!-- Swagger -->
@@ -196,7 +198,7 @@
         <google-auth-library.version>1.17.0</google-auth-library.version>
         <firebase-admin.version>9.5.0</firebase-admin.version>
 
-        <msal4j.version>1.26.0</msal4j.version>
+        <msal4j.version>1.26.1</msal4j.version>
         <nimbus.version>10.10</nimbus.version>
         <jboss-logging.version>3.6.3.Final</jboss-logging.version>
         <cxf.version>4.2.4</cxf.version>
@@ -208,7 +210,7 @@
         <groovy.version>5.1.2</groovy.version>            <!-- Current release (org.apache.grooy) -->
         <groovy-old.version>3.0.25</groovy-old.version>   <!-- Old release (org.codehaus.groovy) -->
         <!-- Apache JEXL -->
-        <jexl.version>3.7.0</jexl.version>
+        <jexl.version>3.7.1</jexl.version>
     </properties>
 
 
@@ -638,30 +640,6 @@
                 <version>${driver.postgresql.version}</version>
             </dependency>
             <dependency>
-                <!-- SAP HANA database driver -->
-                <groupId>com.sap.cloud.db.jdbc</groupId>
-                <artifactId>ngdbc</artifactId>
-                <version>${driver.hana.version}</version>
-            </dependency>
-            <dependency>
-                <!-- ORACLE database driver for Java 8 and up -->
-                <groupId>com.oracle.database.jdbc</groupId>
-                <artifactId>ojdbc8</artifactId>
-                <version>${driver.oracle.version}</version>
-            </dependency>
-            <dependency>
-                <!-- ORACLE database driver optimized for Java 11 -->
-                <groupId>com.oracle.database.jdbc</groupId>
-                <artifactId>ojdbc11</artifactId>
-                <version>${driver.oracle.version}</version>
-            </dependency>
-            <dependency>
-                <!-- MS SQL server database driver -->
-                <groupId>com.microsoft.sqlserver</groupId>
-                <artifactId>mssql-jdbc</artifactId>
-                <version>${driver.sqlserver.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>${h2.version}</version>
@@ -863,7 +841,7 @@
             </dependency>
             <dependency>
                 <groupId>net.sf.jasperreports</groupId>
-                <artifactId>jasperreports-pdf</artifactId>
+                <artifactId>jasperreports-openpdf</artifactId>
                 <version>${jasperreports.version}</version>
             </dependency>
             <dependency>
@@ -915,7 +893,7 @@
             </dependency>
             <dependency>
                 <groupId>org.xhtmlrenderer</groupId>
-                <artifactId>flying-saucer-pdf-openpdf</artifactId>
+                <artifactId>flying-saucer-pdf</artifactId>
                 <version>${flyingsaucer.version}</version>
             </dependency>
 

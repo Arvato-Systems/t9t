@@ -1,0 +1,7 @@
+{
+  "$schema": "./node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../npm-dist",
+  "lib": {
+    "entryFile": "rpc-core/index.ts"
+  }
+  "allowedNonPeerDependencies": ["@arvato-systems-jacs/bonaparte-api", "tslib"]

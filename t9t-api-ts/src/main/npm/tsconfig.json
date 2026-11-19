@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "paths": {
+      "@arvato-systems-jacs/t9t-api/*": ["./*/index.ts"]
+    },
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "types": ["vitest/globals"]
+  },
+  "include": ["rpc-core/**/*.ts", "test-setup.ts"]
+}
