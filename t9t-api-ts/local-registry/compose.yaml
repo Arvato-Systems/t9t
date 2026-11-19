@@ -42,4 +42,3 @@ services:
       retries: 20
 
 volumes:
-  npm-storage:
