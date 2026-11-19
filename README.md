@@ -1,7 +1,7 @@
-# Required prerequisites
+# Overview of Branches
 
-jpaw: https://github.com/arvato-systems-jacs/jpaw
-
-bonaparte-dsl: https://github.com/arvato-systems-jacs/bonaparte-dsl
-
-bonaparte-java: https://github.com/arvato-systems-jacs/bonaparte-java
+| Branch | Status of Snapshot/Build  | Checkstyle |
+| ------ | ------------------------- | ---------- |
+| **master** | [![Build](https://github.com/arvato-systems-jacs/t9t/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/arvato-systems-jacs/t9t/actions/workflows/build.yml) | [![Checkstyle](https://github.com/arvato-systems-jacs/t9t/actions/workflows/checkstyle.yml/badge.svg?branch=master)](https://github.com/arvato-systems-jacs/t9t/actions/workflows/checkstyle.yml) |
+| [release/7.0](https://github.com/arvato-systems-jacs/t9t/tree/release/7.0) | [![Snapshots](https://github.com/arvato-systems-jacs/t9t/actions/workflows/snapshots.yml/badge.svg?branch=release%2F7.0)](https://github.com/arvato-systems-jacs/t9t/actions/workflows/snapshots.yml) | [![Checkstyle](https://github.com/arvato-systems-jacs/t9t/actions/workflows/checkstyle.yml/badge.svg?branch=release%2F7.0)](https://github.com/arvato-systems-jacs/t9t/actions/workflows/checkstyle.yml) |
+| [release/6.8](https://github.com/arvato-systems-jacs/t9t/tree/release/6.8) | [![Snapshots](https://github.com/arvato-systems-jacs/t9t/actions/workflows/snapshots.yml/badge.svg?branch=release%2F6.8)](https://github.com/arvato-systems-jacs/t9t/actions/workflows/snapshots.yml) | [![Checkstyle](https://github.com/arvato-systems-jacs/t9t/actions/workflows/checkstyle.yml/badge.svg?branch=release%2F6.8)](https://github.com/arvato-systems-jacs/t9t/actions/workflows/checkstyle.yml) |

@@ -47,7 +47,7 @@ install-t9t() {
         if [[ $VAR =~ ^setup([a-zA-Z0-9_]+)$ ]]; then
             NAME="${BASH_REMATCH[1]}"
             CONTAINER="$VALUE"
-            DBNAME="${NAME,,}"
+            DBNAME=$(echo "$NAME" | tr '[:upper:]' '[:lower:]')
             echo "Run db setup for $CONTAINER (DB: $DBNAME)"
             run-setup --container="$CONTAINER" --db-url="jdbc:postgresql://host.docker.internal:5432/$DBNAME" --env="${ENV}" --project-version="${PROJECT_VERSION}"
         fi
