@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-build</artifactId>
-        <version>9.3.15</version>
+        <version>9.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>global-dm</artifactId>
@@ -185,7 +185,7 @@
         <!-- Spring boot -->
         <spring-boot.version>4.1.1</spring-boot.version>
 
-        <netty.version>4.2.19.Final</netty.version>
+        <netty.version>4.2.20.Final</netty.version>
         <vertx.version>5.1.10</vertx.version>
         <hazelcast-kubernetes.version>2.2.3</hazelcast-kubernetes.version>
 
@@ -197,9 +197,9 @@
         <flyway.version>11.19.0</flyway.version>
         <reflections.version>0.9.10</reflections.version>
         <maven-plugin-api.version>3.9.16</maven-plugin-api.version>
-        <jackson.version>2.22.2</jackson.version>
+        <jackson.version>2.23.0</jackson.version>
         <solr.version>8.11.1</solr.version>
-        <camel.version>4.22.0</camel.version>
+        <camel.version>4.22.2</camel.version>
         <jsch.version>2.27.9</jsch.version>
         <mina.version>2.2.9</mina.version>
         <kafka.version>3.9.2</kafka.version>
