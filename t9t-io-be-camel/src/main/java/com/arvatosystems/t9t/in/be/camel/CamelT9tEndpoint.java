@@ -23,17 +23,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * CamelT9tEndpoint for the 't9t:*' camel component
- * To be noted: If any additional parameters should be added to the camel route (as in t9t:ROUTE?apiKey=* )
- * they have to be added here as a class variable with getters & setters.
+ * CamelT9tEndpoint for the 't9t:*' camel component.
+ * The data sink to process is determined via the "dataSinkDTO" exchange property set by the route (see GenericT9tRoute),
+ * which also carries the apiKey to use (DataSinkDTO.apiKey) - no endpoint URI parameters are required.
  *
+ * To be noted: If any additional parameters should be added to the camel route (as in t9t:InputSession?exampleParameter="")
+ * they have to be added here as a class variable with getters & setters.
  */
 public class CamelT9tEndpoint extends DefaultEndpoint {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CamelT9tEndpoint.class);
-
-    // Defines the APIKey
-    private String apiKey = "";
 
     // CamelT9tEndpoint() { // unused empty constructor
     // }
@@ -60,12 +59,5 @@ public class CamelT9tEndpoint extends DefaultEndpoint {
     public boolean isSingleton() {
         return true;
     }
-
-    public String getApiKey() {
-        return this.apiKey;
-    }
-
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
-    }
 }
+

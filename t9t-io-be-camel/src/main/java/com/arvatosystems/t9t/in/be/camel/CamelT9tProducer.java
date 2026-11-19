@@ -53,15 +53,17 @@ public class CamelT9tProducer extends DefaultProducer {
     @Override
     public void process(final Exchange exchange) throws Exception {
         final DataSinkDTO dataSinkDTO = exchange.getProperty("dataSinkDTO", DataSinkDTO.class);
-        final CamelT9tEndpoint endpoint = (CamelT9tEndpoint) getEndpoint();
-        final String apiKey = endpoint.getApiKey();
+        final UUID apiKey = dataSinkDTO.getApiKey();
+        if (apiKey == null) {
+            throw new IllegalStateException("No apiKey configured on dataSink " + dataSinkDTO.getDataSinkId() + " for t9t Camel route");
+        }
         LOGGER.info("Processor invoked for dataSinkDTO {}", dataSinkDTO);
 
         final String importFilename = deriveImportFilename(dataSinkDTO, exchange);
 
         // process a file / input stream, which can be binary
         final IInputSession inputSession    = Jdp.getRequired(IInputSession.class);
-        inputSession.open(dataSinkDTO.getDataSinkId(), UUID.fromString(apiKey), importFilename, null);
+        inputSession.open(dataSinkDTO.getDataSinkId(), apiKey, importFilename, null);
 
         InputStream inputStream = null;
 

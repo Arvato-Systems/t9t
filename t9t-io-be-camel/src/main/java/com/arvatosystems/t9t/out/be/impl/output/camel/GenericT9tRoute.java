@@ -28,6 +28,9 @@ import com.arvatosystems.t9t.io.DataSinkDTO;
 
 public class GenericT9tRoute extends RouteBuilder {
 
+    // generic target for file/queue based imports
+    public static final String DEFAULT_IMPORT_CAMEL_ROUTE = "t9t:InputSession";
+
     private final DataSinkDTO dataSinkDTO;
     private final IFileUtil fileUtil;
 
@@ -44,7 +47,7 @@ public class GenericT9tRoute extends RouteBuilder {
             if (dataSinkDTO.getImportQueueName() != null) {
                 final String queueDirectory = fileUtil.getAbsolutePath(".import-queue/" + dataSinkDTO.getImportQueueName()).replace('\\', '/');
 
-                from(dataSinkDTO.getFileOrQueueNamePattern())
+                from(dataSinkDTO.getCamelRoute())
                     .routeId(getQueueInRouteId(dataSinkDTO))
                     .process(exchange -> initMDC(exchange))
                     .to("file://" + queueDirectory + "?autoCreate=true&tempFileName=${file:name}.intrans&flatten=true");
@@ -53,13 +56,13 @@ public class GenericT9tRoute extends RouteBuilder {
                     .routeId(getQueueOutRouteId(dataSinkDTO))
                     .process(exchange -> initMDC(exchange))
                     .setProperty("dataSinkDTO", constant(dataSinkDTO))
-                    .to(dataSinkDTO.getCamelRoute());
+                    .to(DEFAULT_IMPORT_CAMEL_ROUTE);
             } else {
-                from(dataSinkDTO.getFileOrQueueNamePattern())
+                from(dataSinkDTO.getCamelRoute())
                     .routeId(getDirectRouteId(dataSinkDTO))
                     .process(exchange -> initMDC(exchange))
                     .setProperty("dataSinkDTO", constant(dataSinkDTO))
-                    .to(dataSinkDTO.getCamelRoute());
+                    .to(DEFAULT_IMPORT_CAMEL_ROUTE);
             }
         } else {
             throw new UnsupportedOperationException("Output Route with t9t: component is currently not supported!");
