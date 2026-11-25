@@ -103,4 +103,14 @@ package (com.arvatosystems) t9t.auth.request {
         required int                                passwordMinLowercase;       // how many lowercase letters must be part of the password?
         required int                                passwordMaxCommonSubstring; // how many identical substring characters found in the password are allowed?
     }
+
+    /**
+    * Request to update basic user details of logged-in user (excluding permissions and roles).
+    */
+    class UpdateUserDataRequest extends RequestParameters {
+        optional shortText                                  name;
+        optional shortText                                  firstName;
+        optional shortText                                  phoneNo;
+        optional shortText                                  mobilePhoneNo;
+    }
 }
